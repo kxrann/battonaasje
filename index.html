@@ -763,6 +763,189 @@
     pointer-events: none;
   }
 
+  /* MODAL */
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(26,23,20,0.7);
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.35s ease;
+  }
+  .modal-backdrop.open {
+    opacity: 1;
+    pointer-events: all;
+  }
+  .modal {
+    background: var(--paper);
+    max-width: 960px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    transform: translateY(24px);
+    transition: transform 0.35s ease;
+  }
+  .modal-backdrop.open .modal {
+    transform: translateY(0);
+  }
+  .modal-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    font-family: 'Courier Prime', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--faded);
+    cursor: pointer;
+    z-index: 10;
+    transition: color 0.2s;
+  }
+  .modal-close:hover { color: var(--ink); }
+  .modal-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  .modal-gallery {
+    background: var(--aged);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .modal-img-main {
+    width: 100%;
+    aspect-ratio: 3/4;
+    object-fit: cover;
+    display: block;
+  }
+  .modal-img-placeholder-main {
+    width: 100%;
+    aspect-ratio: 3/4;
+    background: var(--ghost);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--faded);
+  }
+  .modal-thumbs {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 2px;
+  }
+  .modal-thumb-placeholder {
+    aspect-ratio: 1;
+    background: var(--ghost);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 8px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--faded);
+    opacity: 0.6;
+  }
+  .modal-info {
+    padding: 48px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+  .modal-region {
+    font-size: 9px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--faded);
+  }
+  .modal-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: 28px;
+    letter-spacing: 3px;
+    color: var(--ink);
+    line-height: 1.2;
+  }
+  .modal-producer {
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--faded);
+    font-style: italic;
+    margin-top: 4px;
+  }
+  .modal-divider {
+    height: 1px;
+    background: var(--ghost);
+  }
+  .modal-section-label {
+    font-size: 9px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--ghost);
+    margin-bottom: 10px;
+  }
+  .modal-text {
+    font-size: 13px;
+    line-height: 1.9;
+    color: var(--accent);
+  }
+  .modal-pairings {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .modal-pairing-tag {
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--faded);
+    border: 1px solid var(--ghost);
+    padding: 5px 10px;
+  }
+  .modal-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid var(--ghost);
+    padding-top: 24px;
+  }
+  .modal-price {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: 22px;
+    letter-spacing: 2px;
+    color: var(--ink);
+  }
+  .modal-wa {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    background: var(--ink);
+    color: var(--paper);
+    font-family: 'Courier Prime', monospace;
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: opacity 0.2s;
+  }
+  .modal-wa:hover { opacity: 0.8; }
+  @media (max-width: 768px) {
+    .modal-layout { grid-template-columns: 1fr; }
+    .modal-info { padding: 32px 24px; gap: 24px; }
+    .modal-title { font-size: 22px; }
+  }
+
   /* HAMBURGER */
   .nav-hamburger {
     display: none;
@@ -907,7 +1090,7 @@
   <div class="bottles-grid">
 
     <!-- Bottle 1: Chablis Grand Cru Gautheron -->
-    <div class="bottle-card">
+    <div class="bottle-card" data-modal="modal-chablis">
       <div class="bottle-label">Beschikbaar</div>
       <img class="bottle-img" src="images/6eb81a7697277c0040dab9212e82.jpg" alt="Chablis Grand Cru Bougros 2022 – Alain et Cyril Gautheron">
       <div class="bottle-overlay">
@@ -934,7 +1117,7 @@
     </div>
 
     <!-- Bottle 2: Massolino Barolo Magnum -->
-    <div class="bottle-card">
+    <div class="bottle-card" data-modal="modal-barolo">
       <div class="bottle-label">Magnum</div>
       <img class="bottle-img" src="images/barolo-docg-2019-magnum-cassetta-di-legno-massolino.jpg" alt="Barolo DOCG Magnum 2019 – Massolino">
       <div class="bottle-overlay">
@@ -968,6 +1151,112 @@
 
   </div>
 </section>
+
+<!-- MODAL: Chablis -->
+<div class="modal-backdrop" id="modal-chablis">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-chablis')">Sluiten ×</button>
+    <div class="modal-layout">
+      <div class="modal-gallery">
+        <img class="modal-img-main" src="images/6eb81a7697277c0040dab9212e82.jpg" alt="Chablis Grand Cru Bougros 2022">
+        <div class="modal-thumbs">
+          <div class="modal-thumb-placeholder">foto</div>
+          <div class="modal-thumb-placeholder">foto</div>
+          <div class="modal-thumb-placeholder">foto</div>
+        </div>
+      </div>
+      <div class="modal-info">
+        <div>
+          <div class="modal-region">Chablis Grand Cru · Bourgogne · Frankrijk</div>
+          <div class="modal-title">Chablis Grand Cru Bougros 2022</div>
+          <div class="modal-producer">Alain et Cyril Gautheron</div>
+        </div>
+        <div class="modal-divider"></div>
+        <div>
+          <div class="modal-section-label">Proefnotities</div>
+          <p class="modal-text">Krijt en citroen openen het glas — scherp, mineraal, onmiskenbaar Chablis. Naarmate de wijn opent verschijnen tonen van witte bloesem, groene appel en een vleugje geroosterd brood van de gedeeltelijke élevage op eik. De afdronk is lang, zout en droog.</p>
+        </div>
+        <div>
+          <div class="modal-section-label">Over de producent</div>
+          <p class="modal-text">Domaine Gautheron is een familiebedrijf in Fleys, op de grens van Chablis Premier Cru en Grand Cru terroir. Vader Alain begon in de jaren '80, zoon Cyril nam het stuur over. Ze werken met minimale interventie in de kelder en laten het terroir spreken — precies zoals Chablis bedoeld is.</p>
+        </div>
+        <div>
+          <div class="modal-section-label">Weetjes</div>
+          <p class="modal-text">Bougros is een van de zeven Grand Cru-klimaten van Chablis, gelegen op de westelijke helling met een ideale zuidoostelijke oriëntatie. De bodem bestaat uit Kimmeridgiaan-kalk — dezelfde formatie als in Champagne. Kimmeridgiaan bevat miljoenen jaren oude fossielen van kleine oesters, wat de beroemde jodium-mineraliteit van Chablis verklaart.</p>
+        </div>
+        <div>
+          <div class="modal-section-label">Spijs-combinaties</div>
+          <div class="modal-pairings">
+            <span class="modal-pairing-tag">Oesters</span>
+            <span class="modal-pairing-tag">Gegrilde tong</span>
+            <span class="modal-pairing-tag">Zeekreeft</span>
+            <span class="modal-pairing-tag">Geitenkaas</span>
+            <span class="modal-pairing-tag">Coquilles</span>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <div class="modal-price">Op aanvraag</div>
+          <a class="modal-wa" href="https://wa.me/31687441353?text=Hoi%2C%20ik%20ben%20ge%C3%AFnteresseerd%20in%20de%20Chablis%20Grand%20Cru%20Bougros%202022%20van%20Gautheron.%20Is%20deze%20nog%20beschikbaar%3F" target="_blank" rel="noopener noreferrer">
+            Bestellen via WhatsApp
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Barolo -->
+<div class="modal-backdrop" id="modal-barolo">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-barolo')">Sluiten ×</button>
+    <div class="modal-layout">
+      <div class="modal-gallery">
+        <img class="modal-img-main" src="images/barolo-docg-2019-magnum-cassetta-di-legno-massolino.jpg" alt="Barolo DOCG Magnum 2019 – Massolino">
+        <div class="modal-thumbs">
+          <div class="modal-thumb-placeholder">foto</div>
+          <div class="modal-thumb-placeholder">foto</div>
+          <div class="modal-thumb-placeholder">foto</div>
+        </div>
+      </div>
+      <div class="modal-info">
+        <div>
+          <div class="modal-region">Barolo DOCG · Piemonte · Italië</div>
+          <div class="modal-title">Barolo DOCG Magnum 2019</div>
+          <div class="modal-producer">Massolino</div>
+        </div>
+        <div class="modal-divider"></div>
+        <div>
+          <div class="modal-section-label">Proefnotities</div>
+          <p class="modal-text">Diep robijnrood met granaten rand. De neus toont gedroogde rozen, teer en kers — klassiek Nebbiolo. Op het gehemelte is de wijn vol en gestructureerd met krachtige maar gepolijste tannines. Aardse ondertonen van truffel en viooltje leiden naar een lange, warme afdronk. 2019 is een uitzonderlijk jaar in Piemonte.</p>
+        </div>
+        <div>
+          <div class="modal-section-label">Over de producent</div>
+          <p class="modal-text">Massolino is een van de meest gerespecteerde namen in Barolo — al sinds 1896. Het domein ligt in Serralunga d'Alba, bekend om zijn kalksteenrijke bodems en de meest tannineuze, langlevende Barolo's. Vier generaties later beheert de familie nog steeds elke fase van productie zelf, van druif tot fles.</p>
+        </div>
+        <div>
+          <div class="modal-section-label">Weetjes</div>
+          <p class="modal-text">Een Magnum (1,5L) rijpt langzamer en gelijkmatiger dan een standaardfles door de gunstigere verhouding tussen wijn en lucht. Voor een wijn als Barolo — die minstens 10 tot 20 jaar nodig heeft om volledig open te bloeien — is een Magnum het ideale formaat. Deze fles is geleverd in een houten cassetta, traditioneel voor topwijnen uit Piemonte.</p>
+        </div>
+        <div>
+          <div class="modal-section-label">Spijs-combinaties</div>
+          <div class="modal-pairings">
+            <span class="modal-pairing-tag">Truffel risotto</span>
+            <span class="modal-pairing-tag">Brasato al Barolo</span>
+            <span class="modal-pairing-tag">Wild zwijn</span>
+            <span class="modal-pairing-tag">Oude kaas</span>
+            <span class="modal-pairing-tag">Ossobuco</span>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <div class="modal-price">Op aanvraag</div>
+          <a class="modal-wa" href="https://wa.me/31687441353?text=Hoi%2C%20ik%20ben%20ge%C3%AFnteresseerd%20in%20de%20Barolo%20DOCG%20Magnum%202019%20van%20Massolino.%20Is%20deze%20nog%20beschikbaar%3F" target="_blank" rel="noopener noreferrer">
+            Bestellen via WhatsApp
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- CONTACT -->
 <section id="contact">
@@ -1174,6 +1463,30 @@
     hamburger.classList.remove('open');
     hamburger.setAttribute('aria-expanded', 'false');
   }
+
+  // Modal
+  function openModal(id) {
+    document.getElementById(id).classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeModal(id) {
+    document.getElementById(id).classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  document.querySelectorAll('.bottle-card[data-modal]').forEach(function(card) {
+    card.addEventListener('click', function(e) {
+      if (e.target.closest('a')) return;
+      openModal(card.dataset.modal);
+    });
+  });
+  document.querySelectorAll('.modal-backdrop').forEach(function(backdrop) {
+    backdrop.addEventListener('click', function(e) {
+      if (e.target === backdrop) closeModal(backdrop.id);
+    });
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') document.querySelectorAll('.modal-backdrop.open').forEach(function(m) { closeModal(m.id); });
+  });
 
   // Scroll fade-in (exclude hero section)
   document.querySelectorAll('#bottles .section-header, #contact .section-header, #about .section-header, #blog .section-header, .bottle-card, .contact-grid, .about-grid, .blog-grid, .coming-soon-card').forEach(function(el) {
