@@ -709,6 +709,60 @@
   .hero-bio { animation: fadeUp 0.7s ease 0.35s both; }
   .hero-cta { animation: fadeUp 0.7s ease 0.5s both; }
 
+  /* Scroll fade-in */
+  .reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Nav shrink on scroll */
+  nav.scrolled {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    transition: padding 0.3s ease;
+  }
+  nav { transition: padding 0.3s ease; }
+
+  /* Bottle card lift */
+  .bottle-card {
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+  }
+  .bottle-card:hover {
+    box-shadow: 0 12px 40px rgba(26,23,20,0.18);
+    transform: translateY(-3px);
+  }
+
+  /* Smooth underline on links */
+  .blog-read, .footer-ig {
+    background-image: linear-gradient(var(--ink), var(--ink));
+    background-size: 0% 1px;
+    background-repeat: no-repeat;
+    background-position: left bottom;
+    border-bottom: none;
+    padding-bottom: 2px;
+    transition: background-size 0.3s ease, color 0.2s;
+  }
+  .blog-read:hover, .footer-ig:hover {
+    background-size: 100% 1px;
+  }
+  .footer-ig {
+    background-image: linear-gradient(var(--faded), var(--faded));
+  }
+
+  /* Age gate fade out */
+  #age-gate {
+    transition: opacity 0.5s ease;
+  }
+  #age-gate.hiding {
+    opacity: 0;
+    pointer-events: none;
+  }
+
   /* HAMBURGER */
   .nav-hamburger {
     display: none;
@@ -937,7 +991,7 @@
         </a>
         <a href="mailto:info@battonaasje.nl" class="contact-link">
           <span class="contact-link-label">E-mail</span>
-          <span class="contact-link-val">info@battonaasje.nl →</span>
+          <span class="contact-link-val">in de maak →</span>
         </a>
         <div class="contact-link" style="cursor:default;">
           <span class="contact-link-label">Locatie</span>
@@ -979,13 +1033,13 @@
     </div>
     <div class="about-content">
       <h3 class="about-name">Battonaasje</h3>
-      <p class="about-role">Sommelier · Friesland · Est. 2025</p>
+      <p class="about-role">Sommelier · Friesland · 21 jaar oud</p>
       <p class="about-body">
         Battonaasje is een gecureerde wijnselectie vanuit het hart van Friesland. 
         De naam is een knipoog naar <em>bâtonnage</em> — het roeren van de droesem 
         tijdens de rijping, een techniek die diepgang en karakter aan wijn geeft. 
-        Net als de wijnen die ik selecteer: gevonden, verzorgd, gedeeld.<br><br>
-        Als sommelier met drie jaar ervaring zoek ik naar flessen die een verhaal 
+        Net als de wijnen die ik selecteer. <br><br>
+        Als assistent-sommelier en wijnliefhebber met drie jaar ervaring zoek ik naar flessen die een verhaal 
         vertellen. Van de Jura tot de Moezel, van Bourgogne tot de Elzas. 
         Wijnen die niet schreeuwen, maar fluisteren.
       </p>
@@ -1000,7 +1054,7 @@
         </div>
         <div class="about-stat">
           <div class="about-stat-num">∞</div>
-          <div class="about-stat-label">Nieuwsgierigheid</div>
+          <div class="about-stat-label">Leergierigheid</div>
         </div>
         <div class="about-stat">
           <div class="about-stat-num">FR</div>
@@ -1015,12 +1069,12 @@
 <section id="blog">
   <div class="section-header">
     <span class="section-num">04</span>
-    <h2 class="section-title">DE KELDER FLUISTERT</h2>
+    <h2 class="section-title">Kyran's Blog</h2>
     <div class="section-line"></div>
   </div>
 
   <div class="blog-grid">
-    <div class="blog-coming">Binnenkort</div>
+    <div class="blog-coming">Binnenkort.....</div>
   </div>
 </section>
 
@@ -1120,6 +1174,57 @@
     hamburger.classList.remove('open');
     hamburger.setAttribute('aria-expanded', 'false');
   }
+
+  // Scroll fade-in (exclude hero section)
+  document.querySelectorAll('#bottles .section-header, #contact .section-header, #about .section-header, #blog .section-header, .bottle-card, .contact-grid, .about-grid, .blog-grid, .coming-soon-card').forEach(function(el) {
+    el.classList.add('reveal');
+  });
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(function(el) { observer.observe(el); });
+
+  // Nav shrink on scroll
+  window.addEventListener('scroll', function() {
+    document.querySelector('nav').classList.toggle('scrolled', window.scrollY > 60);
+  });
+
+  // Age gate fade out
+  var originalCheckAge = checkAge;
+  checkAge = function() {
+    var day = parseInt(document.getElementById('age-day').value);
+    var month = parseInt(document.getElementById('age-month').value);
+    var year = parseInt(document.getElementById('age-year').value);
+    if (!day || !month || !year || year < 1900 || year > 2099) {
+      document.getElementById('age-error').textContent = 'Vul een geldige geboortedatum in.';
+      return;
+    }
+    var birthDate = new Date(year, month - 1, day);
+    var today = new Date();
+    var age = today.getFullYear() - birthDate.getFullYear();
+    var m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) age--;
+    if (isNaN(age) || age < 0 || age > 120) {
+      document.getElementById('age-error').textContent = 'Vul een geldige geboortedatum in.';
+      return;
+    }
+    if (age >= 18) {
+      var gate = document.getElementById('age-gate');
+      gate.classList.add('hiding');
+      setTimeout(function() { gate.classList.add('hidden'); }, 500);
+      sessionStorage.setItem('battonaasje_age_verified', 'true');
+    } else {
+      document.getElementById('age-error').textContent = 'Helaas — u moet 18 jaar of ouder zijn om deze website te bezoeken.';
+      document.getElementById('age-day').value = '';
+      document.getElementById('age-month').value = '';
+      document.getElementById('age-year').value = '';
+    }
+  };
 </script>
 
 </body>
