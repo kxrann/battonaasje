@@ -759,7 +759,11 @@
   /* HERO PARTICLES */
   .hero-particles {
     position: absolute;
-    inset: 0;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100vw;
     overflow: hidden;
     pointer-events: none;
     z-index: 0;
@@ -768,9 +772,8 @@
     position: absolute;
     bottom: -20px;
     border-radius: 50%;
-    background: radial-gradient(circle at 32% 28%, rgba(255,255,240,0.9) 0%, rgba(255,245,200,0.3) 25%, rgba(212,175,80,0.06) 60%, transparent 100%);
-    border: 1.5px solid rgba(200,160,60,0.5);
-    box-shadow: inset -2px -2px 4px rgba(180,140,40,0.2), inset 1px 1px 3px rgba(255,255,220,0.8), 0 0 8px rgba(212,175,80,0.12);
+    background: rgba(212,175,80,0.07);
+    border: 1px solid rgba(200,160,60,0.38);
     animation: particleDrift linear infinite;
   }
   .hero-particles span:nth-child(1)  { width: 10px; height: 10px; left: 5%;   opacity: 0.55; animation-duration: 32s; animation-delay: 0s; }
@@ -803,9 +806,8 @@
     position: absolute;
     bottom: -20px;
     border-radius: 50%;
-    background: radial-gradient(circle at 32% 28%, rgba(255,255,220,0.95) 0%, rgba(255,240,160,0.4) 25%, rgba(212,175,80,0.08) 60%, transparent 100%);
-    border: 1.5px solid rgba(212,175,80,0.65);
-    box-shadow: inset -2px -2px 4px rgba(180,140,40,0.25), inset 1px 1px 3px rgba(255,255,200,0.9), 0 0 10px rgba(212,175,80,0.2);
+    background: rgba(212,175,80,0.06);
+    border: 1px solid rgba(212,175,80,0.50);
     animation: particleDrift linear infinite;
   }
   .age-gate-particles span:nth-child(1)  { width: 10px; height: 10px; left: 8%;   opacity: 0.65; animation-duration: 30s; animation-delay: 0s; }
