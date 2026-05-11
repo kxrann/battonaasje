@@ -58,9 +58,10 @@
   #lucki-gate img {
     width: 100%;
     height: 100%;
-    object-fit: contain;
+    object-fit: cover;
     position: absolute;
     inset: 0;
+    transition: opacity 0.5s ease;
   }
   #lucki-gate p {
     position: relative;
@@ -1826,6 +1827,29 @@
     if (e.key === 'Enter') checkAge();
   });
 
+  // Lucki slideshow
+  var luckiImages = [
+    'https://i.kym-cdn.com/photos/images/original/002/511/194/7ff.png',
+    'https://i.kym-cdn.com/photos/images/original/002/511/199/588.png',
+    'https://i.kym-cdn.com/photos/images/original/002/511/198/096.png',
+    'https://i.kym-cdn.com/photos/images/original/002/511/192/c33.png',
+    'https://i.kym-cdn.com/photos/images/original/002/816/422/8dd.png',
+    'https://i.kym-cdn.com/photos/images/original/002/380/311/089.jpg'
+  ];
+  var luckiIndex = 0;
+  function startLuckiSlideshow() {
+    var img = document.querySelector('#lucki-gate img');
+    img.src = luckiImages[0];
+    setInterval(function() {
+      luckiIndex = (luckiIndex + 1) % luckiImages.length;
+      img.style.opacity = '0';
+      setTimeout(function() {
+        img.src = luckiImages[luckiIndex];
+        img.style.opacity = '1';
+      }, 500);
+    }, 3000);
+  }
+
   // Private gate
   var PRIVATE_CODE = 'SIGARETTEN';
   var privateWrongAttempts = 0;
@@ -1841,6 +1865,7 @@
       document.getElementById('private-code').value = '';
       if (privateWrongAttempts >= 3) {
         document.getElementById('lucki-gate').classList.add('active');
+        startLuckiSlideshow();
         document.body.style.position = 'fixed';
         document.body.style.top = '0';
         document.body.style.left = '0';
