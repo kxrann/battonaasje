@@ -61,7 +61,7 @@
     object-fit: contain;
     position: absolute;
     inset: 0;
-    transition: opacity 0.5s ease;
+    transition: opacity 1.5s ease;
   }
   #lucki-gate p {
     position: relative;
@@ -1834,7 +1834,11 @@
     'https://i.kym-cdn.com/photos/images/original/002/511/198/096.png',
     'https://i.kym-cdn.com/photos/images/original/002/511/192/c33.png',
     'https://i.kym-cdn.com/photos/images/original/002/816/422/8dd.png',
-    'https://i.kym-cdn.com/photos/images/original/002/380/311/089.jpg'
+    'https://i.kym-cdn.com/photos/images/original/002/380/311/089.jpg',
+    'https://i.kym-cdn.com/photos/images/original/002/511/201/197.jpeg',
+    'https://i.kym-cdn.com/photos/images/original/002/568/667/91f.png',
+    'https://i.kym-cdn.com/photos/images/original/002/511/193/eb9',
+    'https://i.kym-cdn.com/photos/images/original/002/511/195/0b5'
   ];
   var luckiIndex = 0;
   function startLuckiSlideshow() {
@@ -1846,8 +1850,8 @@
       setTimeout(function() {
         img.src = luckiImages[luckiIndex];
         img.style.opacity = '1';
-      }, 500);
-    }, 3000);
+      }, 1500);
+    }, 5000);
   }
 
   // Private gate
