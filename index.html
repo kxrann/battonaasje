@@ -1745,6 +1745,7 @@
 <!-- PRIVATE GATE -->
 <div id="lucki-gate">
   <img src="https://i.kym-cdn.com/photos/images/original/002/511/194/7ff.png" alt="">
+  <audio id="lucki-audio" src="media/lucki.mp3" preload="auto"></audio>
   <p>toegang geweigerd</p>
 </div>
 
@@ -1816,6 +1817,7 @@
       if (privateWrongAttempts >= 3) {
         document.getElementById('lucki-gate').classList.add('active');
         document.body.style.overflow = 'hidden';
+        document.getElementById('lucki-audio').play();
       } else {
         document.getElementById('private-error').textContent = 'onjuiste code — probeer opnieuw';
       }
