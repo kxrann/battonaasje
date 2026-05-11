@@ -41,6 +41,9 @@
   #lucki-gate {
     position: fixed;
     inset: 0;
+    width: 100%;
+    height: 100vh;
+    height: 100dvh;
     background: #000;
     z-index: 999999;
     display: none;
@@ -48,6 +51,8 @@
     align-items: center;
     justify-content: center;
     gap: 0;
+    overflow: hidden;
+    touch-action: none;
   }
   #lucki-gate.active { display: flex; }
   #lucki-gate img {
@@ -1756,7 +1761,7 @@
 </div>
 
 <!-- AGE GATE -->
-<div id="age-gate">
+<div id="age-gate" class="hidden">
   <div class="age-gate-particles" aria-hidden="true">
     <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
   </div>
@@ -1802,11 +1807,15 @@
     var input = document.getElementById('private-code').value.trim().toUpperCase();
     if (input === PRIVATE_CODE) {
       document.getElementById('private-gate').classList.add('hidden');
+      if (sessionStorage.getItem('battonaasje_age_verified') !== 'true') {
+        document.getElementById('age-gate').classList.remove('hidden');
+      }
     } else {
       privateWrongAttempts++;
       document.getElementById('private-code').value = '';
       if (privateWrongAttempts >= 3) {
         document.getElementById('lucki-gate').classList.add('active');
+        document.body.style.overflow = 'hidden';
       } else {
         document.getElementById('private-error').textContent = 'onjuiste code — probeer opnieuw';
       }
@@ -1816,9 +1825,6 @@
     if (e.key === 'Enter') checkPrivateCode();
   });
 
-  if (sessionStorage.getItem('battonaasje_age_verified') === 'true') {
-    document.getElementById('age-gate').classList.add('hidden');
-  }
 
   var hamburger = document.getElementById('hamburger');
   var mobileMenu = document.getElementById('mobile-menu');
