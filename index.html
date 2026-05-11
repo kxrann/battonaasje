@@ -32,6 +32,7 @@
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
     font-feature-settings: "kern" 1, "liga" 1;
+    position: relative;
   }
 
   /* AGE GATE */
@@ -804,8 +805,9 @@
 
   /* SITE PARTICLES */
   .site-particles {
-    position: fixed;
+    position: absolute;
     inset: 0;
+    height: 100%;
     overflow: hidden;
     pointer-events: none;
     z-index: 0;
@@ -888,9 +890,9 @@
   @keyframes particleDrift {
     0%   { transform: translateY(0) translateX(0); opacity: 0; }
     5%   { opacity: inherit; }
-    50%  { transform: translateY(-45vh) translateX(24px); }
+    50%  { transform: translateY(-150vh) translateX(24px); }
     95%  { opacity: inherit; }
-    100% { transform: translateY(-100vh) translateX(-12px); opacity: 0; }
+    100% { transform: translateY(-300vh) translateX(-12px); opacity: 0; }
   }
 
   /* Scroll fade-in */
