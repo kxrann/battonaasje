@@ -130,7 +130,6 @@
     pointer-events: none;
     z-index: 1000;
     opacity: 0.4;
-    will-change: transform;
     transform: translateZ(0);
   }
 
@@ -329,7 +328,7 @@
     background: var(--paper);
   }
 
-  .bottle-card:hover .bottle-img { transform: scale(1.03); filter: saturate(1); }
+  .bottle-card:hover .bottle-img { transform: scale(1.03); }
   .bottle-card:hover .bottle-overlay { opacity: 1; }
 
   .bottle-img {
@@ -339,8 +338,7 @@
     display: block;
     padding: 32px 24px 16px;
     box-sizing: border-box;
-    filter: saturate(0.9);
-    transition: transform 0.6s cubic-bezier(0.22,1,0.36,1), filter 0.4s ease;
+    transition: transform 0.6s cubic-bezier(0.22,1,0.36,1);
   }
 
   .bottle-img-placeholder {
@@ -1367,7 +1365,7 @@
     <!-- Bottle 1: Chablis Grand Cru Gautheron -->
     <div class="bottle-card" data-modal="modal-chablis">
       <div class="bottle-label"></div>
-      <img class="bottle-img" src="images/6eb81a7697277c0040dab9212e82.jpg" alt="Chablis Grand Cru Bougros 2022 – Alain et Cyril Gautheron" loading="lazy">
+      <img class="bottle-img" src="images/6eb81a7697277c0040dab9212e82.jpg" alt="Chablis Grand Cru Bougros 2022 – Alain et Cyril Gautheron" loading="lazy" decoding="async">
       <div class="bottle-overlay">
         <span class="bottle-region">Chablis Grand Cru · Bourgogne · Frankrijk</span>
         <div class="bottle-name">Chablis Grand Cru Bougros</div>
@@ -1394,7 +1392,7 @@
     <!-- Bottle 2: Massolino Barolo Magnum -->
     <div class="bottle-card" data-modal="modal-barolo">
       <div class="bottle-label"></div>
-      <img class="bottle-img" src="images/barolo-docg-2019-magnum-cassetta-di-legno-massolino.jpg" alt="Barolo DOCG Magnum 2019 – Massolino" loading="lazy">
+      <img class="bottle-img" src="images/barolo-docg-2019-magnum-cassetta-di-legno-massolino.jpg" alt="Barolo DOCG Magnum 2019 – Massolino" loading="lazy" decoding="async">
       <div class="bottle-overlay">
         <span class="bottle-region">Barolo · Piemonte · Italië</span>
         <div class="bottle-name">Barolo DOCG Magnum</div>
@@ -1421,7 +1419,7 @@
     <!-- Bottle 3: Defaix Chablis Grand Cru Blanchot 1991 -->
     <div class="bottle-card" data-modal="modal-blanchot">
       <div class="bottle-label"></div>
-      <img class="bottle-img" src="images/chablis-grand-cru-blanchot-1991-defaix.jpg" alt="Chablis Grand Cru Blanchot 1991 – Daniël-Étienne Defaix" loading="lazy">
+      <img class="bottle-img" src="images/chablis-grand-cru-blanchot-1991-defaix.jpg" alt="Chablis Grand Cru Blanchot 1991 – Daniël-Étienne Defaix" loading="lazy" decoding="async">
       <div class="bottle-overlay">
         <span class="bottle-region">Chablis Grand Cru · Blanchot · Frankrijk</span>
         <div class="bottle-name">Chablis Grand Cru Blanchot</div>
@@ -1878,7 +1876,7 @@
   // Nav shrink on scroll
   window.addEventListener('scroll', function() {
     document.querySelector('nav').classList.toggle('scrolled', window.scrollY > 60);
-  });
+  }, { passive: true });
 
   function checkAge() {
     var day = parseInt(document.getElementById('age-day').value);
