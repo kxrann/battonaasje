@@ -25,6 +25,7 @@
     color: var(--ink);
     font-family: 'Courier Prime', 'Courier New', monospace;
     overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
   }
 
   /* AGE GATE */
@@ -75,9 +76,11 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px 48px;
-    background: var(--paper);
-    border-bottom: 1px solid var(--ghost);
+    padding: 22px 56px;
+    background: rgba(242,237,228,0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(200,192,176,0.5);
   }
 
   .nav-logo {
@@ -114,8 +117,15 @@
     flex-direction: column;
     justify-content: center;
     align-items: flex-start;
-    padding: 120px 48px 80px;
+    padding: 140px 56px 100px;
+    max-width: 1400px;
+    margin: 0 auto;
+    width: 100%;
     position: relative;
+    border-bottom: 1px solid var(--ghost);
+  }
+
+  .hero-wrap {
     border-bottom: 1px solid var(--ghost);
   }
 
@@ -191,15 +201,20 @@
 
   /* SECTIONS */
   section {
-    padding: 100px 48px;
+    padding: 112px 56px;
     border-bottom: 1px solid var(--ghost);
+    max-width: 1400px;
+    margin: 0 auto;
+    width: 100%;
   }
+
+  section + section { border-top: none; }
 
   .section-header {
     display: flex;
     align-items: baseline;
     gap: 20px;
-    margin-bottom: 64px;
+    margin-bottom: 72px;
   }
 
   .section-num {
@@ -225,8 +240,8 @@
   /* BOTTLES GRID */
   .bottles-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 2px;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 24px;
   }
 
   .bottle-card {
@@ -422,7 +437,7 @@
   .contact-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 80px;
+    gap: 96px;
     align-items: start;
   }
 
@@ -519,8 +534,8 @@
   /* ABOUT */
   .about-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 80px;
+    grid-template-columns: 5fr 7fr;
+    gap: 96px;
     align-items: center;
   }
 
@@ -574,9 +589,10 @@
 
   .about-body {
     font-size: 14px;
-    line-height: 2;
+    line-height: 2.1;
     color: var(--accent);
-    margin-bottom: 40px;
+    margin-bottom: 48px;
+    max-width: 520px;
   }
 
   .about-stats {
@@ -667,10 +683,17 @@
 
   /* FOOTER */
   footer {
-    padding: 48px;
+    padding: 48px 56px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    max-width: 1400px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .footer-wrap {
+    border-top: 1px solid var(--ghost);
   }
 
   .footer-logo {
@@ -700,20 +723,20 @@
 
   /* ANIMATIONS */
   @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(20px); }
+    from { opacity: 0; transform: translateY(24px); }
     to { opacity: 1; transform: translateY(0); }
   }
 
-  .hero-tag { animation: fadeUp 0.6s ease 0.1s both; }
-  .hero-title { animation: fadeUp 0.7s ease 0.2s both; }
-  .hero-bio { animation: fadeUp 0.7s ease 0.35s both; }
-  .hero-cta { animation: fadeUp 0.7s ease 0.5s both; }
+  .hero-tag { animation: fadeUp 0.7s cubic-bezier(0.22,1,0.36,1) 0.1s both; }
+  .hero-title { animation: fadeUp 0.8s cubic-bezier(0.22,1,0.36,1) 0.2s both; }
+  .hero-bio { animation: fadeUp 0.8s cubic-bezier(0.22,1,0.36,1) 0.38s both; }
+  .hero-cta { animation: fadeUp 0.8s cubic-bezier(0.22,1,0.36,1) 0.52s both; }
 
   /* Scroll fade-in */
   .reveal {
     opacity: 0;
-    transform: translateY(28px);
-    transition: opacity 0.7s ease, transform 0.7s ease;
+    transform: translateY(32px);
+    transition: opacity 0.8s cubic-bezier(0.22,1,0.36,1), transform 0.8s cubic-bezier(0.22,1,0.36,1);
   }
   .reveal.visible {
     opacity: 1;
@@ -1027,18 +1050,26 @@
     .nav-hamburger { display: flex; }
     .mobile-menu { display: block; }
 
-    .hero { padding: 100px 24px 60px; }
+    .hero { padding: 110px 24px 72px; }
+    .hero-tag { font-size: 9px; letter-spacing: 4px; }
     .hero-title {
-      font-size: clamp(38px, 10vw, 58px);
-      letter-spacing: 4px;
+      font-size: clamp(42px, 12vw, 64px);
+      letter-spacing: 5px;
+      margin-bottom: 24px;
     }
-    .hero-title::after { width: 48px; }
+    .hero-title::after { width: 40px; margin-top: 20px; }
+    .hero-bio { font-size: 13px; letter-spacing: 2px; margin-bottom: 36px; }
     .hero-scroll { display: none; }
 
-    section { padding: 60px 24px; }
-    .contact-grid { grid-template-columns: 1fr; gap: 48px; }
+    section { padding: 72px 24px; }
+    .section-header { margin-bottom: 48px; }
+    .section-title { font-size: 28px; letter-spacing: 4px; }
+    .bottles-grid { gap: 16px; }
+    .contact-grid { grid-template-columns: 1fr; gap: 56px; }
     .about-grid { grid-template-columns: 1fr; gap: 40px; }
-    footer { flex-direction: column; gap: 16px; text-align: center; padding: 32px 24px; }
+    .about-body { max-width: 100%; font-size: 13px; }
+    .about-name { font-size: 26px; letter-spacing: 4px; }
+    footer { flex-direction: column; gap: 16px; text-align: center; padding: 40px 24px; }
 
     /* Age gate */
     .age-gate-logo { font-size: 26px; letter-spacing: 6px; }
@@ -1093,7 +1124,7 @@
     <!-- Bottle 1: Chablis Grand Cru Gautheron -->
     <div class="bottle-card" data-modal="modal-chablis">
       <div class="bottle-label">Beschikbaar</div>
-      <img class="bottle-img" src="images/6eb81a7697277c0040dab9212e82.jpg" alt="Chablis Grand Cru Bougros 2022 – Alain et Cyril Gautheron">
+      <img class="bottle-img" src="images/6eb81a7697277c0040dab9212e82.jpg" alt="Chablis Grand Cru Bougros 2022 – Alain et Cyril Gautheron" loading="lazy">
       <div class="bottle-overlay">
         <span class="bottle-region">Chablis Grand Cru · Bourgogne · Frankrijk</span>
         <div class="bottle-name">Chablis Grand Cru Bougros</div>
@@ -1120,7 +1151,7 @@
     <!-- Bottle 2: Massolino Barolo Magnum -->
     <div class="bottle-card" data-modal="modal-barolo">
       <div class="bottle-label">Magnum</div>
-      <img class="bottle-img" src="images/barolo-docg-2019-magnum-cassetta-di-legno-massolino.jpg" alt="Barolo DOCG Magnum 2019 – Massolino">
+      <img class="bottle-img" src="images/barolo-docg-2019-magnum-cassetta-di-legno-massolino.jpg" alt="Barolo DOCG Magnum 2019 – Massolino" loading="lazy">
       <div class="bottle-overlay">
         <span class="bottle-region">Barolo · Piemonte · Italië</span>
         <div class="bottle-name">Barolo DOCG Magnum</div>
@@ -1371,12 +1402,13 @@
 </section>
 
 <!-- FOOTER -->
+<div class="footer-wrap">
 <footer>
   <div class="footer-logo">BATTONAASJE</div>
   <div class="footer-meta">friesland · nederland · © 2026</div>
   <a href="https://instagram.com/battonaasje" target="_blank" rel="noopener noreferrer" class="footer-ig">@battonaasje</a>
 </footer>
-
+</div>
 
 <!-- AGE GATE -->
 <div id="age-gate">
