@@ -218,6 +218,8 @@
     max-width: 1400px;
     margin: 0 auto;
     width: 100%;
+    position: relative;
+    z-index: 1;
   }
 
   section + section { border-top: none; }
@@ -714,6 +716,8 @@
 
   .footer-wrap {
     border-top: 1px solid var(--ghost);
+    position: relative;
+    z-index: 1;
   }
 
   .footer-nix {
@@ -797,19 +801,15 @@
   .hero-bio { animation: fadeUp 0.8s cubic-bezier(0.22,1,0.36,1) 0.38s both; }
   .hero-cta { animation: fadeUp 0.8s cubic-bezier(0.22,1,0.36,1) 0.52s both; }
 
-  /* HERO PARTICLES */
-  .hero-particles {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 100vw;
+  /* SITE PARTICLES */
+  .site-particles {
+    position: fixed;
+    inset: 0;
     overflow: hidden;
     pointer-events: none;
     z-index: 0;
   }
-  .hero-particles span {
+  .site-particles span {
     position: absolute;
     bottom: -20px;
     border-radius: 50%;
@@ -817,38 +817,38 @@
     border: 1px solid rgba(200,160,60,0.38);
     animation: particleDrift linear infinite;
   }
-  .hero-particles span:nth-child(1)  { width: 5px;  height: 5px;  left: 5%;   opacity: 0.55; animation-duration: 16s; animation-delay: 0s; }
-  .hero-particles span:nth-child(2)  { width: 28px; height: 28px; left: 8%;   opacity: 0.30; animation-duration: 22s; animation-delay: -4s; }
-  .hero-particles span:nth-child(3)  { width: 10px; height: 10px; left: 12%;  opacity: 0.48; animation-duration: 19s; animation-delay: -11s; }
-  .hero-particles span:nth-child(4)  { width: 4px;  height: 4px;  left: 16%;  opacity: 0.55; animation-duration: 14s; animation-delay: -2s; }
-  .hero-particles span:nth-child(5)  { width: 18px; height: 18px; left: 9%;   opacity: 0.38; animation-duration: 21s; animation-delay: -17s; }
-  .hero-particles span:nth-child(6)  { width: 8px;  height: 8px;  left: 22%;  opacity: 0.50; animation-duration: 17s; animation-delay: -8s; }
-  .hero-particles span:nth-child(7)  { width: 26px; height: 26px; left: 25%;  opacity: 0.28; animation-duration: 25s; animation-delay: -20s; }
-  .hero-particles span:nth-child(8)  { width: 6px;  height: 6px;  left: 30%;  opacity: 0.52; animation-duration: 13s; animation-delay: -5s; }
-  .hero-particles span:nth-child(9)  { width: 14px; height: 14px; left: 35%;  opacity: 0.44; animation-duration: 18s; animation-delay: -14s; }
-  .hero-particles span:nth-child(10) { width: 4px;  height: 4px;  left: 38%;  opacity: 0.58; animation-duration: 12s; animation-delay: -3s; }
-  .hero-particles span:nth-child(11) { width: 22px; height: 22px; left: 40%;  opacity: 0.32; animation-duration: 24s; animation-delay: -22s; }
-  .hero-particles span:nth-child(12) { width: 9px;  height: 9px;  left: 44%;  opacity: 0.48; animation-duration: 15s; animation-delay: -9s; }
-  .hero-particles span:nth-child(13) { width: 5px;  height: 5px;  left: 48%;  opacity: 0.55; animation-duration: 13s; animation-delay: -6s; }
-  .hero-particles span:nth-child(14) { width: 16px; height: 16px; left: 52%;  opacity: 0.40; animation-duration: 20s; animation-delay: -18s; }
-  .hero-particles span:nth-child(15) { width: 28px; height: 28px; left: 55%;  opacity: 0.27; animation-duration: 27s; animation-delay: -25s; }
-  .hero-particles span:nth-child(16) { width: 7px;  height: 7px;  left: 60%;  opacity: 0.50; animation-duration: 16s; animation-delay: -7s; }
-  .hero-particles span:nth-child(17) { width: 12px; height: 12px; left: 63%;  opacity: 0.44; animation-duration: 19s; animation-delay: -12s; }
-  .hero-particles span:nth-child(18) { width: 4px;  height: 4px;  left: 67%;  opacity: 0.58; animation-duration: 11s; animation-delay: -2s; }
-  .hero-particles span:nth-child(19) { width: 20px; height: 20px; left: 70%;  opacity: 0.34; animation-duration: 23s; animation-delay: -20s; }
-  .hero-particles span:nth-child(20) { width: 8px;  height: 8px;  left: 74%;  opacity: 0.50; animation-duration: 15s; animation-delay: -10s; }
-  .hero-particles span:nth-child(21) { width: 5px;  height: 5px;  left: 78%;  opacity: 0.55; animation-duration: 12s; animation-delay: -4s; }
-  .hero-particles span:nth-child(22) { width: 24px; height: 24px; left: 80%;  opacity: 0.30; animation-duration: 26s; animation-delay: -22s; }
-  .hero-particles span:nth-child(23) { width: 10px; height: 10px; left: 84%;  opacity: 0.46; animation-duration: 17s; animation-delay: -8s; }
-  .hero-particles span:nth-child(24) { width: 6px;  height: 6px;  left: 88%;  opacity: 0.52; animation-duration: 14s; animation-delay: -5s; }
-  .hero-particles span:nth-child(25) { width: 18px; height: 18px; left: 91%;  opacity: 0.36; animation-duration: 21s; animation-delay: -16s; }
-  .hero-particles span:nth-child(26) { width: 4px;  height: 4px;  left: 94%;  opacity: 0.58; animation-duration: 11s; animation-delay: -3s; }
-  .hero-particles span:nth-child(27) { width: 14px; height: 14px; left: 18%;  opacity: 0.42; animation-duration: 18s; animation-delay: -28s; }
-  .hero-particles span:nth-child(28) { width: 26px; height: 26px; left: 45%;  opacity: 0.28; animation-duration: 28s; animation-delay: -35s; }
-  .hero-particles span:nth-child(29) { width: 7px;  height: 7px;  left: 32%;  opacity: 0.50; animation-duration: 14s; animation-delay: -30s; }
-  .hero-particles span:nth-child(30) { width: 5px;  height: 5px;  left: 57%;  opacity: 0.55; animation-duration: 12s; animation-delay: -26s; }
-  .hero-particles span:nth-child(31) { width: 22px; height: 22px; left: 73%;  opacity: 0.32; animation-duration: 24s; animation-delay: -38s; }
-  .hero-particles span:nth-child(32) { width: 9px;  height: 9px;  left: 50%;  opacity: 0.46; animation-duration: 16s; animation-delay: -42s; }
+  .site-particles span:nth-child(1)  { width: 5px;  height: 5px;  left: 5%;   opacity: 0.55; animation-duration: 16s; animation-delay: 0s; }
+  .site-particles span:nth-child(2)  { width: 28px; height: 28px; left: 8%;   opacity: 0.30; animation-duration: 22s; animation-delay: -4s; }
+  .site-particles span:nth-child(3)  { width: 10px; height: 10px; left: 12%;  opacity: 0.48; animation-duration: 19s; animation-delay: -11s; }
+  .site-particles span:nth-child(4)  { width: 4px;  height: 4px;  left: 16%;  opacity: 0.55; animation-duration: 14s; animation-delay: -2s; }
+  .site-particles span:nth-child(5)  { width: 18px; height: 18px; left: 9%;   opacity: 0.38; animation-duration: 21s; animation-delay: -17s; }
+  .site-particles span:nth-child(6)  { width: 8px;  height: 8px;  left: 22%;  opacity: 0.50; animation-duration: 17s; animation-delay: -8s; }
+  .site-particles span:nth-child(7)  { width: 26px; height: 26px; left: 25%;  opacity: 0.28; animation-duration: 25s; animation-delay: -20s; }
+  .site-particles span:nth-child(8)  { width: 6px;  height: 6px;  left: 30%;  opacity: 0.52; animation-duration: 13s; animation-delay: -5s; }
+  .site-particles span:nth-child(9)  { width: 14px; height: 14px; left: 35%;  opacity: 0.44; animation-duration: 18s; animation-delay: -14s; }
+  .site-particles span:nth-child(10) { width: 4px;  height: 4px;  left: 38%;  opacity: 0.58; animation-duration: 12s; animation-delay: -3s; }
+  .site-particles span:nth-child(11) { width: 22px; height: 22px; left: 40%;  opacity: 0.32; animation-duration: 24s; animation-delay: -22s; }
+  .site-particles span:nth-child(12) { width: 9px;  height: 9px;  left: 44%;  opacity: 0.48; animation-duration: 15s; animation-delay: -9s; }
+  .site-particles span:nth-child(13) { width: 5px;  height: 5px;  left: 48%;  opacity: 0.55; animation-duration: 13s; animation-delay: -6s; }
+  .site-particles span:nth-child(14) { width: 16px; height: 16px; left: 52%;  opacity: 0.40; animation-duration: 20s; animation-delay: -18s; }
+  .site-particles span:nth-child(15) { width: 28px; height: 28px; left: 55%;  opacity: 0.27; animation-duration: 27s; animation-delay: -25s; }
+  .site-particles span:nth-child(16) { width: 7px;  height: 7px;  left: 60%;  opacity: 0.50; animation-duration: 16s; animation-delay: -7s; }
+  .site-particles span:nth-child(17) { width: 12px; height: 12px; left: 63%;  opacity: 0.44; animation-duration: 19s; animation-delay: -12s; }
+  .site-particles span:nth-child(18) { width: 4px;  height: 4px;  left: 67%;  opacity: 0.58; animation-duration: 11s; animation-delay: -2s; }
+  .site-particles span:nth-child(19) { width: 20px; height: 20px; left: 70%;  opacity: 0.34; animation-duration: 23s; animation-delay: -20s; }
+  .site-particles span:nth-child(20) { width: 8px;  height: 8px;  left: 74%;  opacity: 0.50; animation-duration: 15s; animation-delay: -10s; }
+  .site-particles span:nth-child(21) { width: 5px;  height: 5px;  left: 78%;  opacity: 0.55; animation-duration: 12s; animation-delay: -4s; }
+  .site-particles span:nth-child(22) { width: 24px; height: 24px; left: 80%;  opacity: 0.30; animation-duration: 26s; animation-delay: -22s; }
+  .site-particles span:nth-child(23) { width: 10px; height: 10px; left: 84%;  opacity: 0.46; animation-duration: 17s; animation-delay: -8s; }
+  .site-particles span:nth-child(24) { width: 6px;  height: 6px;  left: 88%;  opacity: 0.52; animation-duration: 14s; animation-delay: -5s; }
+  .site-particles span:nth-child(25) { width: 18px; height: 18px; left: 91%;  opacity: 0.36; animation-duration: 21s; animation-delay: -16s; }
+  .site-particles span:nth-child(26) { width: 4px;  height: 4px;  left: 94%;  opacity: 0.58; animation-duration: 11s; animation-delay: -3s; }
+  .site-particles span:nth-child(27) { width: 14px; height: 14px; left: 18%;  opacity: 0.42; animation-duration: 18s; animation-delay: -28s; }
+  .site-particles span:nth-child(28) { width: 26px; height: 26px; left: 45%;  opacity: 0.28; animation-duration: 28s; animation-delay: -35s; }
+  .site-particles span:nth-child(29) { width: 7px;  height: 7px;  left: 32%;  opacity: 0.50; animation-duration: 14s; animation-delay: -30s; }
+  .site-particles span:nth-child(30) { width: 5px;  height: 5px;  left: 57%;  opacity: 0.55; animation-duration: 12s; animation-delay: -26s; }
+  .site-particles span:nth-child(31) { width: 22px; height: 22px; left: 73%;  opacity: 0.32; animation-duration: 24s; animation-delay: -38s; }
+  .site-particles span:nth-child(32) { width: 9px;  height: 9px;  left: 50%;  opacity: 0.46; animation-duration: 16s; animation-delay: -42s; }
 
   .age-gate-particles { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
   .age-gate-particles span {
@@ -1242,6 +1242,11 @@
 </head>
 <body>
 
+<!-- SITE PARTICLES -->
+<div class="site-particles" aria-hidden="true">
+  <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+</div>
+
 <!-- NAV -->
 <nav>
   <a href="#" class="nav-logo">BATTONAASJE</a>
@@ -1265,9 +1270,6 @@
 
 <!-- HERO -->
 <section class="hero">
-  <div class="hero-particles" aria-hidden="true">
-    <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
-  </div>
   <p class="hero-tag">gecureerde fijne wijnen, Friesland, Nederland</p>
   <h1 class="hero-title">BATTONAASJE</h1>
   <p class="hero-bio">
