@@ -9,9 +9,12 @@
 <meta property="og:description" content="Handpicked fijne wijnen vanuit Friesland. Gevonden. Gecureerd. Gedeeld.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://battonaasje.nl">
+<meta property="og:image" content="https://battonaasje.nl/images/6eb81a7697277c0040dab9212e82.jpg">
+<meta name="theme-color" content="#1a1714">
+<link rel="canonical" href="https://battonaasje.nl/">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap">
 <style>
 
   :root {
@@ -27,6 +30,43 @@
 
   html { scroll-behavior: smooth; }
 
+  .skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 100001;
+    padding: 12px 20px;
+    background: var(--ink);
+    color: var(--paper);
+    font-family: 'Courier Prime', monospace;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-decoration: none;
+    text-transform: uppercase;
+  }
+  .skip-link:focus {
+    left: 16px;
+    top: 16px;
+    outline: 2px solid var(--paper);
+    outline-offset: 2px;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 3px;
+  }
+  #private-gate :focus-visible,
+  #age-gate :focus-visible {
+    outline-color: #f2ede4;
+  }
+  .nav-hamburger:focus-visible,
+  .modal-close:focus-visible,
+  .private-gate-btn:focus-visible,
+  .age-gate-btn:focus-visible,
+  .form-submit:focus-visible {
+    outline-color: var(--ink);
+  }
+
   body {
     background: var(--paper);
     color: var(--ink);
@@ -35,51 +75,6 @@
     -webkit-font-smoothing: antialiased;
     font-feature-settings: "kern" 1, "liga" 1;
     position: relative;
-  }
-
-  /* LUCKI EASTER EGG */
-  #lucki-gate {
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: #000;
-    z-index: 999999;
-    display: none;
-    overflow: hidden;
-    touch-action: none;
-  }
-  #lucki-gate.active { display: block; }
-  #lucki-gate img {
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    transition: opacity 1.5s ease;
-  }
-  #lucki-gate p {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 2;
-    text-align: center;
-    font-family: 'Courier Prime', monospace;
-    font-size: 13px;
-    letter-spacing: 3px;
-    color: #fff;
-    text-transform: uppercase;
-    padding: 24px;
-    opacity: 0.7;
-  }
-  .lucki-dvd {
-    position: absolute;
-    z-index: 3;
-    font-family: 'Comic Sans MS', 'Comic Sans', cursive;
-    font-size: 24px;
-    color: #fff;
-    white-space: nowrap;
-    pointer-events: none;
-    letter-spacing: 1px;
   }
 
   /* PRIVATE GATE */
@@ -192,6 +187,7 @@
   }
 
   .nav-links a:hover { color: var(--ink); }
+  .nav-links a:focus-visible { color: var(--ink); }
 
   /* HERO */
   .hero {
@@ -1337,6 +1333,49 @@
 </head>
 <body>
 
+<div id="private-gate">
+  <div class="private-gate-inner">
+    <div class="private-gate-logo">BATTONAASJE</div>
+    <div class="private-gate-line"></div>
+    <p class="private-gate-label">Besloten preview</p>
+    <p class="private-gate-sub">voer de toegangscode in</p>
+    <input class="private-gate-input" id="private-code" type="password" placeholder="· · · · · · · ·" autocomplete="off">
+    <button type="button" class="private-gate-btn" onclick="checkPrivateCode()">Toegang &rarr;</button>
+    <div class="private-gate-error" id="private-error"></div>
+  </div>
+</div>
+
+<div id="age-gate" class="hidden">
+  <div class="age-gate-particles" aria-hidden="true">
+    <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+  </div>
+  <div class="age-gate-inner">
+    <div class="age-gate-logo">BATTONAASJE</div>
+    <div class="age-gate-line"></div>
+    <p class="age-gate-title">Leeftijdsverificatie vereist</p>
+    <p class="age-gate-sub">
+      Battonaasje verkoopt alcoholhoudende dranken.<br>
+      U moet 18 jaar of ouder zijn om deze website te bezoeken.<br>
+      Voer uw geboortedatum in om verder te gaan.
+    </p>
+    <label class="age-gate-label">Uw geboortedatum</label>
+    <div class="age-gate-inputs">
+      <input class="age-gate-input" id="age-day" type="number" min="1" max="31" placeholder="DD" autocomplete="bday-day" inputmode="numeric" aria-label="Geboortedag">
+      <input class="age-gate-input" id="age-month" type="number" min="1" max="12" placeholder="MM" autocomplete="bday-month" inputmode="numeric" aria-label="Geboortemaand">
+      <input class="age-gate-input" id="age-year" type="number" min="1900" max="2099" placeholder="JJJJ" autocomplete="bday-year" inputmode="numeric" aria-label="Geboortejaar">
+    </div>
+    <div class="age-gate-error" id="age-error"></div>
+    <button type="button" class="age-gate-btn" onclick="checkAge()">Bevestigen en bezoeken &rarr;</button>
+    <div class="age-gate-disclaimer">
+      Door deze website te bezoeken verklaart u 18 jaar of ouder te zijn.<br>
+      Verantwoord alcoholgebruik &mdash; Alcoholwet artikel 20A &middot; NVWA
+    </div>
+  </div>
+</div>
+
+<main id="main" inert>
+<a class="skip-link" href="#main">Naar hoofdinhoud</a>
+
 <!-- SITE PARTICLES -->
 <div class="site-particles" aria-hidden="true">
   <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
@@ -1344,14 +1383,14 @@
 
 <!-- NAV -->
 <nav>
-  <a href="#" class="nav-logo">BATTONAASJE</a>
+  <a href="#main" class="nav-logo">BATTONAASJE</a>
   <ul class="nav-links">
     <li><a href="#bottles">Aanbod</a></li>
     <li><a href="#contact">Contact</a></li>
     <li><a href="#about">Over mij</a></li>
     <li><a href="#blog">Blog</a></li>
   </ul>
-  <button class="nav-hamburger" id="hamburger" aria-label="Menu" aria-expanded="false">
+  <button type="button" class="nav-hamburger" id="hamburger" aria-label="Menu openen of sluiten" aria-controls="mobile-menu" aria-expanded="false">
     <span></span><span></span><span></span>
   </button>
 </nav>
@@ -1385,9 +1424,9 @@
   <div class="bottles-grid">
 
     <!-- Bottle 1: Chablis Grand Cru Gautheron -->
-    <div class="bottle-card" data-modal="modal-chablis">
+    <div class="bottle-card" data-modal="modal-chablis" role="group" tabindex="0" aria-haspopup="dialog" aria-label="Details en proefnotities: Chablis Grand Cru Bougros 2022">
       <div class="bottle-label"></div>
-      <img class="bottle-img" src="images/6eb81a7697277c0040dab9212e82.jpg" alt="Chablis Grand Cru Bougros 2022 – Alain et Cyril Gautheron" loading="lazy" decoding="async">
+      <img class="bottle-img" src="images/6eb81a7697277c0040dab9212e82.jpg" alt="Chablis Grand Cru Bougros 2022 – Alain et Cyril Gautheron" width="1500" height="1998" loading="lazy" decoding="async">
       <div class="bottle-overlay">
         <span class="bottle-region">Chablis Grand Cru · Bourgogne · Frankrijk</span>
         <div class="bottle-name">Chablis Grand Cru Bougros</div>
@@ -1397,7 +1436,7 @@
           <span class="bottle-price">Op aanvraag</span>
         </div>
         <a class="bottle-wa" href="https://wa.me/31687441353?text=Hoi%2C%20ik%20ben%20ge%C3%AFnteresseerd%20in%20de%20Chablis%20Grand%20Cru%20Bougros%202022%20van%20Gautheron.%20Is%20deze%20nog%20beschikbaar%3F" target="_blank" rel="noopener noreferrer">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.124.558 4.118 1.531 5.845L.057 23.882l6.187-1.452A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.006-1.369l-.36-.214-3.722.873.936-3.623-.235-.372A9.818 9.818 0 1112 21.818z"/></svg>
+          <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.124.558 4.118 1.531 5.845L.057 23.882l6.187-1.452A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.006-1.369l-.36-.214-3.722.873.936-3.623-.235-.372A9.818 9.818 0 1112 21.818z"/></svg>
           Bestellen
         </a>
       </div>
@@ -1406,15 +1445,15 @@
         <span class="bottle-strip-vintage">2022</span>
       </div>
       <a class="bottle-wa-mobile" href="https://wa.me/31687441353?text=Hoi%2C%20ik%20ben%20ge%C3%AFnteresseerd%20in%20de%20Chablis%20Grand%20Cru%20Bougros%202022%20van%20Gautheron.%20Is%20deze%20nog%20beschikbaar%3F" target="_blank" rel="noopener noreferrer">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.124.558 4.118 1.531 5.845L.057 23.882l6.187-1.452A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.006-1.369l-.36-.214-3.722.873.936-3.623-.235-.372A9.818 9.818 0 1112 21.818z"/></svg>
+        <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.124.558 4.118 1.531 5.845L.057 23.882l6.187-1.452A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.006-1.369l-.36-.214-3.722.873.936-3.623-.235-.372A9.818 9.818 0 1112 21.818z"/></svg>
         Bestellen via WhatsApp
       </a>
     </div>
 
     <!-- Bottle 2: Massolino Barolo Magnum -->
-    <div class="bottle-card" data-modal="modal-barolo">
+    <div class="bottle-card" data-modal="modal-barolo" role="group" tabindex="0" aria-haspopup="dialog" aria-label="Details en proefnotities: Barolo DOCG Magnum 2019">
       <div class="bottle-label"></div>
-      <img class="bottle-img" src="images/barolo-docg-2019-magnum-cassetta-di-legno-massolino.jpg" alt="Barolo DOCG Magnum 2019 – Massolino" loading="lazy" decoding="async">
+      <img class="bottle-img" src="images/barolo-docg-2019-magnum-cassetta-di-legno-massolino.jpg" alt="Barolo DOCG Magnum 2019 – Massolino" width="700" height="869" loading="lazy" decoding="async">
       <div class="bottle-overlay">
         <span class="bottle-region">Barolo · Piemonte · Italië</span>
         <div class="bottle-name">Barolo DOCG Magnum</div>
@@ -1424,7 +1463,7 @@
           <span class="bottle-price">Op aanvraag</span>
         </div>
         <a class="bottle-wa" href="https://wa.me/31687441353?text=Hoi%2C%20ik%20ben%20ge%C3%AFnteresseerd%20in%20de%20Barolo%20DOCG%20Magnum%202019%20van%20Massolino.%20Is%20deze%20nog%20beschikbaar%3F" target="_blank" rel="noopener noreferrer">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.124.558 4.118 1.531 5.845L.057 23.882l6.187-1.452A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.006-1.369l-.36-.214-3.722.873.936-3.623-.235-.372A9.818 9.818 0 1112 21.818z"/></svg>
+          <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.124.558 4.118 1.531 5.845L.057 23.882l6.187-1.452A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.006-1.369l-.36-.214-3.722.873.936-3.623-.235-.372A9.818 9.818 0 1112 21.818z"/></svg>
           Bestellen
         </a>
       </div>
@@ -1433,15 +1472,15 @@
         <span class="bottle-strip-vintage">2019</span>
       </div>
       <a class="bottle-wa-mobile" href="https://wa.me/31687441353?text=Hoi%2C%20ik%20ben%20ge%C3%AFnteresseerd%20in%20de%20Barolo%20DOCG%20Magnum%202019%20van%20Massolino.%20Is%20deze%20nog%20beschikbaar%3F" target="_blank" rel="noopener noreferrer">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.124.558 4.118 1.531 5.845L.057 23.882l6.187-1.452A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.006-1.369l-.36-.214-3.722.873.936-3.623-.235-.372A9.818 9.818 0 1112 21.818z"/></svg>
+        <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.124.558 4.118 1.531 5.845L.057 23.882l6.187-1.452A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.006-1.369l-.36-.214-3.722.873.936-3.623-.235-.372A9.818 9.818 0 1112 21.818z"/></svg>
         Bestellen via WhatsApp
       </a>
     </div>
 
     <!-- Bottle 3: Defaix Chablis Grand Cru Blanchot 1991 -->
-    <div class="bottle-card" data-modal="modal-blanchot">
+    <div class="bottle-card" data-modal="modal-blanchot" role="group" tabindex="0" aria-haspopup="dialog" aria-label="Details en proefnotities: Chablis Grand Cru Blanchot 1991">
       <div class="bottle-label"></div>
-      <img class="bottle-img" src="images/chablis-grand-cru-blanchot-1991-defaix.jpg" alt="Chablis Grand Cru Blanchot 1991 – Daniël-Étienne Defaix" loading="lazy" decoding="async">
+      <img class="bottle-img" src="images/chablis-grand-cru-blanchot-1991-defaix.jpg" alt="Chablis Grand Cru Blanchot 1991 – Daniël-Étienne Defaix" width="452" height="452" loading="lazy" decoding="async">
       <div class="bottle-overlay">
         <span class="bottle-region">Chablis Grand Cru · Blanchot · Frankrijk</span>
         <div class="bottle-name">Chablis Grand Cru Blanchot</div>
@@ -1451,7 +1490,7 @@
           <span class="bottle-price">Op aanvraag</span>
         </div>
         <a class="bottle-wa" href="https://wa.me/31687441353?text=Hoi%2C%20ik%20ben%20ge%C3%AFnteresseerd%20in%20de%20Chablis%20Grand%20Cru%20Blanchot%201991%20van%20Defaix.%20Is%20deze%20nog%20beschikbaar%3F" target="_blank" rel="noopener noreferrer">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.124.558 4.118 1.531 5.845L.057 23.882l6.187-1.452A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.006-1.369l-.36-.214-3.722.873.936-3.623-.235-.372A9.818 9.818 0 1112 21.818z"/></svg>
+          <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.124.558 4.118 1.531 5.845L.057 23.882l6.187-1.452A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.006-1.369l-.36-.214-3.722.873.936-3.623-.235-.372A9.818 9.818 0 1112 21.818z"/></svg>
           Bestellen
         </a>
       </div>
@@ -1460,7 +1499,7 @@
         <span class="bottle-strip-vintage">1991</span>
       </div>
       <a class="bottle-wa-mobile" href="https://wa.me/31687441353?text=Hoi%2C%20ik%20ben%20ge%C3%AFnteresseerd%20in%20de%20Chablis%20Grand%20Cru%20Blanchot%201991%20van%20Defaix.%20Is%20deze%20nog%20beschikbaar%3F" target="_blank" rel="noopener noreferrer">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.124.558 4.118 1.531 5.845L.057 23.882l6.187-1.452A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.006-1.369l-.36-.214-3.722.873.936-3.623-.235-.372A9.818 9.818 0 1112 21.818z"/></svg>
+        <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.124.558 4.118 1.531 5.845L.057 23.882l6.187-1.452A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.006-1.369l-.36-.214-3.722.873.936-3.623-.235-.372A9.818 9.818 0 1112 21.818z"/></svg>
         Bestellen via WhatsApp
       </a>
     </div>
@@ -1475,12 +1514,12 @@
 </section>
 
 <!-- MODAL: Chablis -->
-<div class="modal-backdrop" id="modal-chablis">
+<div class="modal-backdrop" id="modal-chablis" role="dialog" aria-modal="true" aria-labelledby="modal-title-chablis">
   <div class="modal">
-    <button class="modal-close" onclick="closeModal('modal-chablis')">Sluiten ×</button>
+    <button type="button" class="modal-close" onclick="closeModal('modal-chablis')" aria-label="Sluiten">Sluiten ×</button>
     <div class="modal-layout">
       <div class="modal-gallery">
-        <img class="modal-img-main" src="images/6eb81a7697277c0040dab9212e82.jpg" alt="Chablis Grand Cru Bougros 2022">
+        <img class="modal-img-main" src="images/6eb81a7697277c0040dab9212e82.jpg" alt="Chablis Grand Cru Bougros 2022" width="1500" height="1998" decoding="async">
         <div class="modal-thumbs">
           <div class="modal-thumb-placeholder">foto</div>
           <div class="modal-thumb-placeholder">foto</div>
@@ -1490,7 +1529,7 @@
       <div class="modal-info">
         <div>
           <div class="modal-region">Chablis Grand Cru · Bourgogne · Frankrijk</div>
-          <div class="modal-title">Chablis Grand Cru Bougros 2022</div>
+          <div class="modal-title" id="modal-title-chablis">Chablis Grand Cru Bougros 2022</div>
           <div class="modal-producer">Alain et Cyril Gautheron</div>
         </div>
         <div class="modal-divider"></div>
@@ -1531,12 +1570,12 @@ Geen fratsen. Gewoon hele goede wijn.
 </div>
 
 <!-- MODAL: Barolo -->
-<div class="modal-backdrop" id="modal-barolo">
+<div class="modal-backdrop" id="modal-barolo" role="dialog" aria-modal="true" aria-labelledby="modal-title-barolo">
   <div class="modal">
-    <button class="modal-close" onclick="closeModal('modal-barolo')">Sluiten ×</button>
+    <button type="button" class="modal-close" onclick="closeModal('modal-barolo')" aria-label="Sluiten">Sluiten ×</button>
     <div class="modal-layout">
       <div class="modal-gallery">
-        <img class="modal-img-main" src="images/barolo-docg-2019-magnum-cassetta-di-legno-massolino.jpg" alt="Barolo DOCG Magnum 2019 – Massolino">
+        <img class="modal-img-main" src="images/barolo-docg-2019-magnum-cassetta-di-legno-massolino.jpg" alt="Barolo DOCG Magnum 2019 – Massolino" width="700" height="869" decoding="async">
         <div class="modal-thumbs">
           <div class="modal-thumb-placeholder">foto</div>
           <div class="modal-thumb-placeholder">foto</div>
@@ -1546,7 +1585,7 @@ Geen fratsen. Gewoon hele goede wijn.
       <div class="modal-info">
         <div>
           <div class="modal-region">Barolo DOCG · Piemonte · Italië</div>
-          <div class="modal-title">Barolo DOCG Magnum 2019</div>
+          <div class="modal-title" id="modal-title-barolo">Barolo DOCG Magnum 2019</div>
           <div class="modal-producer">Massolino</div>
         </div>
         <div class="modal-divider"></div>
@@ -1584,12 +1623,12 @@ Geen fratsen. Gewoon hele goede wijn.
 </div>
 
 <!-- MODAL: Blanchot -->
-<div class="modal-backdrop" id="modal-blanchot">
+<div class="modal-backdrop" id="modal-blanchot" role="dialog" aria-modal="true" aria-labelledby="modal-title-blanchot">
   <div class="modal">
-    <button class="modal-close" onclick="closeModal('modal-blanchot')">Sluiten ×</button>
+    <button type="button" class="modal-close" onclick="closeModal('modal-blanchot')" aria-label="Sluiten">Sluiten ×</button>
     <div class="modal-layout">
       <div class="modal-gallery">
-        <img class="modal-img-main" src="images/chablis-grand-cru-blanchot-1991-defaix.jpg" alt="Chablis Grand Cru Blanchot 1991 – Daniël-Étienne Defaix">
+        <img class="modal-img-main" src="images/chablis-grand-cru-blanchot-1991-defaix.jpg" alt="Chablis Grand Cru Blanchot 1991 – Daniël-Étienne Defaix" width="452" height="452" decoding="async">
         <div class="modal-thumbs">
           <div class="modal-thumb-placeholder">foto</div>
           <div class="modal-thumb-placeholder">foto</div>
@@ -1599,7 +1638,7 @@ Geen fratsen. Gewoon hele goede wijn.
       <div class="modal-info">
         <div>
           <div class="modal-region">Chablis Grand Cru · Blanchot · Frankrijk</div>
-          <div class="modal-title">Chablis Grand Cru Blanchot 1991</div>
+          <div class="modal-title" id="modal-title-blanchot">Chablis Grand Cru Blanchot 1991</div>
           <div class="modal-producer">Daniël-Étienne Defaix</div>
         </div>
         <div class="modal-divider"></div>
@@ -1678,7 +1717,7 @@ Geen fratsen. Gewoon hele goede wijn.
           <label class="form-label">E-mailadres</label>
           <input type="email" class="form-input" placeholder="jouw@email.nl">
         </div>
-        <button class="form-submit">Inschrijven →</button>
+        <button type="button" class="form-submit">Inschrijven →</button>
       </div>
     </div>
   </div>
@@ -1762,55 +1801,7 @@ Geen fratsen. Gewoon hele goede wijn.
 </div>
 </div>
 
-<!-- PRIVATE GATE -->
-<div id="lucki-gate">
-  <img id="lucki-img-a" src="https://i.kym-cdn.com/photos/images/original/002/511/194/7ff.png" alt="" style="opacity:1;">
-  <img id="lucki-img-b" src="" alt="" style="opacity:0;">
-  <audio id="lucki-audio" src="media/lucki.mp3" preload="auto"></audio>
-  <span class="lucki-dvd" id="lucki-dvd-1">aye_kyran on ig</span>
-  <p>toegang geweigerd</p>
-</div>
-
-<div id="private-gate">
-  <div class="private-gate-inner">
-    <div class="private-gate-logo">BATTONAASJE</div>
-    <div class="private-gate-line"></div>
-    <p class="private-gate-label">Besloten preview</p>
-    <p class="private-gate-sub">voer de toegangscode in</p>
-    <input class="private-gate-input" id="private-code" type="password" placeholder="· · · · · · · ·" autocomplete="off">
-    <button class="private-gate-btn" onclick="checkPrivateCode()">Toegang &rarr;</button>
-    <div class="private-gate-error" id="private-error"></div>
-  </div>
-</div>
-
-<!-- AGE GATE -->
-<div id="age-gate" class="hidden">
-  <div class="age-gate-particles" aria-hidden="true">
-    <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
-  </div>
-  <div class="age-gate-inner">
-    <div class="age-gate-logo">BATTONAASJE</div>
-    <div class="age-gate-line"></div>
-    <p class="age-gate-title">Leeftijdsverificatie vereist</p>
-    <p class="age-gate-sub">
-      Battonaasje verkoopt alcoholhoudende dranken.<br>
-      U moet 18 jaar of ouder zijn om deze website te bezoeken.<br>
-      Voer uw geboortedatum in om verder te gaan.
-    </p>
-    <label class="age-gate-label">Uw geboortedatum</label>
-    <div class="age-gate-inputs">
-      <input class="age-gate-input" id="age-day" type="number" min="1" max="31" placeholder="DD">
-      <input class="age-gate-input" id="age-month" type="number" min="1" max="12" placeholder="MM">
-      <input class="age-gate-input" id="age-year" type="number" min="1900" max="2099" placeholder="JJJJ">
-    </div>
-    <div class="age-gate-error" id="age-error"></div>
-    <button class="age-gate-btn" onclick="checkAge()">Bevestigen en bezoeken &rarr;</button>
-    <div class="age-gate-disclaimer">
-      Door deze website te bezoeken verklaart u 18 jaar of ouder te zijn.<br>
-      Verantwoord alcoholgebruik &mdash; Alcoholwet artikel 20A &middot; NVWA
-    </div>
-  </div>
-</div>
+</main>
 
 <script>
   document.getElementById('age-day').addEventListener('input', function() {
@@ -1823,67 +1814,14 @@ Geen fratsen. Gewoon hele goede wijn.
     if (e.key === 'Enter') checkAge();
   });
 
-  // Lucki slideshow
-  var luckiImages = [
-    'https://i.kym-cdn.com/photos/images/original/002/511/194/7ff.png',
-    'https://i.kym-cdn.com/photos/images/original/002/511/199/588.png',
-    'https://i.kym-cdn.com/photos/images/original/002/511/198/096.png',
-    'https://i.kym-cdn.com/photos/images/original/002/511/192/c33.png',
-    'https://i.kym-cdn.com/photos/images/original/002/816/422/8dd.png',
-    'https://i.kym-cdn.com/photos/images/original/002/380/311/089.jpg',
-    'https://i.kym-cdn.com/photos/images/original/002/511/201/197.jpeg',
-    'https://i.kym-cdn.com/photos/images/original/002/568/667/91f.png',
-    'https://i.kym-cdn.com/photos/images/original/002/511/193/eb9',
-    'https://i.kym-cdn.com/photos/images/original/002/511/195/0b5'
-  ];
-  var luckiIndex = 0;
-  function startLuckiSlideshow() {
-    var imgA = document.getElementById('lucki-img-a');
-    var imgB = document.getElementById('lucki-img-b');
-    var front = 'a';
-    imgA.src = luckiImages[0];
-    imgB.src = luckiImages[1];
-    setInterval(function() {
-      var nextIndex = (luckiIndex + 1) % luckiImages.length;
-      var afterNext = (luckiIndex + 2) % luckiImages.length;
-      if (front === 'a') {
-        imgB.src = luckiImages[nextIndex];
-        imgA.style.opacity = '0';
-        imgB.style.opacity = '1';
-        front = 'b';
-        setTimeout(function() { imgA.src = luckiImages[afterNext]; }, 1600);
-      } else {
-        imgA.src = luckiImages[nextIndex];
-        imgB.style.opacity = '0';
-        imgA.style.opacity = '1';
-        front = 'a';
-        setTimeout(function() { imgB.src = luckiImages[afterNext]; }, 1600);
-      }
-      luckiIndex = nextIndex;
-    }, 5000);
-
-    // DVD bounce
-    var dvd = [
-      { el: document.getElementById('lucki-dvd-1'), x: 40, y: 60, vx: 2.5, vy: 2.0 }
-    ];
-    function dvdTick() {
-      var gW = window.innerWidth;
-      var gH = window.innerHeight;
-      dvd.forEach(function(d) {
-        d.x += d.vx;
-        d.y += d.vy;
-        var w = d.el.offsetWidth;
-        var h = d.el.offsetHeight;
-        if (d.x <= 0) { d.x = 0; d.vx = Math.abs(d.vx); }
-        if (d.x + w >= gW) { d.x = gW - w; d.vx = -Math.abs(d.vx); }
-        if (d.y <= 0) { d.y = 0; d.vy = Math.abs(d.vy); }
-        if (d.y + h >= gH) { d.y = gH - h; d.vy = -Math.abs(d.vy); }
-        d.el.style.left = d.x + 'px';
-        d.el.style.top = d.y + 'px';
-      });
-      requestAnimationFrame(dvdTick);
-    }
-    requestAnimationFrame(dvdTick);
+  function updateMainInert() {
+    var main = document.getElementById('main');
+    if (!main) return;
+    var gated =
+      !document.getElementById('private-gate').classList.contains('hidden') ||
+      !document.getElementById('age-gate').classList.contains('hidden');
+    if (gated) main.setAttribute('inert', '');
+    else main.removeAttribute('inert');
   }
 
   // Private gate
@@ -1896,37 +1834,16 @@ Geen fratsen. Gewoon hele goede wijn.
       if (sessionStorage.getItem('battonaasje_age_verified') !== 'true') {
         document.getElementById('age-gate').classList.remove('hidden');
       }
+      updateMainInert();
     } else {
       privateWrongAttempts++;
       document.getElementById('private-code').value = '';
       if (privateWrongAttempts >= 3) {
-        document.getElementById('lucki-gate').classList.add('active');
-        startLuckiSlideshow();
-        document.body.style.position = 'fixed';
-        document.body.style.top = '0';
-        document.body.style.left = '0';
-        document.body.style.right = '0';
-        document.body.style.bottom = '0';
-        document.body.style.overflow = 'hidden';
-        var audio = document.getElementById('lucki-audio');
-        audio.currentTime = 0;
-        audio.volume = 1.0;
-        try {
-          var AudioContext = window.AudioContext || window.webkitAudioContext;
-          var audioCtx = new AudioContext();
-          var source = audioCtx.createMediaElementSource(audio);
-          var gainNode = audioCtx.createGain();
-          gainNode.gain.value = 4.0;
-          source.connect(gainNode);
-          gainNode.connect(audioCtx.destination);
-        } catch(e) {}
-        var playPromise = audio.play();
-        if (playPromise !== undefined) {
-          playPromise.catch(function() {
-            audio.muted = false;
-            audio.play();
-          });
-        }
+        document.getElementById('private-error').textContent = 'te veel onjuiste pogingen — vernieuw de pagina om het opnieuw te proberen.';
+        var codeInput = document.getElementById('private-code');
+        codeInput.disabled = true;
+        var submitBtn = document.querySelector('#private-gate .private-gate-btn');
+        if (submitBtn) submitBtn.disabled = true;
       } else {
         document.getElementById('private-error').textContent = 'onjuiste code — probeer opnieuw';
       }
@@ -1954,17 +1871,26 @@ Geen fratsen. Gewoon hele goede wijn.
 
   // Modal
   function openModal(id) {
-    document.getElementById(id).classList.add('open');
+    var backdrop = document.getElementById(id);
+    backdrop.classList.add('open');
     document.body.style.overflow = 'hidden';
+    var closeBtn = backdrop.querySelector('.modal-close');
+    if (closeBtn) closeBtn.focus();
   }
   function closeModal(id) {
     document.getElementById(id).classList.remove('open');
     document.body.style.overflow = '';
   }
   document.querySelectorAll('.bottle-card[data-modal]').forEach(function(card) {
-    card.addEventListener('click', function(e) {
+    function openCardModal(e) {
       if (e.target.closest('a')) return;
       openModal(card.dataset.modal);
+    }
+    card.addEventListener('click', openCardModal);
+    card.addEventListener('keydown', function(e) {
+      if (e.key !== 'Enter' && e.key !== ' ') return;
+      e.preventDefault();
+      openCardModal(e);
     });
   });
   document.querySelectorAll('.modal-backdrop').forEach(function(backdrop) {
@@ -1989,6 +1915,8 @@ Geen fratsen. Gewoon hele goede wijn.
     });
   }, { threshold: 0.12 });
   document.querySelectorAll('.reveal').forEach(function(el) { observer.observe(el); });
+
+  updateMainInert();
 
   // Nav shrink on scroll
   window.addEventListener('scroll', function() {
@@ -2015,7 +1943,10 @@ Geen fratsen. Gewoon hele goede wijn.
     if (age >= 18) {
       var gate = document.getElementById('age-gate');
       gate.classList.add('hiding');
-      setTimeout(function() { gate.classList.add('hidden'); }, 500);
+      setTimeout(function() {
+        gate.classList.add('hidden');
+        updateMainInert();
+      }, 500);
       sessionStorage.setItem('battonaasje_age_verified', 'true');
     } else {
       document.getElementById('age-error').textContent = 'Helaas — u moet 18 jaar of ouder zijn om deze website te bezoeken.';
