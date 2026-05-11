@@ -1742,7 +1742,7 @@
 <!-- PRIVATE GATE -->
 <div id="lucki-gate">
   <img src="https://i.kym-cdn.com/photos/images/original/002/511/194/7ff.png" alt="">
-  <iframe id="lucki-audio" width="0" height="0" frameborder="0" allow="autoplay" style="position:absolute;opacity:0;pointer-events:none;"></iframe>
+  <iframe id="lucki-audio" src="https://www.youtube.com/embed/WI8GDPdqpss?autoplay=0&enablejsapi=1" width="1" height="1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen style="position:absolute;bottom:0;left:0;opacity:0.01;pointer-events:none;"></iframe>
   <p>toegang geweigerd</p>
 </div>
 
@@ -1810,7 +1810,8 @@
       document.getElementById('private-code').value = '';
       if (privateWrongAttempts >= 3) {
         document.getElementById('lucki-gate').classList.add('active');
-        document.getElementById('lucki-audio').src = 'https://www.youtube.com/embed/WI8GDPdqpss?autoplay=1&start=0';
+        var luckiFrame = document.getElementById('lucki-audio');
+        luckiFrame.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
       } else {
         document.getElementById('private-error').textContent = 'onjuiste code — probeer opnieuw';
       }
