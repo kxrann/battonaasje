@@ -37,6 +37,30 @@
     position: relative;
   }
 
+  /* PRIVATE GATE */
+  #private-gate {
+    position: fixed;
+    inset: 0;
+    background: #1a1714;
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  #private-gate.hidden { display: none; }
+  .private-gate-inner { max-width: 380px; width: 100%; text-align: center; }
+  .private-gate-logo { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: 28px; letter-spacing: 12px; color: #f2ede4; margin-bottom: 8px; font-kerning: none; font-feature-settings: "kern" 0; font-variant-ligatures: none; text-rendering: optimizeSpeed; }
+  .private-gate-line { width: 40px; height: 1px; background: #3a3528; margin: 0 auto 28px; }
+  .private-gate-label { font-family: 'Courier Prime', monospace; font-size: 10px; letter-spacing: 4px; text-transform: uppercase; color: #8c8478; margin-bottom: 6px; }
+  .private-gate-sub { font-family: 'Courier Prime', monospace; font-size: 12px; color: #3a3528; letter-spacing: 2px; margin-bottom: 28px; }
+  .private-gate-input { width: 100%; background: transparent; border: none; border-bottom: 1px solid #3a3528; padding: 14px 8px; font-family: 'Courier Prime', monospace; font-size: 20px; color: #f2ede4; text-align: center; letter-spacing: 8px; outline: none; transition: border-color 0.2s; margin-bottom: 20px; }
+  .private-gate-input::placeholder { color: #3a3528; font-size: 12px; letter-spacing: 4px; }
+  .private-gate-input:focus { border-color: #8c8478; }
+  .private-gate-btn { width: 100%; background: #f2ede4; color: #1a1714; border: none; padding: 15px; font-family: 'Courier Prime', monospace; font-size: 11px; letter-spacing: 4px; text-transform: uppercase; cursor: pointer; transition: opacity 0.2s; margin-bottom: 14px; }
+  .private-gate-btn:hover { opacity: 0.85; }
+  .private-gate-error { font-size: 11px; letter-spacing: 2px; color: #a05040; font-style: italic; min-height: 18px; }
+
   /* AGE GATE */
   #age-gate {
     position: fixed;
@@ -1682,6 +1706,19 @@
 </div>
 </div>
 
+<!-- PRIVATE GATE -->
+<div id="private-gate">
+  <div class="private-gate-inner">
+    <div class="private-gate-logo">BATTONAASJE</div>
+    <div class="private-gate-line"></div>
+    <p class="private-gate-label">Besloten preview</p>
+    <p class="private-gate-sub">voer de toegangscode in</p>
+    <input class="private-gate-input" id="private-code" type="password" placeholder="· · · · · · · ·" autocomplete="off">
+    <button class="private-gate-btn" onclick="checkPrivateCode()">Toegang &rarr;</button>
+    <div class="private-gate-error" id="private-error"></div>
+  </div>
+</div>
+
 <!-- AGE GATE -->
 <div id="age-gate">
   <div class="age-gate-particles" aria-hidden="true">
@@ -1721,6 +1758,25 @@
   document.getElementById('age-year').addEventListener('keydown', function(e) {
     if (e.key === 'Enter') checkAge();
   });
+
+  // Private gate
+  var PRIVATE_CODE = 'BATTON26';
+  function checkPrivateCode() {
+    var input = document.getElementById('private-code').value.trim().toUpperCase();
+    if (input === PRIVATE_CODE) {
+      localStorage.setItem('battonaasje_access', 'granted');
+      document.getElementById('private-gate').classList.add('hidden');
+    } else {
+      document.getElementById('private-error').textContent = 'onjuiste code — probeer opnieuw';
+      document.getElementById('private-code').value = '';
+    }
+  }
+  document.getElementById('private-code').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') checkPrivateCode();
+  });
+  if (localStorage.getItem('battonaasje_access') === 'granted') {
+    document.getElementById('private-gate').classList.add('hidden');
+  }
 
   if (sessionStorage.getItem('battonaasje_age_verified') === 'true') {
     document.getElementById('age-gate').classList.add('hidden');
