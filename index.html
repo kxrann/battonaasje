@@ -768,16 +768,23 @@
     position: absolute;
     bottom: -10px;
     border-radius: 50%;
-    background: var(--ghost);
+    background: radial-gradient(circle at 35% 35%, rgba(255,240,180,0.55), rgba(212,175,80,0.08));
+    border: 1px solid rgba(212,175,80,0.55);
+    box-shadow: inset 0 1px 2px rgba(255,248,210,0.6), 0 0 6px rgba(212,175,80,0.15);
     animation: particleDrift linear infinite;
   }
-  .hero-particles span:nth-child(1) { width: 7px;  height: 7px;  left: 12%;  opacity: 0.22; animation-duration: 32s; animation-delay: 0s; }
-  .hero-particles span:nth-child(2) { width: 5px;  height: 5px;  left: 28%;  opacity: 0.16; animation-duration: 45s; animation-delay: -10s; }
-  .hero-particles span:nth-child(3) { width: 9px;  height: 9px;  left: 48%;  opacity: 0.13; animation-duration: 28s; animation-delay: -5s; }
-  .hero-particles span:nth-child(4) { width: 5px;  height: 5px;  left: 64%;  opacity: 0.19; animation-duration: 38s; animation-delay: -18s; }
-  .hero-particles span:nth-child(5) { width: 7px;  height: 7px;  left: 76%;  opacity: 0.14; animation-duration: 52s; animation-delay: -30s; }
-  .hero-particles span:nth-child(6) { width: 5px;  height: 5px;  left: 88%;  opacity: 0.17; animation-duration: 42s; animation-delay: -8s; }
-  .hero-particles span:nth-child(7) { width: 6px;  height: 6px;  left: 38%;  opacity: 0.11; animation-duration: 60s; animation-delay: -24s; }
+  .hero-particles span:nth-child(1)  { width: 7px;  height: 7px;  left: 6%;   opacity: 0.35; animation-duration: 32s; animation-delay: 0s; }
+  .hero-particles span:nth-child(2)  { width: 5px;  height: 5px;  left: 18%;  opacity: 0.28; animation-duration: 45s; animation-delay: -10s; }
+  .hero-particles span:nth-child(3)  { width: 9px;  height: 9px;  left: 30%;  opacity: 0.24; animation-duration: 28s; animation-delay: -5s; }
+  .hero-particles span:nth-child(4)  { width: 5px;  height: 5px;  left: 44%;  opacity: 0.32; animation-duration: 38s; animation-delay: -18s; }
+  .hero-particles span:nth-child(5)  { width: 7px;  height: 7px;  left: 56%;  opacity: 0.26; animation-duration: 52s; animation-delay: -30s; }
+  .hero-particles span:nth-child(6)  { width: 5px;  height: 5px;  left: 68%;  opacity: 0.30; animation-duration: 42s; animation-delay: -8s; }
+  .hero-particles span:nth-child(7)  { width: 6px;  height: 6px;  left: 78%;  opacity: 0.22; animation-duration: 60s; animation-delay: -24s; }
+  .hero-particles span:nth-child(8)  { width: 8px;  height: 8px;  left: 88%;  opacity: 0.28; animation-duration: 36s; animation-delay: -14s; }
+  .hero-particles span:nth-child(9)  { width: 4px;  height: 4px;  left: 22%;  opacity: 0.33; animation-duration: 48s; animation-delay: -6s; }
+  .hero-particles span:nth-child(10) { width: 6px;  height: 6px;  left: 52%;  opacity: 0.25; animation-duration: 40s; animation-delay: -35s; }
+  .hero-particles span:nth-child(11) { width: 5px;  height: 5px;  left: 35%;  opacity: 0.29; animation-duration: 55s; animation-delay: -20s; }
+  .hero-particles span:nth-child(12) { width: 7px;  height: 7px;  left: 92%;  opacity: 0.23; animation-duration: 44s; animation-delay: -42s; }
 
   @keyframes particleDrift {
     0%   { transform: translateY(0) translateX(0); opacity: 0; }
@@ -1161,7 +1168,7 @@
 <!-- HERO -->
 <section class="hero">
   <div class="hero-particles" aria-hidden="true">
-    <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
   </div>
   <p class="hero-tag">gecureerde fijne wijnen, Friesland, Nederland</p>
   <h1 class="hero-title">BATTONAASJE</h1>
