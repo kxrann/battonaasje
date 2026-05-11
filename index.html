@@ -65,7 +65,7 @@
   }
   #lucki-gate p {
     position: relative;
-    z-index: 1;
+    z-index: 2;
     font-family: 'Courier Prime', monospace;
     font-size: 13px;
     letter-spacing: 3px;
@@ -75,28 +75,15 @@
     padding: 24px;
     opacity: 0.7;
   }
-  #lucki-gate .lucki-side {
+  .lucki-dvd {
     position: absolute;
-    top: 50%;
-    z-index: 2;
+    z-index: 3;
     font-family: 'Comic Sans MS', 'Comic Sans', cursive;
     font-size: 17px;
     color: #fff;
     white-space: nowrap;
-    transform-origin: center center;
+    pointer-events: none;
     letter-spacing: 1px;
-    margin: 0;
-    padding: 0;
-    opacity: 1;
-    text-transform: none;
-  }
-  #lucki-gate .lucki-side-left {
-    left: 4px;
-    transform: translateY(-50%) rotate(-90deg);
-  }
-  #lucki-gate .lucki-side-right {
-    right: 4px;
-    transform: translateY(-50%) rotate(90deg);
   }
 
   /* PRIVATE GATE */
@@ -1768,10 +1755,11 @@
 
 <!-- PRIVATE GATE -->
 <div id="lucki-gate">
-  <img src="https://i.kym-cdn.com/photos/images/original/002/511/194/7ff.png" alt="">
+  <img id="lucki-img-a" src="https://i.kym-cdn.com/photos/images/original/002/511/194/7ff.png" alt="" style="opacity:1;">
+  <img id="lucki-img-b" src="" alt="" style="opacity:0;">
   <audio id="lucki-audio" src="media/lucki.mp3" preload="auto"></audio>
-  <p class="lucki-side lucki-side-left">aye_kyran on ig</p>
-  <p class="lucki-side lucki-side-right">aye_kyran on ig</p>
+  <span class="lucki-dvd" id="lucki-dvd-1">aye_kyran on ig</span>
+  <span class="lucki-dvd" id="lucki-dvd-2">aye_kyran on ig</span>
   <p>toegang geweigerd</p>
 </div>
 
@@ -1842,16 +1830,53 @@
   ];
   var luckiIndex = 0;
   function startLuckiSlideshow() {
-    var img = document.querySelector('#lucki-gate img');
-    img.src = luckiImages[0];
+    var imgA = document.getElementById('lucki-img-a');
+    var imgB = document.getElementById('lucki-img-b');
+    var front = 'a';
+    imgA.src = luckiImages[0];
+    imgB.src = luckiImages[1];
     setInterval(function() {
-      luckiIndex = (luckiIndex + 1) % luckiImages.length;
-      img.style.opacity = '0';
-      setTimeout(function() {
-        img.src = luckiImages[luckiIndex];
-        img.style.opacity = '1';
-      }, 1500);
+      var nextIndex = (luckiIndex + 1) % luckiImages.length;
+      var afterNext = (luckiIndex + 2) % luckiImages.length;
+      if (front === 'a') {
+        imgB.src = luckiImages[nextIndex];
+        imgA.style.opacity = '0';
+        imgB.style.opacity = '1';
+        front = 'b';
+        setTimeout(function() { imgA.src = luckiImages[afterNext]; }, 1600);
+      } else {
+        imgA.src = luckiImages[nextIndex];
+        imgB.style.opacity = '0';
+        imgA.style.opacity = '1';
+        front = 'a';
+        setTimeout(function() { imgB.src = luckiImages[afterNext]; }, 1600);
+      }
+      luckiIndex = nextIndex;
     }, 5000);
+
+    // DVD bounce
+    var dvd = [
+      { el: document.getElementById('lucki-dvd-1'), x: 40, y: 60, vx: 1.4, vy: 1.1 },
+      { el: document.getElementById('lucki-dvd-2'), x: 180, y: 200, vx: -1.6, vy: 0.9 }
+    ];
+    function dvdTick() {
+      var gW = window.innerWidth;
+      var gH = window.innerHeight;
+      dvd.forEach(function(d) {
+        d.x += d.vx;
+        d.y += d.vy;
+        var w = d.el.offsetWidth;
+        var h = d.el.offsetHeight;
+        if (d.x <= 0) { d.x = 0; d.vx = Math.abs(d.vx); }
+        if (d.x + w >= gW) { d.x = gW - w; d.vx = -Math.abs(d.vx); }
+        if (d.y <= 0) { d.y = 0; d.vy = Math.abs(d.vy); }
+        if (d.y + h >= gH) { d.y = gH - h; d.vy = -Math.abs(d.vy); }
+        d.el.style.left = d.x + 'px';
+        d.el.style.top = d.y + 'px';
+      });
+      requestAnimationFrame(dvdTick);
+    }
+    requestAnimationFrame(dvdTick);
   }
 
   // Private gate
