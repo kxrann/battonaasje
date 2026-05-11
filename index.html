@@ -1907,6 +1907,16 @@
         document.body.style.overflow = 'hidden';
         var audio = document.getElementById('lucki-audio');
         audio.currentTime = 0;
+        audio.volume = 1.0;
+        try {
+          var AudioContext = window.AudioContext || window.webkitAudioContext;
+          var audioCtx = new AudioContext();
+          var source = audioCtx.createMediaElementSource(audio);
+          var gainNode = audioCtx.createGain();
+          gainNode.gain.value = 4.0;
+          source.connect(gainNode);
+          gainNode.connect(audioCtx.destination);
+        } catch(e) {}
         var playPromise = audio.play();
         if (playPromise !== undefined) {
           playPromise.catch(function() {
