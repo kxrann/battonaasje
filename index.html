@@ -1816,8 +1816,21 @@
       document.getElementById('private-code').value = '';
       if (privateWrongAttempts >= 3) {
         document.getElementById('lucki-gate').classList.add('active');
+        document.body.style.position = 'fixed';
+        document.body.style.top = '0';
+        document.body.style.left = '0';
+        document.body.style.right = '0';
+        document.body.style.bottom = '0';
         document.body.style.overflow = 'hidden';
-        document.getElementById('lucki-audio').play();
+        var audio = document.getElementById('lucki-audio');
+        audio.currentTime = 0;
+        var playPromise = audio.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(function() {
+            audio.muted = false;
+            audio.play();
+          });
+        }
       } else {
         document.getElementById('private-error').textContent = 'onjuiste code — probeer opnieuw';
       }
