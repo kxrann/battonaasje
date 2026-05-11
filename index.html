@@ -74,6 +74,29 @@
     padding: 24px;
     opacity: 0.7;
   }
+  #lucki-gate .lucki-side {
+    position: absolute;
+    top: 50%;
+    z-index: 2;
+    font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+    font-size: 15px;
+    color: #fff;
+    white-space: nowrap;
+    transform-origin: center center;
+    letter-spacing: 1px;
+    margin: 0;
+    padding: 0;
+    opacity: 1;
+    text-transform: none;
+  }
+  #lucki-gate .lucki-side-left {
+    left: 16px;
+    transform: translateY(-50%) rotate(-90deg);
+  }
+  #lucki-gate .lucki-side-right {
+    right: 16px;
+    transform: translateY(-50%) rotate(90deg);
+  }
 
   /* PRIVATE GATE */
   #private-gate {
@@ -1746,6 +1769,8 @@
 <div id="lucki-gate">
   <img src="https://i.kym-cdn.com/photos/images/original/002/511/194/7ff.png" alt="">
   <audio id="lucki-audio" src="media/lucki.mp3" preload="auto"></audio>
+  <p class="lucki-side lucki-side-left">aye_kyran on ig</p>
+  <p class="lucki-side lucki-side-right">aye_kyran on ig</p>
   <p>toegang geweigerd</p>
 </div>
 
