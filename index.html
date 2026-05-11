@@ -9,8 +9,10 @@
 <meta property="og:description" content="Handpicked fijne wijnen vanuit Friesland. Gevonden. Gecureerd. Gedeeld.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://battonaasje.nl">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap');
 
   :root {
     --ink: #1a1714;
@@ -71,6 +73,8 @@
     pointer-events: none;
     z-index: 1000;
     opacity: 0.4;
+    will-change: transform;
+    transform: translateZ(0);
   }
 
   /* NAV */
@@ -193,7 +197,7 @@
     border: 1px solid var(--ink);
     padding: 14px 32px;
     text-decoration: none;
-    transition: all 0.2s;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
   }
 
   .hero-cta:hover {
@@ -819,6 +823,7 @@
     background: rgba(212,175,80,0.07);
     border: 1px solid rgba(200,160,60,0.38);
     animation: particleDrift linear infinite;
+    will-change: transform, opacity;
   }
   .site-particles span:nth-child(1)  { width: 5px;  height: 5px;  left: 5%;   opacity: 0.55; animation-duration: 16s; animation-delay: 0s; }
   .site-particles span:nth-child(2)  { width: 28px; height: 28px; left: 8%;   opacity: 0.30; animation-duration: 22s; animation-delay: -4s; }
@@ -861,6 +866,7 @@
     background: rgba(212,175,80,0.06);
     border: 1px solid rgba(212,175,80,0.50);
     animation: particleDrift linear infinite;
+    will-change: transform, opacity;
   }
   .age-gate-particles span:nth-child(1)  { width: 5px;  height: 5px;  left: 8%;   opacity: 0.65; animation-duration: 15s; animation-delay: 0s; }
   .age-gate-particles span:nth-child(2)  { width: 26px; height: 26px; left: 12%;  opacity: 0.35; animation-duration: 21s; animation-delay: -4s; }
