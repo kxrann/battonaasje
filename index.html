@@ -31,6 +31,7 @@
     font-family: 'Courier Prime', 'Courier New', monospace;
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
+    font-feature-settings: "kern" 1, "liga" 1;
   }
 
   /* AGE GATE */
@@ -252,16 +253,18 @@
     background: var(--aged);
   }
 
-  .bottle-card:hover .bottle-img { transform: scale(1.04); filter: none; }
+  .bottle-card:hover .bottle-img { transform: scale(1.03); filter: saturate(1); }
   .bottle-card:hover .bottle-overlay { opacity: 1; }
 
   .bottle-img {
     width: 100%;
     height: 380px;
-    object-fit: cover;
+    object-fit: contain;
     display: block;
-    filter: saturate(0.85);
-    transition: transform 0.5s ease, filter 0.4s ease;
+    padding: 32px 24px 16px;
+    box-sizing: border-box;
+    filter: saturate(0.9);
+    transition: transform 0.6s cubic-bezier(0.22,1,0.36,1), filter 0.4s ease;
   }
 
   .bottle-img-placeholder {
@@ -303,13 +306,13 @@
   .bottle-overlay {
     position: absolute;
     inset: 0;
-    background: rgba(26,23,20,0.88);
+    background: linear-gradient(to top, rgba(26,23,20,0.97) 0%, rgba(26,23,20,0.85) 60%, rgba(26,23,20,0.4) 100%);
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    padding: 28px;
+    padding: 32px;
     opacity: 0;
-    transition: opacity 0.3s ease;
+    transition: opacity 0.4s cubic-bezier(0.22,1,0.36,1);
   }
 
   .bottle-region {
@@ -363,75 +366,77 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    margin-top: 16px;
-    padding: 10px 16px;
-    background: var(--paper);
-    color: var(--ink);
+    margin-top: 20px;
+    padding: 12px 20px;
+    background: transparent;
+    border: 1px solid rgba(242,237,228,0.4);
+    color: var(--paper);
     font-family: 'Courier Prime', monospace;
-    font-size: 10px;
-    letter-spacing: 3px;
+    font-size: 9px;
+    letter-spacing: 4px;
     text-transform: uppercase;
     text-decoration: none;
-    transition: opacity 0.2s;
+    transition: background 0.2s, border-color 0.2s;
     align-self: flex-start;
   }
-  .bottle-wa:hover { opacity: 0.75; }
+  .bottle-wa:hover { background: rgba(242,237,228,0.1); border-color: rgba(242,237,228,0.7); }
 
   .bottle-label {
     position: absolute;
     top: 20px;
     left: 20px;
-    font-size: 9px;
-    letter-spacing: 3px;
+    font-size: 8px;
+    letter-spacing: 4px;
     text-transform: uppercase;
-    color: var(--paper);
-    background: var(--ink);
-    padding: 4px 10px;
+    color: var(--faded);
+    background: transparent;
   }
 
   /* Bottom info strip for non-hovered state */
   .bottle-strip {
-    padding: 16px 20px;
+    padding: 18px 24px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     border-top: 1px solid var(--ghost);
+    background: var(--paper);
   }
 
   .bottle-strip-name {
-    font-size: 12px;
+    font-size: 11px;
     letter-spacing: 2px;
-    color: var(--ink);
+    color: var(--accent);
   }
 
   .bottle-strip-vintage {
-    font-size: 11px;
-    letter-spacing: 2px;
-    color: var(--faded);
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--ghost);
   }
 
   .coming-soon-card {
-    background: var(--aged);
+    background: transparent;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 420px;
-    border: 1px dashed var(--ghost);
-    gap: 12px;
+    min-height: 440px;
+    border: 1px solid var(--ghost);
+    gap: 16px;
   }
 
   .coming-soon-card span {
-    font-size: 10px;
-    letter-spacing: 4px;
+    font-size: 9px;
+    letter-spacing: 5px;
     text-transform: uppercase;
     color: var(--ghost);
   }
 
   .coming-soon-card p {
-    font-size: 12px;
-    color: var(--faded);
+    font-size: 11px;
+    color: var(--ghost);
     font-style: italic;
+    letter-spacing: 1px;
   }
 
   /* CONTACT */
@@ -674,12 +679,12 @@
   .blog-coming {
     grid-column: 1/-1;
     text-align: center;
-    padding: 60px 0;
-    font-size: 11px;
-    letter-spacing: 4px;
+    padding: 80px 0;
+    font-size: 9px;
+    letter-spacing: 6px;
     text-transform: uppercase;
     color: var(--ghost);
-    font-style: italic;
+    font-style: normal;
   }
 
   /* FOOTER */
@@ -812,8 +817,9 @@
     max-height: 90vh;
     overflow-y: auto;
     position: relative;
-    transform: translateY(24px);
-    transition: transform 0.35s ease;
+    transform: translateY(32px);
+    transition: transform 0.5s cubic-bezier(0.22,1,0.36,1);
+    box-shadow: 0 32px 80px rgba(26,23,20,0.3);
   }
   .modal-backdrop.open .modal {
     transform: translateY(0);
@@ -1398,7 +1404,7 @@
   </div>
 
   <div class="blog-grid">
-    <div class="blog-coming">Binnenkort.....</div>
+    <div class="blog-coming">Binnenkort</div>
   </div>
 </section>
 
