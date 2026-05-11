@@ -37,6 +37,39 @@
     position: relative;
   }
 
+  /* LUCKI EASTER EGG */
+  #lucki-gate {
+    position: fixed;
+    inset: 0;
+    background: #000;
+    z-index: 999999;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+  }
+  #lucki-gate.active { display: flex; }
+  #lucki-gate img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    inset: 0;
+  }
+  #lucki-gate p {
+    position: relative;
+    z-index: 1;
+    font-family: 'Courier Prime', monospace;
+    font-size: 13px;
+    letter-spacing: 3px;
+    color: #fff;
+    text-transform: uppercase;
+    margin-top: auto;
+    padding: 24px;
+    opacity: 0.7;
+  }
+
   /* PRIVATE GATE */
   #private-gate {
     position: fixed;
@@ -1707,6 +1740,12 @@
 </div>
 
 <!-- PRIVATE GATE -->
+<div id="lucki-gate">
+  <img src="https://i.kym-cdn.com/photos/images/original/002/511/194/7ff.png" alt="">
+  <iframe id="lucki-audio" width="0" height="0" frameborder="0" allow="autoplay" style="position:absolute;opacity:0;pointer-events:none;"></iframe>
+  <p>toegang geweigerd</p>
+</div>
+
 <div id="private-gate">
   <div class="private-gate-inner">
     <div class="private-gate-logo">BATTONAASJE</div>
@@ -1761,13 +1800,20 @@
 
   // Private gate
   var PRIVATE_CODE = 'SIGARETTEN';
+  var privateWrongAttempts = 0;
   function checkPrivateCode() {
     var input = document.getElementById('private-code').value.trim().toUpperCase();
     if (input === PRIVATE_CODE) {
       document.getElementById('private-gate').classList.add('hidden');
     } else {
-      document.getElementById('private-error').textContent = 'onjuiste code — probeer opnieuw';
+      privateWrongAttempts++;
       document.getElementById('private-code').value = '';
+      if (privateWrongAttempts >= 3) {
+        document.getElementById('lucki-gate').classList.add('active');
+        document.getElementById('lucki-audio').src = 'https://www.youtube.com/embed/WI8GDPdqpss?autoplay=1&start=0';
+      } else {
+        document.getElementById('private-error').textContent = 'onjuiste code — probeer opnieuw';
+      }
     }
   }
   document.getElementById('private-code').addEventListener('keydown', function(e) {
