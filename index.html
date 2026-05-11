@@ -723,7 +723,8 @@
   .footer-nix {
     display: flex;
     justify-content: center;
-    padding: 16px 56px 32px;
+    align-items: center;
+    padding: 16px 24px 32px;
   }
 
   .nix18-btn {
@@ -1213,26 +1214,33 @@
     .nav-hamburger { display: flex; }
     .mobile-menu { display: block; }
 
-    .hero { padding: 110px 24px 72px; }
+    .hero { padding: 110px 24px 72px; align-items: center; text-align: center; }
     .hero-tag { font-size: 9px; letter-spacing: 4px; }
     .hero-title {
       font-size: clamp(42px, 12vw, 64px);
       letter-spacing: 5px;
       margin-bottom: 24px;
     }
-    .hero-title::after { width: 40px; margin-top: 20px; }
+    .hero-title::after { width: 40px; margin-top: 20px; margin-left: auto; margin-right: auto; }
     .hero-bio { font-size: 13px; letter-spacing: 2px; margin-bottom: 36px; }
     .hero-scroll { display: none; }
 
     section { padding: 72px 24px; }
-    .section-header { margin-bottom: 48px; }
+    .section-header { margin-bottom: 48px; justify-content: center; }
+    .section-num { display: none; }
+    .section-line { display: none; }
+    .section-title { text-align: center; width: 100%; }
     .section-title { font-size: 28px; letter-spacing: 4px; }
-    .bottles-grid { gap: 16px; }
-    .contact-grid { grid-template-columns: 1fr; gap: 56px; }
-    .about-grid { grid-template-columns: 1fr; gap: 40px; }
+    .bottles-grid { gap: 16px; justify-items: center; }
+    .contact-grid { grid-template-columns: 1fr; gap: 56px; text-align: center; }
+    .contact-links { align-items: center; }
+    .about-grid { grid-template-columns: 1fr; gap: 40px; text-align: center; }
+    .about-image-frame { margin: 0 auto; }
+    .about-stats { justify-content: center; }
     .about-body { max-width: 100%; font-size: 13px; }
     .about-name { font-size: 26px; letter-spacing: 4px; }
     footer { flex-direction: column; gap: 16px; text-align: center; padding: 40px 24px; }
+    .footer-nix { padding: 12px 24px 28px; }
 
     /* Age gate */
     .age-gate-logo { font-size: 26px; letter-spacing: 6px; }
