@@ -1764,7 +1764,6 @@
   function checkPrivateCode() {
     var input = document.getElementById('private-code').value.trim().toUpperCase();
     if (input === PRIVATE_CODE) {
-      localStorage.setItem('battonaasje_access', 'granted');
       document.getElementById('private-gate').classList.add('hidden');
     } else {
       document.getElementById('private-error').textContent = 'onjuiste code — probeer opnieuw';
@@ -1774,9 +1773,6 @@
   document.getElementById('private-code').addEventListener('keydown', function(e) {
     if (e.key === 'Enter') checkPrivateCode();
   });
-  if (localStorage.getItem('battonaasje_access') === 'granted') {
-    document.getElementById('private-gate').classList.add('hidden');
-  }
 
   if (sessionStorage.getItem('battonaasje_age_verified') === 'true') {
     document.getElementById('age-gate').classList.add('hidden');
