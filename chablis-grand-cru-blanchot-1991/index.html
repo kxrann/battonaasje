@@ -20,7 +20,7 @@
 <meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
 <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
 <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=()">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action https://formspree.io;">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src https://*.workers.dev; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action https://formspree.io;">
 <link rel="canonical" href="https://battonaasje.nl/chablis-grand-cru-blanchot-1991/">
 <link rel="stylesheet" href="/fonts/fonts.css">
 <style>
@@ -564,27 +564,46 @@
     else main.removeAttribute('inert');
   }
 
-  var PRIVATE_CODE = 'SIGARETTEN';
+  var GATE_WORKER = 'JOUW_WORKER_URL';
   var privateWrongAttempts = 0;
-  function checkPrivateCode() {
-    var input = document.getElementById('private-code').value.trim().toUpperCase();
-    if (input === PRIVATE_CODE) {
-      document.getElementById('private-gate').classList.add('hidden');
-      sessionStorage.setItem('battonaasje_private_verified', 'true');
-      if (sessionStorage.getItem('battonaasje_age_verified') !== 'true') {
-        document.getElementById('age-gate').classList.remove('hidden');
-      }
-      updateMainInert();
-    } else {
-      privateWrongAttempts++;
-      document.getElementById('private-code').value = '';
-      if (privateWrongAttempts >= 3) {
-        document.getElementById('private-error').textContent = 'toegang geweigerd';
-        document.getElementById('private-code').disabled = true;
-        document.querySelector('#private-gate .private-gate-btn').disabled = true;
+  async function checkPrivateCode() {
+    var input = document.getElementById('private-code').value.trim();
+    var btn = document.querySelector('#private-gate .private-gate-btn');
+    var errorEl = document.getElementById('private-error');
+    btn.disabled = true;
+    btn.textContent = '· · ·';
+    errorEl.textContent = '';
+    try {
+      var res = await fetch(GATE_WORKER + '/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: input })
+      });
+      var data = await res.json();
+      if (data.ok) {
+        document.getElementById('private-gate').classList.add('hidden');
+        sessionStorage.setItem('battonaasje_private_verified', 'true');
+        if (sessionStorage.getItem('battonaasje_age_verified') !== 'true') {
+          document.getElementById('age-gate').classList.remove('hidden');
+        }
+        updateMainInert();
       } else {
-        document.getElementById('private-error').textContent = 'onjuiste code — probeer opnieuw';
+        privateWrongAttempts++;
+        document.getElementById('private-code').value = '';
+        btn.disabled = false;
+        btn.textContent = 'Toegang →';
+        if (privateWrongAttempts >= 3) {
+          errorEl.textContent = 'toegang geweigerd';
+          document.getElementById('private-code').disabled = true;
+          btn.disabled = true;
+        } else {
+          errorEl.textContent = 'onjuiste code — probeer opnieuw';
+        }
       }
+    } catch (err) {
+      btn.disabled = false;
+      btn.textContent = 'Toegang →';
+      errorEl.textContent = 'verbindingsfout — probeer opnieuw';
     }
   }
   document.getElementById('private-code').addEventListener('keydown', function(e) {
