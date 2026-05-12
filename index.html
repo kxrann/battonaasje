@@ -74,7 +74,6 @@
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
     font-feature-settings: "kern" 1, "liga" 1;
-    position: relative;
   }
 
   /* PRIVATE GATE */
@@ -90,7 +89,7 @@
   }
   #private-gate.hidden { display: none; }
   .private-gate-inner { max-width: 520px; width: 100%; text-align: center; }
-  .private-gate-logo { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: 36px; letter-spacing: 12px; color: #f2ede4; margin-bottom: 8px; font-kerning: none; font-feature-settings: "kern" 0; font-variant-ligatures: none; text-rendering: optimizeSpeed; }
+  .private-gate-logo { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: 36px; letter-spacing: 12px; color: #f2ede4; margin-bottom: 8px; }
   .private-gate-line { width: 40px; height: 1px; background: #3a3528; margin: 0 auto 28px; }
   .private-gate-label { font-family: 'Courier Prime', monospace; font-size: 13px; letter-spacing: 4px; text-transform: uppercase; color: #8c8478; margin-bottom: 6px; }
   .private-gate-sub { font-family: 'Courier Prime', monospace; font-size: 15px; color: #3a3528; letter-spacing: 2px; margin-bottom: 28px; }
@@ -114,7 +113,7 @@
   }
   #age-gate.hidden { display: none; }
   .age-gate-inner { max-width: 480px; width: 100%; text-align: center; position: relative; z-index: 1; }
-  .age-gate-logo { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: 36px; letter-spacing: 14px; color: #f2ede4; margin-bottom: 8px; font-kerning: none; font-feature-settings: "kern" 0; font-variant-ligatures: none; text-rendering: optimizeSpeed; }
+  .age-gate-logo { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: 36px; letter-spacing: 14px; color: #f2ede4; margin-bottom: 8px; }
   .age-gate-line { width: 60px; height: 1px; background: #8c8478; margin: 0 auto 32px; }
   .age-gate-title { font-family: 'Courier Prime', monospace; font-size: 11px; letter-spacing: 4px; text-transform: uppercase; color: #8c8478; margin-bottom: 12px; }
   .age-gate-sub { font-family: 'Courier Prime', monospace; font-size: 13px; color: #c8c0b0; font-style: italic; margin-bottom: 40px; line-height: 1.8; }
@@ -128,16 +127,11 @@
   .age-gate-error { font-size: 11px; letter-spacing: 2px; color: #a05040; font-style: italic; min-height: 20px; margin-bottom: 8px; }
   .age-gate-disclaimer { font-size: 10px; color: #3a3528; letter-spacing: 1px; line-height: 1.8; margin-top: 32px; border-top: 1px solid #2c2820; padding-top: 20px; }
 
-  /* Grain overlay */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 1000;
-    opacity: 0.4;
-    transform: translateZ(0);
+
+  .nav-logo, .hero-title, .age-gate-logo, .private-gate-logo,
+  .section-title, .modal-title, .bottle-name, .modal-producer,
+  .contact-title, .about-title, .blog-title {    font-variant-ligatures: none;
+    text-rendering: optimizeSpeed;
   }
 
   /* NAV */
@@ -222,10 +216,7 @@
     letter-spacing: 14px;
     color: var(--ink);
     margin-bottom: 32px;
-    position: relative;
-    font-kerning: none;
-    font-feature-settings: "kern" 0;
-    font-variant-ligatures: none;
+    position: relative;    font-variant-ligatures: none;
     text-rendering: optimizeSpeed;
   }
 
@@ -311,10 +302,7 @@
     font-weight: 300;
     font-size: 36px;
     letter-spacing: 8px;
-    color: var(--ink);
-    font-kerning: none;
-    font-feature-settings: "kern" 0;
-  }
+    color: var(--ink);  }
 
   .section-line {
     flex: 1;
@@ -664,10 +652,7 @@
     font-weight: 300;
     font-size: 32px;
     letter-spacing: 8px;
-    margin-bottom: 8px;
-    font-kerning: none;
-    font-feature-settings: "kern" 0;
-  }
+    margin-bottom: 8px;  }
 
   .about-role {
     font-size: 11px;
@@ -835,10 +820,7 @@
     font-weight: 300;
     font-size: 18px;
     letter-spacing: 12px;
-    color: var(--ink);
-    font-kerning: none;
-    font-feature-settings: "kern" 0;
-    font-variant-ligatures: none;
+    color: var(--ink);    font-variant-ligatures: none;
     text-rendering: optimizeSpeed;
   }
 
@@ -1036,10 +1018,7 @@
     font-size: 28px;
     letter-spacing: 4px;
     color: var(--ink);
-    line-height: 1.2;
-    font-kerning: none;
-    font-feature-settings: "kern" 0;
-  }
+    line-height: 1.2;  }
   .modal-producer {
     font-size: 11px;
     letter-spacing: 2px;
