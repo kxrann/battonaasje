@@ -503,6 +503,8 @@
   }
 
   /* REGIONS */
+  #regions { padding-top: 64px; }
+  #regions .section-header { margin-bottom: 40px; }
   .regions-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -526,11 +528,14 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 1.2s cubic-bezier(0.22,1,0.36,1);
+    transition: transform 1.4s cubic-bezier(0.22,1,0.36,1), filter 0.5s ease;
     z-index: 0;
   }
   .region-card:hover .region-img,
-  .region-card:focus-visible .region-img { transform: scale(1.04); }
+  .region-card:focus-visible .region-img {
+    transform: scale(1.06);
+    filter: brightness(0.78);
+  }
   .region-card::after {
     content: '';
     position: absolute;
@@ -564,7 +569,7 @@
     letter-spacing: 3px;
     color: var(--paper);
     line-height: 1.1;
-    margin: 2px 0 14px;
+    margin: 2px 0 18px;
   }
   .region-cta {
     font-family: 'Courier Prime', monospace;
@@ -572,14 +577,16 @@
     letter-spacing: 4px;
     text-transform: uppercase;
     color: var(--paper);
-    padding: 8px 0;
-    border-bottom: 1px solid rgba(242,237,228,0.4);
-    transition: border-color 0.3s, letter-spacing 0.3s;
+    background: transparent;
+    border: 1px solid rgba(242,237,228,0.5);
+    padding: 11px 20px;
+    transition: background-color 0.35s ease, color 0.35s ease, border-color 0.35s ease;
   }
   .region-card:hover .region-cta,
   .region-card:focus-visible .region-cta {
+    background: var(--paper);
+    color: var(--ink);
     border-color: var(--paper);
-    letter-spacing: 5px;
   }
 
   @media (max-width: 768px) {
