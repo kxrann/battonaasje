@@ -219,6 +219,16 @@
   .wine-image-frame img {
     width: 100%; height: 100%; object-fit: cover; display: block;
   }
+  .img-placeholder {
+    width: 100%; height: 100%;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 16px;
+    background: var(--aged);
+    border: 1px solid var(--ghost);
+    color: var(--ghost);
+  }
+  .img-placeholder svg { width: 32px; height: 32px; opacity: 0.5; }
+  .img-placeholder-label { font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: var(--ghost); }
   .wine-info { display: flex; flex-direction: column; gap: 40px; }
   .wine-meta {
     font-size: 9px;
@@ -416,7 +426,10 @@
 
   <article class="wine">
     <div class="wine-image-frame">
-      <img src="/images/chablis-grand-cru-blanchot-1991-defaix.jpg" alt="Chablis Grand Cru Blanchot 1991 – Daniël-Étienne Defaix" loading="lazy" decoding="async">
+      <div class="img-placeholder">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2h8l1 7c0 3.31-2.69 6-6 6s-6-2.69-6-6L8 2z"/><line x1="12" y1="15" x2="12" y2="22"/><line x1="8" y1="22" x2="16" y2="22"/></svg>
+        <span class="img-placeholder-label">Foto volgt</span>
+      </div>
     </div>
     <div class="wine-info">
       <div>
