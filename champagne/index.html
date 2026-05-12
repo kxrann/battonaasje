@@ -86,7 +86,7 @@
   font-feature-settings: "kern" 0;
   text-rendering: optimizeSpeed;
 }
-  .nav-back { font-family: 'Courier Prime', monospace; font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--faded); text-decoration: none; transition: color 0.2s; }
+  .nav-back { font-family: 'Courier Prime', monospace; font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--faded); text-decoration: none; transition: color 0.2s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 45%; }
   .nav-back:hover { color: var(--ink); }
 
   /* REGION HERO */
@@ -137,7 +137,7 @@
     margin-bottom: 56px;
   }
   .region-placeholder {
-    border-top: 1px solid var(--ghost);
+    border-top: 1px solid rgba(242,237,228,0.25);
     padding-top: 40px;
     width: 100%;
     max-width: 560px;
@@ -146,14 +146,14 @@
     font-size: 9px;
     letter-spacing: 4px;
     text-transform: uppercase;
-    color: var(--ghost);
+    color: rgba(242,237,228,0.55);
     margin-bottom: 14px;
   }
   .region-placeholder-text {
     font-family: 'Cormorant Garamond', serif;
     font-size: 22px;
     font-style: italic;
-    color: var(--faded);
+    color: rgba(242,237,228,0.5);
     line-height: 1.5;
   }
 
@@ -181,10 +181,11 @@
     display: flex; justify-content: center; align-items: center;
     gap: 20px; padding: 16px 56px 28px; flex-wrap: wrap;
   }
-  .footer-legal a { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--ghost); text-decoration: none; transition: color 0.2s; }
+  .footer-legal a { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--ghost); text-decoration: none; transition: color 0.2s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 45%; }
   .footer-legal a:hover { color: var(--faded); }
   .footer-legal-sep { color: var(--aged); font-size: 9px; }
 
+  @media (max-width: 480px) { .nav-back { max-width: 22px; letter-spacing: 0; } }
   @media (max-width: 768px) {
     nav { padding: 16px 24px; }
     .region-hero { padding: 120px 24px 60px; min-height: 60vh; }
@@ -203,6 +204,7 @@
   .cookie-btn-accept:hover { background: rgba(242,237,228,0.1); border-color: rgba(242,237,228,0.9); color: rgba(242,237,228,0.95); }
   .cookie-btn-decline { border-color: rgba(242,237,228,0.2); color: rgba(242,237,228,0.35); }
   .cookie-btn-decline:hover { border-color: rgba(242,237,228,0.4); color: rgba(242,237,228,0.55); }
+  @media (max-width: 480px) { .nav-back { max-width: 22px; letter-spacing: 0; } }
   @media (max-width: 768px) { .cookie-banner { flex-direction: column; padding: 16px 24px; align-items: flex-start; gap: 14px; } .cookie-banner-actions { width: 100%; } .cookie-btn { flex: 1; text-align: center; } }
 </style>
 </head>
