@@ -868,6 +868,26 @@
     z-index: 1;
   }
 
+  .footer-legal {
+    border-top: 1px solid var(--aged);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    padding: 16px 56px 28px;
+    flex-wrap: wrap;
+  }
+  .footer-legal a {
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--ghost);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .footer-legal a:hover { color: var(--faded); }
+  .footer-legal-sep { color: var(--aged); font-size: 9px; }
+
   .footer-nix {
     display: flex;
     justify-content: center;
@@ -1712,6 +1732,15 @@
   <div class="footer-meta">friesland · nederland · © 2026</div>
   <a href="https://instagram.com/battonaasje" target="_blank" rel="noopener noreferrer" class="footer-ig">@battonaasje</a>
 </footer>
+<div class="footer-legal">
+  <a href="algemene-voorwaarden.html">Algemene voorwaarden</a>
+  <span class="footer-legal-sep">·</span>
+  <a href="privacybeleid.html">Privacybeleid</a>
+  <span class="footer-legal-sep">·</span>
+  <a href="retourbeleid.html">Retourbeleid</a>
+  <span class="footer-legal-sep">·</span>
+  <a href="cookiebeleid.html">Cookiebeleid</a>
+</div>
 <div class="footer-nix">
   <a href="https://www.nix18.nl" target="_blank" rel="noopener noreferrer" class="nix18-btn">
     <span class="nix18-badge">NIX</span>

@@ -150,11 +150,21 @@
   footer a { color: var(--faded); text-decoration: none; }
   footer a:hover { color: var(--ink); }
 
+  .footer-legal {
+    border-top: 1px solid var(--aged);
+    display: flex; justify-content: center; align-items: center;
+    gap: 20px; padding: 16px 56px 28px; flex-wrap: wrap;
+  }
+  .footer-legal a { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--ghost); text-decoration: none; transition: color 0.2s; }
+  .footer-legal a:hover { color: var(--faded); }
+  .footer-legal-sep { color: var(--aged); font-size: 9px; }
+
   @media (max-width: 768px) {
     nav { padding: 16px 24px; }
     .region-hero { padding: 120px 24px 60px; min-height: 60vh; }
     .region-hero-title { letter-spacing: 4px; }
     footer { flex-direction: column; gap: 16px; text-align: center; padding: 32px 24px; }
+    .footer-legal { padding: 16px 24px 24px; gap: 14px; }
   }
 </style>
 </head>
@@ -210,6 +220,15 @@
   <div>friesland · nederland · © 2026</div>
   <a href="https://instagram.com/battonaasje" target="_blank" rel="noopener noreferrer">@battonaasje</a>
 </footer>
+<div class="footer-legal">
+  <a href="algemene-voorwaarden.html">Algemene voorwaarden</a>
+  <span class="footer-legal-sep">·</span>
+  <a href="privacybeleid.html">Privacybeleid</a>
+  <span class="footer-legal-sep">·</span>
+  <a href="retourbeleid.html">Retourbeleid</a>
+  <span class="footer-legal-sep">·</span>
+  <a href="cookiebeleid.html">Cookiebeleid</a>
+</div>
 
 </main>
 
