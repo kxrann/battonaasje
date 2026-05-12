@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Piemonte — Battonaasje</title>
+<meta name="description" content="Piemonte — gecureerde fijne wijnen uit Italië.">
+<meta name="theme-color" content="#1a1714">
+<link rel="canonical" href="https://battonaasje.nl/piemonte.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap">
+<style>
+  :root {
+    --ink: #1a1714;
+    --paper: #f2ede4;
+    --aged: #e8e2d6;
+    --ghost: #c8c0b0;
+    --faded: #8c8478;
+    --accent: #3a3528;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Courier Prime', 'Courier New', monospace;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+  :focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+  #private-gate :focus-visible, #age-gate :focus-visible { outline-color: #f2ede4; }
+
+  /* PRIVATE GATE */
+  #private-gate {
+    position: fixed; inset: 0; background: #1a1714; z-index: 99999;
+    display: flex; align-items: center; justify-content: center; padding: 24px;
+  }
+  #private-gate.hidden { display: none; }
+  .private-gate-inner { max-width: 520px; width: 100%; text-align: center; }
+  .private-gate-logo { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: 36px; letter-spacing: 12px; color: #f2ede4; margin-bottom: 8px; }
+  .private-gate-line { width: 40px; height: 1px; background: #3a3528; margin: 0 auto 28px; }
+  .private-gate-sub { font-size: 15px; color: #3a3528; letter-spacing: 2px; margin-bottom: 28px; }
+  .private-gate-input { width: 100%; background: transparent; border: none; border-bottom: 1px solid #3a3528; padding: 16px 8px; font-family: 'Courier Prime', monospace; font-size: 24px; color: #f2ede4; text-align: center; letter-spacing: 8px; outline: none; margin-bottom: 20px; }
+  .private-gate-input::placeholder { color: #3a3528; font-size: 15px; letter-spacing: 4px; }
+  .private-gate-input:focus { border-color: #8c8478; }
+  .private-gate-btn { width: 100%; background: #f2ede4; color: #1a1714; border: none; padding: 18px; font-family: 'Courier Prime', monospace; font-size: 14px; letter-spacing: 4px; text-transform: uppercase; cursor: pointer; margin-bottom: 14px; }
+  .private-gate-btn:hover { opacity: 0.85; }
+  .private-gate-error { font-size: 22px; letter-spacing: 4px; color: #a05040; text-transform: uppercase; min-height: 18px; }
+
+  /* AGE GATE */
+  #age-gate {
+    position: fixed; inset: 0; background: #1a1714; z-index: 9999;
+    display: flex; align-items: center; justify-content: center; padding: 24px;
+  }
+  #age-gate.hidden { display: none; }
+  .age-gate-inner { max-width: 480px; width: 100%; text-align: center; }
+  .age-gate-logo { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: 36px; letter-spacing: 14px; color: #f2ede4; margin-bottom: 8px; }
+  .age-gate-line { width: 60px; height: 1px; background: #8c8478; margin: 0 auto 32px; }
+  .age-gate-title { font-size: 11px; letter-spacing: 4px; text-transform: uppercase; color: #8c8478; margin-bottom: 12px; }
+  .age-gate-sub { font-size: 13px; color: #c8c0b0; font-style: italic; margin-bottom: 40px; line-height: 1.8; }
+  .age-gate-label { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: #8c8478; display: block; margin-bottom: 10px; text-align: left; }
+  .age-gate-inputs { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 24px; }
+  .age-gate-input { background: transparent; border: none; border-bottom: 1px solid #3a3528; padding: 12px 8px; font-family: 'Courier Prime', monospace; font-size: 18px; color: #f2ede4; text-align: center; outline: none; width: 100%; }
+  .age-gate-input::placeholder { color: #3a3528; font-size: 12px; letter-spacing: 2px; }
+  .age-gate-input:focus { border-color: #8c8478; }
+  .age-gate-btn { width: 100%; background: #f2ede4; color: #1a1714; border: none; padding: 16px; font-family: 'Courier Prime', monospace; font-size: 11px; letter-spacing: 4px; text-transform: uppercase; cursor: pointer; margin-bottom: 16px; }
+  .age-gate-btn:hover { opacity: 0.85; }
+  .age-gate-error { font-size: 11px; letter-spacing: 2px; color: #a05040; font-style: italic; min-height: 20px; }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 22px 56px; background: rgba(242,237,228,0.92);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(200,192,176,0.5);
+  }
+  .nav-logo { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: 20px; letter-spacing: 12px; color: var(--ink); text-decoration: none; }
+  .nav-back { font-family: 'Courier Prime', monospace; font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--faded); text-decoration: none; transition: color 0.2s; }
+  .nav-back:hover { color: var(--ink); }
+
+  /* REGION HERO */
+  .region-hero {
+    min-height: 70vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 140px 56px 80px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .region-hero-tag {
+    font-size: 10px;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    color: var(--faded);
+    margin-bottom: 20px;
+  }
+  .region-hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: clamp(56px, 10vw, 120px);
+    letter-spacing: 6px;
+    color: var(--ink);
+    line-height: 1;
+    margin-bottom: 32px;
+  }
+  .region-hero-sub {
+    font-size: 15px;
+    line-height: 1.9;
+    color: var(--accent);
+    max-width: 560px;
+    margin-bottom: 56px;
+  }
+  .region-placeholder {
+    border-top: 1px solid var(--ghost);
+    padding-top: 40px;
+    width: 100%;
+    max-width: 560px;
+  }
+  .region-placeholder-label {
+    font-size: 9px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--ghost);
+    margin-bottom: 14px;
+  }
+  .region-placeholder-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-style: italic;
+    color: var(--faded);
+    line-height: 1.5;
+  }
+
+  footer {
+    border-top: 1px solid var(--ghost);
+    padding: 40px 56px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--faded);
+  }
+  .footer-logo { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: 18px; letter-spacing: 10px; color: var(--ink); }
+  footer a { color: var(--faded); text-decoration: none; }
+  footer a:hover { color: var(--ink); }
+
+  @media (max-width: 768px) {
+    nav { padding: 16px 24px; }
+    .region-hero { padding: 120px 24px 60px; min-height: 60vh; }
+    .region-hero-title { letter-spacing: 4px; }
+    footer { flex-direction: column; gap: 16px; text-align: center; padding: 32px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="private-gate">
+  <div class="private-gate-inner">
+    <div class="private-gate-logo">BATTONAASJE</div>
+    <div class="private-gate-line"></div>
+    <p class="private-gate-sub">voer de toegangscode in</p>
+    <input class="private-gate-input" id="private-code" type="password" placeholder="· · · · · · · ·" autocomplete="off">
+    <button type="button" class="private-gate-btn" onclick="checkPrivateCode()">Toegang &rarr;</button>
+    <div class="private-gate-error" id="private-error"></div>
+  </div>
+</div>
+
+<div id="age-gate" class="hidden">
+  <div class="age-gate-inner">
+    <div class="age-gate-logo">BATTONAASJE</div>
+    <div class="age-gate-line"></div>
+    <div class="age-gate-title">Verificatie</div>
+    <p class="age-gate-sub">Vul uw geboortedatum in om toegang te krijgen tot deze website.</p>
+    <span class="age-gate-label">Geboortedatum</span>
+    <div class="age-gate-inputs">
+      <input class="age-gate-input" id="age-day" type="number" min="1" max="31" placeholder="DD" autocomplete="bday-day" inputmode="numeric" aria-label="Geboortedag">
+      <input class="age-gate-input" id="age-month" type="number" min="1" max="12" placeholder="MM" autocomplete="bday-month" inputmode="numeric" aria-label="Geboortemaand">
+      <input class="age-gate-input" id="age-year" type="number" min="1900" max="2099" placeholder="JJJJ" autocomplete="bday-year" inputmode="numeric" aria-label="Geboortejaar">
+    </div>
+    <button type="button" class="age-gate-btn" onclick="checkAge()">Bevestigen &rarr;</button>
+    <div class="age-gate-error" id="age-error"></div>
+  </div>
+</div>
+
+<main id="main" inert>
+
+<nav>
+  <a href="index.html" class="nav-logo">BATTONAASJE</a>
+  <a href="index.html#regions" class="nav-back">&larr; Terug naar regio's</a>
+</nav>
+
+<section class="region-hero">
+  <p class="region-hero-tag">Italië</p>
+  <h1 class="region-hero-title">Piemonte</h1>
+  <p class="region-hero-sub">Het land van Nebbiolo — Barolo, Barbaresco en alles wat in de mist groeit.</p>
+  <div class="region-placeholder">
+    <div class="region-placeholder-label">Binnenkort</div>
+    <p class="region-placeholder-text">De selectie uit Piemonte wordt hier verzameld. Een handvol flessen, met zorg uitgekozen.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">BATTONAASJE</div>
+  <div>friesland · nederland · © 2026</div>
+  <a href="https://instagram.com/battonaasje" target="_blank" rel="noopener noreferrer">@battonaasje</a>
+</footer>
+
+</main>
+
+<script>
+  if (sessionStorage.getItem('battonaasje_private_verified') === 'true') {
+    document.getElementById('private-gate').classList.add('hidden');
+  }
+  if (sessionStorage.getItem('battonaasje_age_verified') === 'true') {
+    document.getElementById('age-gate').classList.add('hidden');
+  } else if (sessionStorage.getItem('battonaasje_private_verified') === 'true') {
+    document.getElementById('age-gate').classList.remove('hidden');
+  }
+
+  function updateMainInert() {
+    var main = document.getElementById('main');
+    if (!main) return;
+    var gated =
+      !document.getElementById('private-gate').classList.contains('hidden') ||
+      !document.getElementById('age-gate').classList.contains('hidden');
+    if (gated) main.setAttribute('inert', '');
+    else main.removeAttribute('inert');
+  }
+
+  var PRIVATE_CODE = 'SIGARETTEN';
+  var privateWrongAttempts = 0;
+  function checkPrivateCode() {
+    var input = document.getElementById('private-code').value.trim().toUpperCase();
+    if (input === PRIVATE_CODE) {
+      document.getElementById('private-gate').classList.add('hidden');
+      sessionStorage.setItem('battonaasje_private_verified', 'true');
+      if (sessionStorage.getItem('battonaasje_age_verified') !== 'true') {
+        document.getElementById('age-gate').classList.remove('hidden');
+      }
+      updateMainInert();
+    } else {
+      privateWrongAttempts++;
+      document.getElementById('private-code').value = '';
+      if (privateWrongAttempts >= 3) {
+        document.getElementById('private-error').textContent = 'toegang geweigerd';
+        document.getElementById('private-code').disabled = true;
+        document.querySelector('#private-gate .private-gate-btn').disabled = true;
+      } else {
+        document.getElementById('private-error').textContent = 'onjuiste code — probeer opnieuw';
+      }
+    }
+  }
+  document.getElementById('private-code').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') checkPrivateCode();
+  });
+
+  document.getElementById('age-day').addEventListener('input', function() {
+    if (this.value.length >= 2) document.getElementById('age-month').focus();
+  });
+  document.getElementById('age-month').addEventListener('input', function() {
+    if (this.value.length >= 2) document.getElementById('age-year').focus();
+  });
+  document.getElementById('age-year').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') checkAge();
+  });
+
+  function checkAge() {
+    var day = parseInt(document.getElementById('age-day').value);
+    var month = parseInt(document.getElementById('age-month').value);
+    var year = parseInt(document.getElementById('age-year').value);
+    if (!day || !month || !year || year < 1900 || year > 2099) {
+      document.getElementById('age-error').textContent = 'Vul een geldige geboortedatum in.';
+      return;
+    }
+    var birthDate = new Date(year, month - 1, day);
+    var today = new Date();
+    var age = today.getFullYear() - birthDate.getFullYear();
+    var m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) age--;
+    if (age >= 18) {
+      document.getElementById('age-gate').classList.add('hidden');
+      sessionStorage.setItem('battonaasje_age_verified', 'true');
+      updateMainInert();
+    } else {
+      document.getElementById('age-error').textContent = 'Helaas — u moet 18 jaar of ouder zijn.';
+    }
+  }
+
+  updateMainInert();
+</script>
+</body>
+</html>

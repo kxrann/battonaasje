@@ -502,6 +502,92 @@
     color: var(--ghost);
   }
 
+  /* REGIONS */
+  .regions-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    max-width: 1320px;
+    margin: 0 auto;
+  }
+  .region-card {
+    position: relative;
+    display: block;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    background: var(--accent);
+    text-decoration: none;
+    color: var(--paper);
+    isolation: isolate;
+  }
+  .region-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 1.2s cubic-bezier(0.22,1,0.36,1);
+    z-index: 0;
+  }
+  .region-card:hover .region-img,
+  .region-card:focus-visible .region-img { transform: scale(1.04); }
+  .region-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(26,23,20,0.78) 0%, rgba(26,23,20,0.25) 55%, rgba(26,23,20,0) 100%);
+    z-index: 1;
+  }
+  .region-overlay {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 40px 44px;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+  .region-country {
+    font-family: 'Courier Prime', monospace;
+    font-size: 9px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: rgba(242,237,228,0.65);
+  }
+  .region-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: 42px;
+    letter-spacing: 3px;
+    color: var(--paper);
+    line-height: 1.1;
+    margin: 2px 0 14px;
+  }
+  .region-cta {
+    font-family: 'Courier Prime', monospace;
+    font-size: 10px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--paper);
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(242,237,228,0.4);
+    transition: border-color 0.3s, letter-spacing 0.3s;
+  }
+  .region-card:hover .region-cta,
+  .region-card:focus-visible .region-cta {
+    border-color: var(--paper);
+    letter-spacing: 5px;
+  }
+
+  @media (max-width: 768px) {
+    .regions-grid { grid-template-columns: 1fr; gap: 10px; }
+    .region-overlay { padding: 28px 26px; }
+    .region-title { font-size: 32px; letter-spacing: 2px; }
+  }
+
   .coming-soon-card p {
     font-size: 11px;
     color: var(--ghost);
@@ -1422,7 +1508,7 @@
 <nav>
   <a href="#main" class="nav-logo">BATTONAASJE</a>
   <ul class="nav-links">
-    <li><a href="#bottles">Aanbod</a></li>
+    <li><a href="#regions">Regio's</a></li>
     <li><a href="#contact">Contact</a></li>
     <li><a href="#about">Over mij</a></li>
     <li><a href="#blog">Blog</a></li>
@@ -1433,7 +1519,7 @@
 </nav>
 
 <div class="mobile-menu" id="mobile-menu">
-  <a href="#bottles" onclick="closeMobileMenu()">Aanbod</a>
+  <a href="#regions" onclick="closeMobileMenu()">Regio's</a>
   <a href="#contact" onclick="closeMobileMenu()">Contact</a>
   <a href="#about" onclick="closeMobileMenu()">Over mij</a>
   <a href="#blog" onclick="closeMobileMenu()">Blog</a>
@@ -1446,417 +1532,58 @@
   <p class="hero-bio">
     gevonden. gecureerd. gedeeld.
   </p>
-  <a href="#bottles" class="hero-cta">Bekijk het aanbod</a>
+  <a href="#regions" class="hero-cta">Ontdek de regio's</a>
   <span class="hero-scroll">scroll naar beneden</span>
 </section>
 
-<!-- AVAILABLE BOTTLES -->
-<section id="bottles">
+<!-- REGIONS -->
+<section id="regions">
   <div class="section-header">
     <span class="section-num">01</span>
-    <h2 class="section-title">BESCHIKBAAR</h2>
+    <h2 class="section-title">ONTDEK REGIO'S</h2>
     <div class="section-line"></div>
   </div>
 
-  <div class="bottles-grid">
+  <div class="regions-grid">
 
-    <!-- Bottle 1: Chablis Grand Cru Gautheron -->
-    <div class="bottle-card" data-modal="modal-chablis" role="group" tabindex="0" aria-haspopup="dialog" aria-label="Details en proefnotities: Chablis Grand Cru Bougros 2022">
-      <div class="bottle-label"></div>
-      <img class="bottle-img" src="images/6eb81a7697277c0040dab9212e82.jpg" alt="Chablis Grand Cru Bougros 2022 – Alain et Cyril Gautheron" width="1500" height="1998" loading="lazy" decoding="async">
-      <div class="bottle-overlay">
-        <span class="bottle-region">Chablis Grand Cru · Bourgogne · Frankrijk</span>
-        <div class="bottle-name">Chablis Grand Cru Bougros</div>
-        <div class="bottle-producer">Alain et Cyril Gautheron</div>
-        <div class="bottle-meta">
-          <span class="bottle-vintage">2022</span>
-          <span class="bottle-price">Op aanvraag</span>
-        </div>
-        <a class="bottle-wa" href="https://wa.me/31687441353?text=Hoi%2C%20ik%20ben%20ge%C3%AFnteresseerd%20in%20de%20Chablis%20Grand%20Cru%20Bougros%202022%20van%20Gautheron.%20Is%20deze%20nog%20beschikbaar%3F" target="_blank" rel="noopener noreferrer">
-          <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.124.558 4.118 1.531 5.845L.057 23.882l6.187-1.452A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.006-1.369l-.36-.214-3.722.873.936-3.623-.235-.372A9.818 9.818 0 1112 21.818z"/></svg>
-          Bestellen
-        </a>
+    <a class="region-card" href="bourgogne.html">
+      <img class="region-img" src="images/burgundy.jpg" alt="Wijngaarden van Bourgogne" loading="lazy" decoding="async">
+      <div class="region-overlay">
+        <span class="region-country">Frankrijk</span>
+        <h3 class="region-title">Bourgogne</h3>
+        <span class="region-cta">Ontdek Bourgogne &rarr;</span>
       </div>
-      <div class="bottle-strip">
-        <span class="bottle-strip-name">Gautheron · Chablis Grand Cru Bougros</span>
-        <span class="bottle-strip-vintage">2022</span>
-      </div>
-      <a class="bottle-wa-mobile" href="https://wa.me/31687441353?text=Hoi%2C%20ik%20ben%20ge%C3%AFnteresseerd%20in%20de%20Chablis%20Grand%20Cru%20Bougros%202022%20van%20Gautheron.%20Is%20deze%20nog%20beschikbaar%3F" target="_blank" rel="noopener noreferrer">
-        <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.124.558 4.118 1.531 5.845L.057 23.882l6.187-1.452A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.006-1.369l-.36-.214-3.722.873.936-3.623-.235-.372A9.818 9.818 0 1112 21.818z"/></svg>
-        Bestellen via WhatsApp
-      </a>
-    </div>
+    </a>
 
-    <!-- Bottle 2: Massolino Barolo Magnum -->
-    <div class="bottle-card" data-modal="modal-barolo" role="group" tabindex="0" aria-haspopup="dialog" aria-label="Details en proefnotities: Barolo DOCG Magnum 2019">
-      <div class="bottle-label"></div>
-      <img class="bottle-img" src="images/barolo-docg-2019-magnum-cassetta-di-legno-massolino.jpg" alt="Barolo DOCG Magnum 2019 – Massolino" width="700" height="869" loading="lazy" decoding="async">
-      <div class="bottle-overlay">
-        <span class="bottle-region">Barolo · Piemonte · Italië</span>
-        <div class="bottle-name">Barolo DOCG Magnum</div>
-        <div class="bottle-producer">Massolino</div>
-        <div class="bottle-meta">
-          <span class="bottle-vintage">2019</span>
-          <span class="bottle-price">Op aanvraag</span>
-        </div>
-        <a class="bottle-wa" href="https://wa.me/31687441353?text=Hoi%2C%20ik%20ben%20ge%C3%AFnteresseerd%20in%20de%20Barolo%20DOCG%20Magnum%202019%20van%20Massolino.%20Is%20deze%20nog%20beschikbaar%3F" target="_blank" rel="noopener noreferrer">
-          <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.124.558 4.118 1.531 5.845L.057 23.882l6.187-1.452A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.006-1.369l-.36-.214-3.722.873.936-3.623-.235-.372A9.818 9.818 0 1112 21.818z"/></svg>
-          Bestellen
-        </a>
+    <a class="region-card" href="champagne.html">
+      <img class="region-img" src="images/champagne.jpg" alt="Wijngaarden van Champagne" loading="lazy" decoding="async">
+      <div class="region-overlay">
+        <span class="region-country">Frankrijk</span>
+        <h3 class="region-title">Champagne</h3>
+        <span class="region-cta">Ontdek Champagne &rarr;</span>
       </div>
-      <div class="bottle-strip">
-        <span class="bottle-strip-name">Massolino · Barolo Magnum</span>
-        <span class="bottle-strip-vintage">2019</span>
-      </div>
-      <a class="bottle-wa-mobile" href="https://wa.me/31687441353?text=Hoi%2C%20ik%20ben%20ge%C3%AFnteresseerd%20in%20de%20Barolo%20DOCG%20Magnum%202019%20van%20Massolino.%20Is%20deze%20nog%20beschikbaar%3F" target="_blank" rel="noopener noreferrer">
-        <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.124.558 4.118 1.531 5.845L.057 23.882l6.187-1.452A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.006-1.369l-.36-.214-3.722.873.936-3.623-.235-.372A9.818 9.818 0 1112 21.818z"/></svg>
-        Bestellen via WhatsApp
-      </a>
-    </div>
+    </a>
 
-    <!-- Bottle 3: Defaix Chablis Grand Cru Blanchot 1991 -->
-    <div class="bottle-card" data-modal="modal-blanchot" role="group" tabindex="0" aria-haspopup="dialog" aria-label="Details en proefnotities: Chablis Grand Cru Blanchot 1991">
-      <div class="bottle-label"></div>
-      <img class="bottle-img" src="images/chablis-grand-cru-blanchot-1991-defaix.jpg" alt="Chablis Grand Cru Blanchot 1991 – Daniël-Étienne Defaix" width="452" height="452" loading="lazy" decoding="async">
-      <div class="bottle-overlay">
-        <span class="bottle-region">Chablis Grand Cru · Blanchot · Frankrijk</span>
-        <div class="bottle-name">Chablis Grand Cru Blanchot</div>
-        <div class="bottle-producer">Daniël-Étienne Defaix</div>
-        <div class="bottle-meta">
-          <span class="bottle-vintage">1991</span>
-          <span class="bottle-price">Op aanvraag</span>
-        </div>
-        <a class="bottle-wa" href="https://wa.me/31687441353?text=Hoi%2C%20ik%20ben%20ge%C3%AFnteresseerd%20in%20de%20Chablis%20Grand%20Cru%20Blanchot%201991%20van%20Defaix.%20Is%20deze%20nog%20beschikbaar%3F" target="_blank" rel="noopener noreferrer">
-          <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.124.558 4.118 1.531 5.845L.057 23.882l6.187-1.452A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.006-1.369l-.36-.214-3.722.873.936-3.623-.235-.372A9.818 9.818 0 1112 21.818z"/></svg>
-          Bestellen
-        </a>
+    <a class="region-card" href="jura.html">
+      <img class="region-img" src="images/region-jura.jpg" alt="Wijngaarden van de Jura" loading="lazy" decoding="async">
+      <div class="region-overlay">
+        <span class="region-country">Frankrijk</span>
+        <h3 class="region-title">Jura</h3>
+        <span class="region-cta">Ontdek de Jura &rarr;</span>
       </div>
-      <div class="bottle-strip">
-        <span class="bottle-strip-name">Defaix · Chablis Grand Cru Blanchot</span>
-        <span class="bottle-strip-vintage">1991</span>
-      </div>
-      <a class="bottle-wa-mobile" href="https://wa.me/31687441353?text=Hoi%2C%20ik%20ben%20ge%C3%AFnteresseerd%20in%20de%20Chablis%20Grand%20Cru%20Blanchot%201991%20van%20Defaix.%20Is%20deze%20nog%20beschikbaar%3F" target="_blank" rel="noopener noreferrer">
-        <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.124.558 4.118 1.531 5.845L.057 23.882l6.187-1.452A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.006-1.369l-.36-.214-3.722.873.936-3.623-.235-.372A9.818 9.818 0 1112 21.818z"/></svg>
-        Bestellen via WhatsApp
-      </a>
-    </div>
+    </a>
 
-    <!-- Coming soon card -->
-    <div class="coming-soon-card">
-      <span>Binnenkort</span>
-      <p>nieuwe flessen worden toegevoegd</p>
-    </div>
+    <a class="region-card" href="piemonte.html">
+      <img class="region-img" src="images/region-piemonte.jpg" alt="Wijngaarden van Piemonte" loading="lazy" decoding="async">
+      <div class="region-overlay">
+        <span class="region-country">Italië</span>
+        <h3 class="region-title">Piemonte</h3>
+        <span class="region-cta">Ontdek Piemonte &rarr;</span>
+      </div>
+    </a>
 
   </div>
 </section>
-
-<!-- MODAL: Chablis -->
-<div class="modal-backdrop" id="modal-chablis" role="dialog" aria-modal="true" aria-labelledby="modal-title-chablis">
-  <div class="modal">
-    <button type="button" class="modal-close" onclick="closeModal('modal-chablis')" aria-label="Sluiten">Sluiten ×</button>
-    <div class="modal-layout">
-      <div class="modal-gallery">
-        <img class="modal-img-main" src="images/6eb81a7697277c0040dab9212e82.jpg" alt="Chablis Grand Cru Bougros 2022" width="1500" height="1998" decoding="async">
-        <div class="modal-thumbs">
-          <div class="modal-thumb-placeholder">foto</div>
-          <div class="modal-thumb-placeholder">foto</div>
-          <div class="modal-thumb-placeholder">foto</div>
-        </div>
-      </div>
-      <div class="modal-info">
-        <div>
-          <div class="modal-region">Chablis Grand Cru · Bourgogne · Frankrijk</div>
-          <div class="modal-title" id="modal-title-chablis">Chablis Grand Cru Bougros 2022</div>
-          <div class="modal-producer">Alain et Cyril Gautheron</div>
-        </div>
-        <div class="modal-divider"></div>
-        <div class="terroir" aria-label="Terroir van Chablis">
-          <div class="terroir-map">
-            <svg viewBox="0 0 1024 1024" class="terroir-svg" aria-hidden="true">
-              <g transform="translate(0,1024) scale(0.1,-0.1)">
-                <path class="terroir-country" vector-effect="non-scaling-stroke" d="M4805 9979 c-192 -43 -280 -74 -360 -127 l-55 -36 0 -53 c0 -30 -7 -70 -15 -90 -21 -49 -19 -80 9 -140 19 -39 21 -53 11 -56 -15 -6 -45 -90 -45 -128 0 -15 5 -29 11 -31 8 -3 7 -14 -5 -35 -23 -45 -20 -54 24 -87 78 -58 118 -146 66 -146 -14 0 -28 5 -31 10 -4 6 -27 21 -52 34 l-46 23 -60 -64 c-63 -66 -196 -182 -234 -202 -12 -6 -41 -11 -65 -10 -24 1 -61 -6 -84 -14 -22 -8 -53 -13 -67 -10 -54 11 -116 -7 -183 -53 -36 -25 -88 -54 -116 -65 -28 -11 -64 -29 -79 -40 -40 -28 -93 -140 -93 -197 l-1 -46 99 -18 c91 -16 128 -30 115 -43 -3 -2 -49 -13 -102 -24 -70 -14 -125 -34 -198 -70 -59 -30 -116 -51 -134 -51 -18 0 -70 18 -116 39 -103 48 -164 61 -279 61 -64 0 -96 5 -117 17 -39 22 -83 11 -83 -20 0 -38 -12 -45 -67 -40 -47 5 -53 8 -53 28 0 12 7 36 16 54 15 31 15 33 -20 97 -20 35 -36 72 -36 81 0 10 14 32 31 49 25 25 30 38 25 58 -9 36 -56 42 -130 16 -33 -11 -73 -20 -90 -20 -38 0 -152 35 -185 57 -23 15 -24 15 -16 -8 4 -13 14 -82 23 -154 l15 -130 73 -78 c80 -85 92 -110 75 -158 -6 -18 -8 -55 -5 -85 6 -44 10 -54 25 -54 25 0 24 -23 -2 -165 -26 -135 -21 -151 58 -205 59 -39 68 -66 26 -76 -83 -18 -104 -26 -113 -44 -10 -18 -13 -19 -33 -6 -12 8 -53 20 -92 26 -90 16 -113 30 -117 75 l-3 36 -35 -30 -35 -29 18 -51 c19 -54 16 -83 -11 -113 -14 -17 -52 -25 -52 -12 0 4 5 24 11 45 10 33 9 42 -10 73 -13 20 -27 36 -31 36 -5 0 -20 -11 -34 -25 -31 -31 -49 -32 -73 -2 -10 12 -25 22 -33 22 -10 0 -15 9 -15 27 1 23 -2 25 -18 17 -10 -6 -28 -9 -40 -7 -14 2 -30 -7 -45 -24 -13 -15 -48 -41 -78 -58 -29 -17 -54 -36 -54 -41 0 -5 -8 -9 -18 -9 -13 0 -34 29 -72 98 -114 208 -122 218 -174 213 -28 -3 -29 -2 -23 34 6 35 5 36 -12 21 -23 -21 -41 -20 -56 1 -11 15 -17 14 -64 -16 -36 -23 -58 -31 -75 -27 -20 5 -24 1 -35 -34 -21 -70 -102 -106 -134 -60 -8 11 -27 23 -44 26 -26 5 -32 2 -51 -30 -23 -38 -36 -43 -76 -25 -16 8 -26 23 -31 46 -5 28 -10 33 -23 27 -54 -23 -142 -52 -174 -58 -31 -6 -38 -4 -38 10 0 11 -5 14 -16 10 -9 -3 -34 -9 -57 -12 -23 -4 -53 -15 -67 -24 -31 -21 -86 -40 -115 -40 -19 0 -23 -7 -29 -46 -3 -26 -6 -66 -6 -90 0 -43 1 -44 33 -44 17 0 83 11 145 23 105 21 112 22 112 5 0 -9 -10 -23 -22 -29 -21 -11 -20 -12 12 -25 25 -11 31 -19 27 -34 -4 -15 0 -20 16 -20 31 0 44 -11 57 -44 8 -21 7 -32 -1 -42 -16 -20 -31 -17 -73 11 -36 24 -134 55 -175 55 -17 0 -21 -6 -21 -30 0 -30 0 -30 25 -14 24 15 28 15 68 0 64 -25 85 -46 93 -93 8 -54 -3 -59 -139 -72 -59 -6 -118 -13 -133 -17 -38 -10 -10 -24 48 -24 45 0 49 -3 73 -40 14 -22 37 -69 52 -106 26 -62 26 -67 10 -79 -16 -11 -16 -13 -1 -19 8 -3 38 -6 66 -6 l50 0 -6 34 c-5 25 -3 35 9 40 8 3 15 18 15 34 0 34 16 52 47 52 16 0 23 -6 23 -19 0 -11 -4 -23 -10 -26 -19 -12 -10 -34 18 -49 26 -14 30 -13 45 5 24 28 32 24 65 -29 24 -39 38 -51 73 -61 70 -21 162 -66 192 -94 l27 -26 0 34 0 34 43 -18 c32 -14 42 -24 43 -42 1 -47 3 -50 32 -47 22 2 28 8 30 36 4 40 28 43 66 7 37 -34 34 -60 -12 -84 -29 -15 -29 -41 1 -41 13 0 28 -5 34 -11 18 -18 58 -7 61 18 2 12 9 27 17 33 11 9 17 6 28 -16 14 -26 19 -28 83 -28 66 -1 69 -2 79 -30 8 -24 6 -31 -16 -50 l-26 -22 76 -1 c51 0 88 -6 109 -17 34 -17 42 -43 17 -52 -11 -5 -12 -10 -3 -24 11 -18 8 -26 -36 -85 -5 -6 -6 -32 -2 -56 l7 -44 64 -16 65 -16 29 32 c43 49 66 58 130 51 61 -7 77 -16 134 -70 40 -38 99 -59 194 -71 48 -6 52 -9 43 -26 -20 -37 -47 -42 -122 -24 -49 13 -92 33 -144 68 -53 35 -87 51 -119 55 -55 6 -73 -7 -73 -52 0 -19 -3 -42 -6 -53 -5 -15 1 -22 30 -32 37 -13 134 -99 134 -118 0 -6 -11 -14 -24 -17 -29 -7 -126 -134 -126 -164 0 -11 17 -42 37 -69 20 -26 54 -70 75 -98 21 -27 46 -79 57 -115 15 -50 30 -75 63 -106 49 -48 106 -79 161 -87 20 -3 50 -15 65 -26 41 -29 82 -37 82 -17 0 29 30 17 47 -20 14 -28 21 -34 38 -29 40 13 58 10 77 -16 27 -36 17 -63 -38 -95 -40 -24 -43 -28 -31 -43 26 -29 97 -180 97 -206 0 -18 -5 -25 -20 -25 -17 0 -18 -3 -10 -26 18 -45 12 -71 -16 -78 -30 -8 -27 -28 13 -90 34 -52 15 -65 -45 -30 -49 29 -57 27 -48 -10 4 -17 21 -33 51 -48 54 -28 225 -211 255 -274 14 -28 25 -78 30 -141 13 -138 24 -170 86 -247 30 -37 54 -74 54 -81 0 -19 -13 -25 -30 -15 -11 7 -18 -1 -30 -33 -9 -23 -20 -42 -25 -42 -5 0 -13 19 -17 43 -4 25 -20 58 -39 81 -36 43 -65 129 -78 237 -7 63 -15 80 -63 150 -100 146 -113 163 -125 164 -24 0 -44 -48 -53 -126 -13 -118 -29 -206 -61 -339 -16 -66 -34 -165 -39 -220 -6 -55 -14 -125 -19 -155 -5 -30 -8 -56 -6 -58 2 -2 10 21 19 52 16 53 36 76 69 76 20 0 117 -101 117 -123 0 -52 -42 -71 -105 -47 -17 7 -33 7 -45 0 -29 -15 -57 -104 -79 -251 -11 -74 -47 -253 -80 -399 -32 -146 -62 -285 -66 -309 -18 -129 -164 -311 -250 -311 -18 0 -18 1 -4 -39 9 -27 16 -31 45 -31 24 0 43 -8 59 -25 l25 -24 0 24 c0 36 40 33 101 -7 43 -27 49 -36 49 -65 0 -18 -14 -63 -30 -100 -17 -36 -30 -70 -30 -74 0 -5 13 -9 29 -9 22 0 31 6 41 30 26 63 80 63 80 0 0 -46 29 -85 78 -106 80 -35 190 -64 243 -64 l55 0 22 -45 c12 -25 33 -63 47 -85 l25 -40 154 0 153 0 47 -59 c46 -57 49 -59 79 -50 18 5 76 12 129 16 l98 6 11 -33 12 -33 14 27 c16 30 29 32 61 11 15 -11 40 -15 84 -13 l63 3 -3 41 c-2 23 4 58 12 78 17 42 38 46 94 17 20 -10 75 -27 122 -36 64 -13 93 -24 118 -47 33 -28 36 -28 107 -22 89 8 125 -8 125 -55 0 -16 8 -39 18 -51 16 -20 21 -21 41 -11 18 10 42 10 113 0 96 -14 108 -23 108 -82 0 -16 9 -26 29 -33 18 -7 39 -29 56 -60 73 -128 86 -133 201 -83 l71 31 99 -40 c98 -40 99 -40 149 -25 27 8 97 39 154 69 58 30 112 54 120 54 8 0 45 -16 82 -35 38 -19 71 -35 74 -35 4 0 -3 13 -14 29 -12 16 -21 35 -21 43 0 8 -16 29 -35 48 l-35 34 0 115 c0 83 5 135 18 181 16 54 17 70 6 95 -10 25 -9 35 6 66 12 23 15 40 9 50 -22 36 -2 83 26 59 11 -9 17 -5 30 21 25 47 103 127 152 156 42 25 72 27 115 9 12 -6 29 4 60 37 55 57 255 219 313 252 31 19 55 25 82 23 36 -3 38 -5 47 -47 12 -56 36 -66 176 -76 120 -8 158 -23 166 -65 7 -34 24 -40 117 -40 l67 0 0 30 c0 54 60 91 90 55 7 -8 21 -15 32 -15 19 0 19 1 4 25 -17 26 -21 82 -7 104 8 12 20 9 73 -17 35 -18 73 -32 84 -32 50 0 58 -69 12 -103 -15 -11 -51 -22 -83 -26 -54 -6 -55 -7 -41 -26 14 -20 15 -20 87 -1 95 24 116 23 147 -7 20 -20 25 -36 25 -71 l0 -46 41 0 c23 0 52 -7 65 -16 22 -16 24 -16 33 0 14 25 35 19 81 -23 23 -21 52 -41 64 -45 12 -4 32 -23 43 -41 23 -37 40 -37 70 -1 16 20 67 20 100 1 35 -20 48 -18 52 7 3 22 8 23 76 22 65 0 73 2 78 21 4 17 23 25 105 45 54 13 103 26 108 29 5 4 12 21 16 38 6 28 4 33 -13 33 -11 0 -26 7 -33 16 -11 14 -11 18 4 28 9 7 25 33 36 59 21 50 37 62 94 72 53 10 83 38 102 95 17 51 27 58 111 75 25 5 37 17 58 55 32 59 69 90 107 90 26 0 29 3 29 33 0 64 27 77 106 52 21 -7 22 -4 20 80 -1 85 0 87 30 115 17 15 37 29 43 31 16 6 32 142 17 151 -18 12 -69 9 -148 -8 -41 -8 -90 -13 -113 -9 -58 8 -192 78 -252 130 -70 62 -90 108 -96 227 l-5 97 58 92 c57 88 59 93 46 123 -16 39 -69 76 -109 76 -24 0 -42 11 -79 51 -60 64 -128 165 -128 191 0 30 54 78 87 78 15 0 89 23 164 52 l136 53 7 70 c8 79 13 72 -93 138 -51 32 -62 44 -71 77 -5 22 -15 58 -21 81 -7 30 -19 45 -42 57 -17 10 -44 30 -60 45 -24 23 -28 33 -23 59 10 50 29 72 95 107 71 38 76 54 34 119 -20 31 -38 45 -64 52 -19 5 -46 21 -60 36 -22 24 -24 33 -24 132 0 69 -5 115 -13 130 -9 15 -11 37 -7 63 l7 39 -56 0 c-65 0 -241 -53 -250 -75 -7 -19 12 -75 34 -100 23 -26 13 -51 -34 -93 -54 -47 -109 -72 -159 -72 -27 0 -49 -6 -57 -15 -28 -34 -54 -5 -52 59 1 22 16 45 61 90 34 34 61 66 61 71 0 5 -10 33 -22 62 -21 51 -21 53 -4 98 15 39 16 51 5 77 -12 30 -11 32 27 66 90 81 131 120 162 156 30 35 32 41 32 117 0 44 4 88 10 98 9 18 42 34 93 45 15 4 27 13 27 22 0 8 24 41 53 72 66 70 132 159 142 192 4 14 17 35 28 48 20 22 20 22 1 22 -48 0 -56 44 -23 120 19 44 24 49 62 55 23 4 59 16 79 26 21 11 39 19 42 19 15 0 36 -35 36 -60 0 -55 54 -44 128 27 72 69 76 83 42 169 l-29 71 28 135 c27 131 27 135 11 184 -28 80 -5 193 56 283 20 30 24 48 24 109 0 44 5 81 14 95 7 12 16 45 19 74 7 57 23 96 71 161 61 84 77 101 111 113 30 11 33 16 28 41 -4 21 0 35 17 53 l22 23 -24 15 c-159 99 -201 116 -340 132 -87 10 -126 19 -147 34 -37 27 -45 26 -99 -5 -40 -24 -48 -25 -82 -15 -29 8 -45 8 -64 0 -29 -13 -51 -2 -61 32 -9 28 -81 27 -88 -1 -7 -29 -53 -26 -99 7 -36 24 -110 126 -180 245 -26 46 -26 46 -90 50 -53 4 -74 0 -131 -25 l-69 -29 -82 51 -83 51 -84 -25 c-131 -38 -143 -36 -164 35 -9 30 -14 35 -38 32 -29 -4 -32 0 -42 60 -5 33 -11 40 -63 64 -227 106 -258 128 -248 170 5 20 0 34 -24 60 -35 41 -36 52 -10 136 24 78 24 77 0 71 -14 -4 -22 -17 -26 -43 -10 -60 -36 -93 -119 -149 -85 -57 -114 -62 -202 -36 -98 29 -133 86 -75 122 15 9 29 18 30 19 2 1 -6 16 -19 33 -19 26 -22 41 -21 109 2 70 0 81 -21 101 -29 27 -77 41 -139 41 -39 0 -53 -5 -78 -30 -35 -35 -32 -33 -64 -19 -29 13 -41 46 -51 133 -10 84 -34 106 -118 106 -76 0 -109 20 -127 78 -7 20 -30 71 -52 112 l-40 75 -44 -4 c-40 -3 -44 -5 -44 -30 0 -15 -6 -36 -14 -46 -12 -17 -18 -15 -100 44 -101 73 -121 105 -137 218 -12 89 -18 113 -27 112 -4 -1 -83 -18 -177 -40z m-254 -8866 c15 -41 -3 -73 -41 -73 -28 0 -30 2 -30 38 0 63 51 88 71 35z"/>
-                <path class="terroir-country" vector-effect="non-scaling-stroke" d="M10049 1898 c0 -2 -3 -28 -6 -58 -3 -30 -9 -62 -14 -72 -14 -25 -11 -54 6 -68 18 -15 13 -55 -11 -102 -17 -32 -40 -35 -82 -11 -25 14 -34 15 -75 3 -42 -11 -47 -16 -47 -41 0 -36 -40 -63 -118 -81 -46 -10 -55 -16 -67 -45 -12 -28 -18 -33 -38 -28 -15 4 -28 0 -40 -13 -19 -21 -21 -35 -11 -95 6 -37 6 -38 -21 -31 -27 7 -28 6 -22 -27 4 -19 20 -46 37 -61 16 -15 30 -30 30 -32 0 -3 -20 -19 -44 -35 -43 -30 -44 -32 -34 -67 5 -20 7 -42 4 -50 -3 -9 1 -14 13 -14 24 0 74 -25 94 -47 8 -10 18 -30 22 -45 5 -21 2 -30 -14 -40 -12 -7 -21 -21 -21 -31 0 -10 -5 -28 -11 -39 -11 -20 -10 -21 22 -13 56 13 101 11 111 -5 8 -13 -5 -48 -70 -181 -1 -3 10 -4 25 -2 33 5 133 -41 133 -62 0 -7 -21 -31 -46 -53 -29 -24 -45 -45 -41 -54 3 -8 58 -35 123 -60 72 -28 123 -54 128 -65 5 -10 12 -25 16 -33 4 -8 15 -16 24 -18 12 -3 16 4 16 25 0 48 21 107 43 125 18 15 19 18 5 18 -25 0 -30 16 -23 61 7 38 9 41 35 37 26 -4 29 -1 40 41 7 25 15 105 19 176 l7 130 47 88 c26 49 47 97 47 107 0 10 -11 60 -24 112 -14 51 -29 146 -35 211 -9 111 -11 121 -45 170 l-35 52 -7 163 c-6 149 -8 162 -25 162 -11 0 -19 -1 -20 -2z"/>
-              </g>
-              <circle class="terroir-region-glow" cx="645" cy="365" r="48"/>
-              <circle class="terroir-region" cx="645" cy="365" r="18"/>
-              <line class="terroir-pin-line" x1="645" y1="365" x2="900" y2="180"/>
-              <circle class="terroir-pin-dot" cx="900" cy="180" r="7"/>
-            </svg>
-          </div>
-          <div class="terroir-data">
-            <div class="terroir-breadcrumb">Frankrijk · Bourgogne · Chablis</div>
-            <div class="terroir-rows">
-              <div class="terroir-row">
-                <span class="terroir-icon" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 22s7-6.5 7-12a7 7 0 1 0-14 0c0 5.5 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg>
-                </span>
-                <div><div class="terroir-label">Plaats</div><div class="terroir-value">47°48′ N<br>3°50′ E</div></div>
-              </div>
-              <div class="terroir-row">
-                <span class="terroir-icon" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><path d="M3 20 L10 8 L14 14 L17 10 L21 20 Z"/></svg>
-                </span>
-                <div><div class="terroir-label">Hoogte</div><div class="terroir-value">200 m</div></div>
-              </div>
-            </div>
-            <div class="terroir-climate">
-              <div class="terroir-label">Klimaat</div>
-              <div class="terroir-slider">
-                <div class="terroir-track"></div>
-                <div class="terroir-tick" style="left: 33.33%"></div>
-                <div class="terroir-tick" style="left: 66.66%"></div>
-                <div class="terroir-marker" style="left: 33.33%"></div>
-              </div>
-              <div class="terroir-scale">
-                <span>Koud</span><span class="active">Koel</span><span>Gematigd</span><span>Warm</span>
-              </div>
-              <div class="terroir-types">
-                <span class="active">Continentaal</span>
-                <span>Mediterraan</span>
-                <span>Maritiem</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div>
-          <div class="modal-section-label">Proefnotities</div>
-          <p class="modal-text">Al vijf generaties lang maakt de familie Gautheron wijn vanuit Fleys, een klein dorp ten zuidoosten van Chablis. Met slechts 18 hectare blijft dit een echt familiedomein, en dat proeft u!
-Deze Grand Cru komt uit de Bougros, één van de meest prestigieuze wijngaarden van de regio. In het glas: een neus vol bloemen en rijp fruit, elegant en uitnodigend. Op het gehemelte een mooie balans tussen frisse zuurgraad en de rijpheid van perzik en geroosterd brood. De afdronk is lang en mineraal, precies wat je van een echte Chablis Grand Cru mag verwachten.
-Geen fratsen. Gewoon hele goede wijn.
-</p>
-        </div>
-        <div>
-          <div class="modal-section-label">Over de producent</div>
-          <p class="modal-text">Domaine Gautheron is een familiebedrijf in Fleys, op de grens van Chablis Premier Cru en Grand Cru terroir. Vader Alain begon in de jaren '80, zoon Cyril nam het stuur over. Ze werken met minimale interventie in de kelder en laten het terroir spreken — precies zoals Chablis bedoeld is.</p>
-        </div>
-        <div>
-          <div class="modal-section-label">Weetjes</div>
-          <p class="modal-text">Bougros is een van de zeven Grand Cru-klimaten van Chablis, gelegen op de westelijke helling met een ideale zuidoostelijke oriëntatie. De bodem bestaat uit Kimmeridgiaan-kalk — dezelfde formatie als in Champagne. Kimmeridgiaan bevat miljoenen jaren oude fossielen van kleine oesters, wat de beroemde jodium-mineraliteit van Chablis verklaart.</p>
-        </div>
-        <div>
-          <div class="modal-section-label">Spijs-combinaties</div>
-          <div class="modal-pairings">
-            <span class="modal-pairing-tag">Oesters</span>
-            <span class="modal-pairing-tag">Gegrilde tong</span>
-            <span class="modal-pairing-tag">Zeekreeft</span>
-            <span class="modal-pairing-tag">Geitenkaas</span>
-            <span class="modal-pairing-tag">Coquilles</span>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <div class="modal-price">Op aanvraag</div>
-          <a class="modal-wa" href="https://wa.me/31687441353?text=Hoi%2C%20ik%20ben%20ge%C3%AFnteresseerd%20in%20de%20Chablis%20Grand%20Cru%20Bougros%202022%20van%20Gautheron.%20Is%20deze%20nog%20beschikbaar%3F" target="_blank" rel="noopener noreferrer">
-            Bestellen via WhatsApp
-          </a>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL: Barolo -->
-<div class="modal-backdrop" id="modal-barolo" role="dialog" aria-modal="true" aria-labelledby="modal-title-barolo">
-  <div class="modal">
-    <button type="button" class="modal-close" onclick="closeModal('modal-barolo')" aria-label="Sluiten">Sluiten ×</button>
-    <div class="modal-layout">
-      <div class="modal-gallery">
-        <img class="modal-img-main" src="images/barolo-docg-2019-magnum-cassetta-di-legno-massolino.jpg" alt="Barolo DOCG Magnum 2019 – Massolino" width="700" height="869" decoding="async">
-        <div class="modal-thumbs">
-          <div class="modal-thumb-placeholder">foto</div>
-          <div class="modal-thumb-placeholder">foto</div>
-          <div class="modal-thumb-placeholder">foto</div>
-        </div>
-      </div>
-      <div class="modal-info">
-        <div>
-          <div class="modal-region">Barolo DOCG · Piemonte · Italië</div>
-          <div class="modal-title" id="modal-title-barolo">Barolo DOCG Magnum 2019</div>
-          <div class="modal-producer">Massolino</div>
-        </div>
-        <div class="modal-divider"></div>
-        <div class="terroir" aria-label="Terroir van Barolo">
-          <div class="terroir-map">
-            <svg viewBox="0 0 1024 1024" class="terroir-svg" aria-hidden="true">
-              <g transform="translate(0,1024) scale(0.1,-0.1)">
-                <path class="terroir-country" vector-effect="non-scaling-stroke" d="M4826 10195 c-49 -25 -101 -45 -116 -45 -15 0 -59 12 -96 27 -56 21 -87 27 -159 27 -126 1 -152 -6 -221 -65 -75 -65 -108 -79 -188 -79 -54 0 -75 6 -133 35 -93 49 -109 44 -116 -36 -3 -40 -13 -72 -26 -90 -28 -38 -26 -54 9 -79 43 -30 40 -56 -7 -64 -66 -10 -89 -7 -117 19 -38 35 -66 32 -108 -12 -49 -53 -51 -65 -18 -110 30 -38 37 -67 21 -77 -19 -12 -18 -47 1 -71 23 -30 17 -62 -17 -77 -21 -10 -30 -5 -77 37 -29 26 -59 60 -67 76 -20 43 -48 45 -134 9 -42 -17 -88 -30 -103 -28 -41 5 -63 43 -71 121 -7 76 -30 117 -66 117 -20 0 -24 -8 -35 -76 -16 -104 -48 -169 -112 -229 -117 -109 -107 -92 -115 -191 -4 -49 -12 -95 -17 -101 -30 -37 -86 3 -144 103 -25 42 -26 49 -15 80 7 19 10 38 6 43 -3 5 -29 17 -58 25 -65 19 -97 41 -97 67 0 27 -23 70 -50 92 -23 19 -24 49 -3 141 l6 29 -44 -7 c-32 -5 -55 -18 -84 -45 -22 -21 -61 -51 -88 -66 l-47 -27 21 -34 c30 -49 20 -73 -58 -140 -38 -32 -87 -76 -111 -98 l-42 -40 -73 36 -73 37 -50 -15 c-27 -8 -102 -20 -166 -26 -106 -11 -121 -10 -154 6 -37 17 -37 17 -115 -15 -75 -30 -79 -33 -79 -63 0 -24 9 -41 36 -67 49 -47 64 -79 64 -141 0 -50 2 -54 37 -78 59 -40 103 -81 103 -97 0 -8 -11 -29 -25 -47 -17 -23 -25 -46 -25 -74 0 -40 -1 -41 -27 -36 -18 3 -57 -5 -103 -22 -41 -15 -108 -30 -149 -34 -44 -5 -77 -13 -82 -21 -12 -18 -6 -60 20 -134 23 -64 36 -78 119 -126 57 -34 82 -70 82 -121 0 -27 -9 -43 -45 -78 -25 -25 -57 -61 -70 -81 -22 -31 -24 -39 -14 -68 9 -27 8 -40 -11 -83 -21 -50 -21 -52 -4 -97 23 -60 105 -140 185 -180 58 -29 69 -31 170 -31 168 0 199 -22 154 -109 -14 -28 -25 -62 -25 -76 0 -19 -9 -31 -31 -43 -60 -33 -79 -53 -79 -82 0 -71 30 -76 192 -30 175 49 183 53 239 136 72 107 103 139 153 158 39 15 47 23 69 76 21 47 34 63 64 78 152 78 330 68 422 -24 26 -26 41 -49 38 -58 -3 -8 1 -20 9 -26 11 -10 18 -8 33 11 l20 24 43 -40 c23 -22 45 -43 48 -46 3 -3 20 -14 39 -24 19 -9 77 -51 130 -93 53 -41 102 -80 109 -85 9 -7 17 -4 27 9 13 19 14 18 37 -3 14 -13 33 -23 44 -23 23 0 94 -69 94 -91 0 -8 11 -30 24 -48 29 -39 34 -65 50 -256 12 -146 14 -154 59 -255 26 -58 56 -122 67 -142 25 -46 25 -72 0 -200 -25 -128 -25 -124 5 -104 33 22 51 20 102 -9 32 -19 43 -32 43 -50 0 -13 -4 -27 -10 -30 -5 -3 -10 -24 -10 -45 0 -21 -5 -42 -11 -45 -16 -11 20 -45 48 -45 64 0 172 -84 195 -152 6 -18 22 -46 35 -62 16 -19 22 -35 17 -50 -9 -31 -34 -56 -56 -56 -23 0 -23 -12 2 -41 l20 -24 19 24 c15 20 25 23 52 18 152 -25 278 -138 383 -344 21 -43 31 -53 52 -53 17 0 35 -11 52 -32 15 -18 57 -62 93 -98 83 -83 89 -90 109 -153 14 -45 23 -56 63 -77 57 -32 152 -138 193 -216 27 -53 34 -59 65 -62 19 -2 43 -12 54 -22 11 -10 44 -28 72 -40 39 -17 60 -34 83 -68 16 -25 30 -54 30 -64 0 -27 37 -23 78 9 19 14 55 30 80 34 43 9 47 7 104 -36 33 -25 64 -45 69 -45 4 0 25 9 46 20 31 15 46 17 77 10 22 -5 43 -7 47 -4 32 19 199 -376 199 -469 0 -45 16 -49 25 -7 8 35 12 36 37 13 18 -16 21 -16 49 -1 37 22 50 17 94 -38 20 -24 47 -47 60 -50 46 -12 39 -47 -25 -112 -23 -24 -40 -45 -38 -47 2 -1 48 12 103 30 55 18 134 36 175 40 l76 7 36 -59 c102 -166 113 -213 69 -295 l-31 -57 36 -7 c22 -4 43 -17 56 -35 16 -22 25 -26 35 -18 17 15 101 -55 128 -105 11 -21 25 -34 32 -31 7 2 13 0 13 -5 0 -5 11 -17 25 -26 25 -16 27 -16 73 23 66 55 67 55 107 39 50 -21 85 -51 118 -98 23 -35 27 -51 27 -108 0 -75 19 -139 74 -248 24 -47 46 -77 62 -84 51 -23 84 -138 84 -291 l0 -97 61 -122 c59 -118 61 -123 49 -162 -6 -21 -24 -52 -39 -67 -28 -28 -28 -28 -72 -12 -57 21 -84 13 -136 -38 -39 -37 -57 -73 -34 -67 11 4 61 -68 61 -88 0 -22 -85 -187 -115 -223 -15 -17 -47 -43 -71 -57 -38 -22 -42 -28 -33 -45 7 -15 6 -40 -7 -95 l-16 -75 28 -31 c47 -50 83 -68 112 -57 14 5 51 7 84 3 49 -6 62 -4 79 12 37 33 79 102 79 129 0 16 18 50 47 88 90 118 120 144 194 172 38 15 76 36 84 48 23 33 21 239 -2 278 -17 28 -17 31 2 65 36 67 116 129 210 163 101 37 100 36 166 12 l50 -20 20 47 20 46 -27 54 c-26 50 -27 57 -15 101 9 37 9 54 0 74 -9 20 -9 40 0 83 15 75 15 71 -19 89 -17 9 -36 27 -42 40 -7 15 -41 41 -84 65 -39 21 -81 52 -92 67 -18 25 -27 28 -96 31 -72 4 -78 6 -100 36 -65 86 -68 127 -16 200 38 53 60 123 60 191 0 37 5 57 17 66 9 8 27 39 40 69 14 30 35 69 47 85 13 17 28 46 34 65 28 84 96 147 184 171 66 17 134 -27 126 -83 -2 -17 12 -29 82 -66 47 -25 104 -55 127 -67 38 -21 52 -22 147 -18 l106 6 33 -36 c18 -20 48 -65 67 -101 33 -61 34 -66 22 -100 -12 -34 -12 -40 12 -80 36 -62 230 -204 262 -192 11 4 14 26 14 90 0 98 7 120 51 170 39 45 37 65 -28 196 -42 84 -60 108 -163 210 -63 63 -125 129 -137 145 -12 17 -23 24 -23 18 0 -25 -28 -13 -38 16 -8 21 -19 31 -44 36 -35 8 -90 33 -98 45 -3 5 -40 26 -83 48 -89 47 -218 142 -256 190 -14 18 -55 50 -91 72 -75 45 -259 120 -294 120 -14 0 -46 16 -72 37 -27 20 -77 45 -114 56 -75 22 -151 59 -169 81 -8 9 -22 16 -33 16 -11 0 -45 24 -76 53 -31 29 -81 68 -110 86 -58 37 -76 62 -67 92 4 11 49 51 100 90 137 103 151 133 91 204 l-33 39 -95 -22 c-90 -20 -97 -21 -151 -5 -52 14 -65 14 -158 0 -93 -15 -104 -15 -132 0 -17 8 -60 18 -95 21 -60 5 -66 8 -126 62 -46 42 -80 63 -127 79 -68 23 -109 54 -109 82 0 12 -15 25 -42 37 -29 12 -75 53 -138 122 -52 57 -118 118 -146 136 -70 45 -100 83 -149 189 -58 124 -92 236 -100 325 -9 104 -27 162 -97 314 -52 110 -62 142 -66 199 l-4 67 -127 84 c-98 65 -166 122 -306 256 -98 95 -217 204 -263 244 -46 39 -92 84 -102 101 -25 40 -81 257 -81 310 1 86 1 122 0 174 -2 71 23 106 75 105 24 -1 36 3 36 12 0 34 23 62 49 61 24 -2 26 2 35 56 8 53 6 61 -12 80 -18 18 -25 19 -47 9 -39 -18 -45 -15 -45 22 0 64 -14 162 -19 139 l-6 -23 -33 26 c-40 32 -65 78 -57 105 6 19 14 20 63 2 8 -4 12 6 12 31 0 69 52 157 116 197 28 17 37 19 50 8 11 -9 18 -9 26 -1 7 7 25 12 41 12 25 0 28 -3 25 -27 -2 -19 -11 -30 -28 -35 -18 -6 -15 -7 14 -3 21 2 68 19 105 36 40 20 86 34 116 36 109 7 115 8 130 31 15 21 15 22 -9 22 -31 0 -32 8 -5 54 13 23 25 33 35 29 8 -3 22 2 32 10 15 14 25 13 97 -8 83 -24 100 -40 73 -72 -12 -15 -11 -15 10 -4 13 7 31 26 40 42 22 38 41 37 92 -6 56 -47 80 -78 80 -105 0 -17 5 -21 28 -18 21 2 28 9 30 30 4 36 -8 52 -90 123 -38 33 -68 66 -68 74 0 9 9 30 20 46 29 43 26 73 -7 85 -45 16 -76 34 -80 47 -3 7 21 40 53 73 31 33 55 62 53 63 -2 2 -47 16 -99 32 -52 15 -101 32 -108 38 -9 7 -12 29 -10 66 l3 56 79 42 c88 47 208 124 203 129 -2 2 -84 17 -183 34 -100 17 -205 37 -235 46 -30 9 -112 31 -184 50 -144 38 -244 82 -275 121 -32 41 -44 101 -31 151 10 40 9 46 -12 72 -13 15 -27 47 -31 69 -8 54 -25 53 -140 -4z m112 -2987 c10 -10 17 -10 31 -1 16 10 20 9 25 -3 10 -26 7 -54 -10 -79 -15 -23 -16 -23 -60 -8 -49 16 -57 40 -28 81 17 25 25 27 42 10z"/>
-                <path class="terroir-country" vector-effect="non-scaling-stroke" d="M3412 6220 c-8 -14 -23 -20 -46 -20 -18 0 -39 -7 -46 -15 -14 -17 -40 -20 -40 -5 0 6 -15 10 -34 10 -28 0 -34 -4 -38 -25 -5 -22 -1 -26 35 -36 31 -8 46 -8 64 2 20 11 26 11 34 -1 8 -13 10 -13 19 0 7 12 12 12 21 3 10 -10 17 -5 36 22 22 32 32 85 15 85 -4 0 -13 -9 -20 -20z"/>
-                <path class="terroir-country" vector-effect="non-scaling-stroke" d="M2320 4773 c0 -5 7 -17 15 -27 33 -43 1 -89 -63 -90 -40 -1 -100 -43 -175 -123 -36 -39 -45 -43 -88 -43 -36 0 -65 -10 -123 -40 -41 -22 -82 -40 -91 -40 -24 0 -134 58 -161 85 -14 14 -21 30 -18 39 4 10 1 16 -10 16 -13 0 -14 -4 -4 -25 10 -22 7 -35 -27 -100 -39 -77 -39 -90 -2 -90 35 0 33 -36 -3 -68 -18 -16 -29 -36 -29 -50 l2 -22 4 22 c6 32 33 17 33 -19 l0 -29 26 20 c39 31 54 27 47 -12 -3 -23 2 -44 17 -70 20 -33 22 -46 16 -107 -5 -48 -4 -70 4 -70 5 0 18 -15 27 -34 15 -32 15 -37 -1 -70 -14 -29 -15 -43 -7 -74 19 -66 15 -77 -31 -96 -24 -10 -37 -20 -30 -23 9 -3 11 -19 6 -55 -6 -45 -5 -50 11 -46 11 2 22 16 27 34 9 34 35 51 52 34 7 -7 6 -20 -2 -43 -9 -25 -9 -42 -1 -64 8 -24 7 -39 -5 -66 -13 -32 -13 -36 1 -41 13 -5 13 -9 2 -23 -11 -13 -11 -17 -1 -20 17 -6 15 -42 -3 -50 -9 -3 -25 3 -35 12 -26 23 -29 19 -36 -46 -4 -30 -16 -70 -27 -89 -11 -19 -28 -64 -38 -99 -17 -63 -17 -65 2 -89 25 -33 24 -41 -12 -78 l-30 -31 16 -41 c9 -22 24 -42 34 -45 10 -2 21 -17 24 -34 3 -17 16 -35 31 -43 23 -12 25 -18 20 -48 -5 -28 -3 -38 12 -49 15 -11 17 -18 7 -43 -8 -22 -8 -33 2 -46 11 -16 13 -16 24 5 7 12 24 26 38 32 22 8 30 6 53 -16 19 -18 30 -23 35 -15 5 8 11 6 20 -7 12 -16 15 -16 52 10 49 34 101 87 104 107 1 8 -1 36 -5 63 -5 28 -4 64 2 89 9 34 8 46 -3 59 -15 16 -20 39 -9 39 16 0 62 -35 80 -61 16 -25 24 -28 51 -23 51 10 89 -5 143 -52 34 -32 55 -44 68 -40 13 5 22 -1 32 -19 7 -14 17 -25 21 -25 8 0 39 74 39 96 0 8 11 26 25 40 24 24 34 54 18 54 -5 0 -14 4 -21 9 -11 6 -6 20 23 59 29 41 36 59 34 90 -2 20 0 42 3 47 11 18 29 135 23 146 -4 5 -2 16 4 23 14 16 41 122 41 160 0 16 7 37 16 47 13 14 13 21 3 37 -10 17 -10 25 4 46 23 34 22 41 -13 110 -21 42 -30 73 -30 109 0 47 2 52 59 106 32 31 70 79 84 106 25 50 25 51 6 74 -15 18 -19 39 -19 92 0 49 -4 70 -14 76 -8 4 -20 30 -27 56 -12 44 -12 49 8 69 l22 22 -22 11 c-15 7 -22 20 -22 38 1 22 -3 25 -21 21 -26 -7 -64 3 -64 16 0 5 20 23 45 41 l46 33 -28 12 c-22 9 -31 9 -44 -2 -32 -29 -40 14 -9 53 22 28 24 41 10 63 -8 12 -13 11 -34 -9 l-24 -23 -17 25 c-9 14 -15 33 -13 43 2 14 -8 21 -45 32 -36 10 -52 21 -60 41 -8 16 -18 25 -29 23 -9 -2 -19 2 -23 7 -7 13 -25 15 -25 4z"/>
-                <path class="terroir-country" vector-effect="non-scaling-stroke" d="M6950 1601 c-9 -3 -36 -20 -60 -37 -71 -49 -85 -51 -137 -13 l-46 32 5 -32 c4 -27 -1 -37 -38 -71 -24 -22 -51 -40 -61 -40 -9 0 -41 17 -70 37 -49 34 -56 36 -86 26 -18 -6 -52 -15 -77 -18 -25 -4 -59 -19 -80 -36 -50 -40 -107 -58 -229 -70 -129 -13 -132 -13 -206 1 -84 16 -153 9 -214 -24 -44 -23 -60 -26 -97 -20 -55 8 -100 44 -125 99 l-18 40 -68 0 c-53 0 -68 3 -70 15 -11 84 -13 90 -41 90 -15 0 -36 -7 -46 -15 -26 -20 -55 -19 -78 2 -19 17 -20 16 -39 -7 -10 -14 -18 -36 -17 -50 3 -21 -5 -29 -52 -52 -30 -15 -65 -27 -77 -27 -27 -1 -80 42 -88 72 -4 12 -11 34 -17 50 l-11 28 -34 -41 c-19 -22 -55 -52 -79 -66 -61 -36 -105 -102 -97 -148 3 -20 -1 -54 -10 -81 -9 -25 -14 -51 -12 -58 2 -7 9 -31 15 -55 9 -34 17 -45 44 -56 25 -10 37 -24 46 -51 15 -45 45 -59 103 -45 23 5 65 10 94 10 50 0 54 -2 85 -44 27 -37 41 -47 81 -55 53 -12 107 -37 107 -50 0 -14 110 -129 144 -150 18 -12 46 -21 61 -21 22 0 41 -14 84 -61 59 -64 96 -89 132 -89 13 0 35 -15 54 -37 31 -36 34 -37 65 -26 23 9 38 9 56 1 18 -8 31 -8 50 1 23 10 35 8 92 -19 87 -41 128 -73 136 -107 4 -15 21 -43 38 -62 17 -19 41 -58 54 -87 21 -48 28 -54 78 -73 87 -32 132 -41 256 -49 l115 -7 3 -27 c3 -25 5 -26 28 -16 23 11 24 15 18 57 -4 25 -7 60 -7 78 2 68 96 193 148 193 20 1 20 1 0 16 -18 14 -18 17 -4 27 15 9 14 15 -12 50 -16 22 -26 43 -24 48 3 4 -4 10 -15 14 -11 3 -24 14 -30 24 -7 15 -3 21 26 35 31 14 34 19 23 32 -7 9 -34 26 -60 39 -43 22 -48 29 -58 75 -19 87 -14 128 18 169 34 43 54 87 70 156 7 28 28 71 50 100 21 27 62 92 90 142 29 51 74 119 101 150 28 32 50 65 50 73 0 9 12 33 26 53 14 21 24 40 22 41 -12 11 -66 22 -78 17z"/>
-              </g>
-              <circle class="terroir-region-glow" cx="230" cy="285" r="48"/>
-              <circle class="terroir-region" cx="230" cy="285" r="18"/>
-              <line class="terroir-pin-line" x1="230" y1="285" x2="550" y2="180"/>
-              <circle class="terroir-pin-dot" cx="550" cy="180" r="7"/>
-            </svg>
-          </div>
-          <div class="terroir-data">
-            <div class="terroir-breadcrumb">Italië · Piemonte · Serralunga d'Alba</div>
-            <div class="terroir-rows">
-              <div class="terroir-row">
-                <span class="terroir-icon" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 22s7-6.5 7-12a7 7 0 1 0-14 0c0 5.5 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg>
-                </span>
-                <div><div class="terroir-label">Plaats</div><div class="terroir-value">44°36′ N<br>7°59′ E</div></div>
-              </div>
-              <div class="terroir-row">
-                <span class="terroir-icon" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><path d="M3 20 L10 8 L14 14 L17 10 L21 20 Z"/></svg>
-                </span>
-                <div><div class="terroir-label">Hoogte</div><div class="terroir-value">340 m</div></div>
-              </div>
-            </div>
-            <div class="terroir-climate">
-              <div class="terroir-label">Klimaat</div>
-              <div class="terroir-slider">
-                <div class="terroir-track"></div>
-                <div class="terroir-tick" style="left: 33.33%"></div>
-                <div class="terroir-tick" style="left: 66.66%"></div>
-                <div class="terroir-marker" style="left: 66.66%"></div>
-              </div>
-              <div class="terroir-scale">
-                <span>Koud</span><span>Koel</span><span class="active">Gematigd</span><span>Warm</span>
-              </div>
-              <div class="terroir-types">
-                <span class="active">Continentaal</span>
-                <span>Mediterraan</span>
-                <span>Maritiem</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div>
-          <div class="modal-section-label">Proefnotities</div>
-          <p class="modal-text">Diep robijnrood met granaten rand. De neus toont gedroogde rozen, teer en kers — klassiek Nebbiolo. Op het gehemelte is de wijn vol en gestructureerd met krachtige maar gepolijste tannines. Aardse ondertonen van truffel en viooltje leiden naar een lange, warme afdronk. 2019 is een uitzonderlijk jaar in Piemonte.</p>
-        </div>
-        <div>
-          <div class="modal-section-label">Over de producent</div>
-          <p class="modal-text">Massolino is een van de meest gerespecteerde namen in Barolo — al sinds 1896. Het domein ligt in Serralunga d'Alba, bekend om zijn kalksteenrijke bodems en de meest tannineuze, langlevende Barolo's. Vier generaties later beheert de familie nog steeds elke fase van productie zelf, van druif tot fles.</p>
-        </div>
-        <div>
-          <div class="modal-section-label">Weetjes</div>
-          <p class="modal-text">Een Magnum (1,5L) rijpt langzamer en gelijkmatiger dan een standaardfles door de gunstigere verhouding tussen wijn en lucht. Voor een wijn als Barolo — die minstens 10 tot 20 jaar nodig heeft om volledig open te bloeien — is een Magnum het ideale formaat. Deze fles is geleverd in een houten cassetta, traditioneel voor topwijnen uit Piemonte.</p>
-        </div>
-        <div>
-          <div class="modal-section-label">Spijs-combinaties</div>
-          <div class="modal-pairings">
-            <span class="modal-pairing-tag">Truffel risotto</span>
-            <span class="modal-pairing-tag">Brasato al Barolo</span>
-            <span class="modal-pairing-tag">Wild zwijn</span>
-            <span class="modal-pairing-tag">Oude kaas</span>
-            <span class="modal-pairing-tag">Ossobuco</span>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <div class="modal-price">Op aanvraag</div>
-          <a class="modal-wa" href="https://wa.me/31687441353?text=Hoi%2C%20ik%20ben%20ge%C3%AFnteresseerd%20in%20de%20Barolo%20DOCG%20Magnum%202019%20van%20Massolino.%20Is%20deze%20nog%20beschikbaar%3F" target="_blank" rel="noopener noreferrer">
-            Bestellen via WhatsApp
-          </a>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL: Blanchot -->
-<div class="modal-backdrop" id="modal-blanchot" role="dialog" aria-modal="true" aria-labelledby="modal-title-blanchot">
-  <div class="modal">
-    <button type="button" class="modal-close" onclick="closeModal('modal-blanchot')" aria-label="Sluiten">Sluiten ×</button>
-    <div class="modal-layout">
-      <div class="modal-gallery">
-        <img class="modal-img-main" src="images/chablis-grand-cru-blanchot-1991-defaix.jpg" alt="Chablis Grand Cru Blanchot 1991 – Daniël-Étienne Defaix" width="452" height="452" decoding="async">
-        <div class="modal-thumbs">
-          <div class="modal-thumb-placeholder">foto</div>
-          <div class="modal-thumb-placeholder">foto</div>
-          <div class="modal-thumb-placeholder">foto</div>
-        </div>
-      </div>
-      <div class="modal-info">
-        <div>
-          <div class="modal-region">Chablis Grand Cru · Blanchot · Frankrijk</div>
-          <div class="modal-title" id="modal-title-blanchot">Chablis Grand Cru Blanchot 1991</div>
-          <div class="modal-producer">Daniël-Étienne Defaix</div>
-        </div>
-        <div class="modal-divider"></div>
-        <div class="terroir" aria-label="Terroir van Chablis Blanchot">
-          <div class="terroir-map">
-            <svg viewBox="0 0 1024 1024" class="terroir-svg" aria-hidden="true">
-              <g transform="translate(0,1024) scale(0.1,-0.1)">
-                <path class="terroir-country" vector-effect="non-scaling-stroke" d="M4805 9979 c-192 -43 -280 -74 -360 -127 l-55 -36 0 -53 c0 -30 -7 -70 -15 -90 -21 -49 -19 -80 9 -140 19 -39 21 -53 11 -56 -15 -6 -45 -90 -45 -128 0 -15 5 -29 11 -31 8 -3 7 -14 -5 -35 -23 -45 -20 -54 24 -87 78 -58 118 -146 66 -146 -14 0 -28 5 -31 10 -4 6 -27 21 -52 34 l-46 23 -60 -64 c-63 -66 -196 -182 -234 -202 -12 -6 -41 -11 -65 -10 -24 1 -61 -6 -84 -14 -22 -8 -53 -13 -67 -10 -54 11 -116 -7 -183 -53 -36 -25 -88 -54 -116 -65 -28 -11 -64 -29 -79 -40 -40 -28 -93 -140 -93 -197 l-1 -46 99 -18 c91 -16 128 -30 115 -43 -3 -2 -49 -13 -102 -24 -70 -14 -125 -34 -198 -70 -59 -30 -116 -51 -134 -51 -18 0 -70 18 -116 39 -103 48 -164 61 -279 61 -64 0 -96 5 -117 17 -39 22 -83 11 -83 -20 0 -38 -12 -45 -67 -40 -47 5 -53 8 -53 28 0 12 7 36 16 54 15 31 15 33 -20 97 -20 35 -36 72 -36 81 0 10 14 32 31 49 25 25 30 38 25 58 -9 36 -56 42 -130 16 -33 -11 -73 -20 -90 -20 -38 0 -152 35 -185 57 -23 15 -24 15 -16 -8 4 -13 14 -82 23 -154 l15 -130 73 -78 c80 -85 92 -110 75 -158 -6 -18 -8 -55 -5 -85 6 -44 10 -54 25 -54 25 0 24 -23 -2 -165 -26 -135 -21 -151 58 -205 59 -39 68 -66 26 -76 -83 -18 -104 -26 -113 -44 -10 -18 -13 -19 -33 -6 -12 8 -53 20 -92 26 -90 16 -113 30 -117 75 l-3 36 -35 -30 -35 -29 18 -51 c19 -54 16 -83 -11 -113 -14 -17 -52 -25 -52 -12 0 4 5 24 11 45 10 33 9 42 -10 73 -13 20 -27 36 -31 36 -5 0 -20 -11 -34 -25 -31 -31 -49 -32 -73 -2 -10 12 -25 22 -33 22 -10 0 -15 9 -15 27 1 23 -2 25 -18 17 -10 -6 -28 -9 -40 -7 -14 2 -30 -7 -45 -24 -13 -15 -48 -41 -78 -58 -29 -17 -54 -36 -54 -41 0 -5 -8 -9 -18 -9 -13 0 -34 29 -72 98 -114 208 -122 218 -174 213 -28 -3 -29 -2 -23 34 6 35 5 36 -12 21 -23 -21 -41 -20 -56 1 -11 15 -17 14 -64 -16 -36 -23 -58 -31 -75 -27 -20 5 -24 1 -35 -34 -21 -70 -102 -106 -134 -60 -8 11 -27 23 -44 26 -26 5 -32 2 -51 -30 -23 -38 -36 -43 -76 -25 -16 8 -26 23 -31 46 -5 28 -10 33 -23 27 -54 -23 -142 -52 -174 -58 -31 -6 -38 -4 -38 10 0 11 -5 14 -16 10 -9 -3 -34 -9 -57 -12 -23 -4 -53 -15 -67 -24 -31 -21 -86 -40 -115 -40 -19 0 -23 -7 -29 -46 -3 -26 -6 -66 -6 -90 0 -43 1 -44 33 -44 17 0 83 11 145 23 105 21 112 22 112 5 0 -9 -10 -23 -22 -29 -21 -11 -20 -12 12 -25 25 -11 31 -19 27 -34 -4 -15 0 -20 16 -20 31 0 44 -11 57 -44 8 -21 7 -32 -1 -42 -16 -20 -31 -17 -73 11 -36 24 -134 55 -175 55 -17 0 -21 -6 -21 -30 0 -30 0 -30 25 -14 24 15 28 15 68 0 64 -25 85 -46 93 -93 8 -54 -3 -59 -139 -72 -59 -6 -118 -13 -133 -17 -38 -10 -10 -24 48 -24 45 0 49 -3 73 -40 14 -22 37 -69 52 -106 26 -62 26 -67 10 -79 -16 -11 -16 -13 -1 -19 8 -3 38 -6 66 -6 l50 0 -6 34 c-5 25 -3 35 9 40 8 3 15 18 15 34 0 34 16 52 47 52 16 0 23 -6 23 -19 0 -11 -4 -23 -10 -26 -19 -12 -10 -34 18 -49 26 -14 30 -13 45 5 24 28 32 24 65 -29 24 -39 38 -51 73 -61 70 -21 162 -66 192 -94 l27 -26 0 34 0 34 43 -18 c32 -14 42 -24 43 -42 1 -47 3 -50 32 -47 22 2 28 8 30 36 4 40 28 43 66 7 37 -34 34 -60 -12 -84 -29 -15 -29 -41 1 -41 13 0 28 -5 34 -11 18 -18 58 -7 61 18 2 12 9 27 17 33 11 9 17 6 28 -16 14 -26 19 -28 83 -28 66 -1 69 -2 79 -30 8 -24 6 -31 -16 -50 l-26 -22 76 -1 c51 0 88 -6 109 -17 34 -17 42 -43 17 -52 -11 -5 -12 -10 -3 -24 11 -18 8 -26 -36 -85 -5 -6 -6 -32 -2 -56 l7 -44 64 -16 65 -16 29 32 c43 49 66 58 130 51 61 -7 77 -16 134 -70 40 -38 99 -59 194 -71 48 -6 52 -9 43 -26 -20 -37 -47 -42 -122 -24 -49 13 -92 33 -144 68 -53 35 -87 51 -119 55 -55 6 -73 -7 -73 -52 0 -19 -3 -42 -6 -53 -5 -15 1 -22 30 -32 37 -13 134 -99 134 -118 0 -6 -11 -14 -24 -17 -29 -7 -126 -134 -126 -164 0 -11 17 -42 37 -69 20 -26 54 -70 75 -98 21 -27 46 -79 57 -115 15 -50 30 -75 63 -106 49 -48 106 -79 161 -87 20 -3 50 -15 65 -26 41 -29 82 -37 82 -17 0 29 30 17 47 -20 14 -28 21 -34 38 -29 40 13 58 10 77 -16 27 -36 17 -63 -38 -95 -40 -24 -43 -28 -31 -43 26 -29 97 -180 97 -206 0 -18 -5 -25 -20 -25 -17 0 -18 -3 -10 -26 18 -45 12 -71 -16 -78 -30 -8 -27 -28 13 -90 34 -52 15 -65 -45 -30 -49 29 -57 27 -48 -10 4 -17 21 -33 51 -48 54 -28 225 -211 255 -274 14 -28 25 -78 30 -141 13 -138 24 -170 86 -247 30 -37 54 -74 54 -81 0 -19 -13 -25 -30 -15 -11 7 -18 -1 -30 -33 -9 -23 -20 -42 -25 -42 -5 0 -13 19 -17 43 -4 25 -20 58 -39 81 -36 43 -65 129 -78 237 -7 63 -15 80 -63 150 -100 146 -113 163 -125 164 -24 0 -44 -48 -53 -126 -13 -118 -29 -206 -61 -339 -16 -66 -34 -165 -39 -220 -6 -55 -14 -125 -19 -155 -5 -30 -8 -56 -6 -58 2 -2 10 21 19 52 16 53 36 76 69 76 20 0 117 -101 117 -123 0 -52 -42 -71 -105 -47 -17 7 -33 7 -45 0 -29 -15 -57 -104 -79 -251 -11 -74 -47 -253 -80 -399 -32 -146 -62 -285 -66 -309 -18 -129 -164 -311 -250 -311 -18 0 -18 1 -4 -39 9 -27 16 -31 45 -31 24 0 43 -8 59 -25 l25 -24 0 24 c0 36 40 33 101 -7 43 -27 49 -36 49 -65 0 -18 -14 -63 -30 -100 -17 -36 -30 -70 -30 -74 0 -5 13 -9 29 -9 22 0 31 6 41 30 26 63 80 63 80 0 0 -46 29 -85 78 -106 80 -35 190 -64 243 -64 l55 0 22 -45 c12 -25 33 -63 47 -85 l25 -40 154 0 153 0 47 -59 c46 -57 49 -59 79 -50 18 5 76 12 129 16 l98 6 11 -33 12 -33 14 27 c16 30 29 32 61 11 15 -11 40 -15 84 -13 l63 3 -3 41 c-2 23 4 58 12 78 17 42 38 46 94 17 20 -10 75 -27 122 -36 64 -13 93 -24 118 -47 33 -28 36 -28 107 -22 89 8 125 -8 125 -55 0 -16 8 -39 18 -51 16 -20 21 -21 41 -11 18 10 42 10 113 0 96 -14 108 -23 108 -82 0 -16 9 -26 29 -33 18 -7 39 -29 56 -60 73 -128 86 -133 201 -83 l71 31 99 -40 c98 -40 99 -40 149 -25 27 8 97 39 154 69 58 30 112 54 120 54 8 0 45 -16 82 -35 38 -19 71 -35 74 -35 4 0 -3 13 -14 29 -12 16 -21 35 -21 43 0 8 -16 29 -35 48 l-35 34 0 115 c0 83 5 135 18 181 16 54 17 70 6 95 -10 25 -9 35 6 66 12 23 15 40 9 50 -22 36 -2 83 26 59 11 -9 17 -5 30 21 25 47 103 127 152 156 42 25 72 27 115 9 12 -6 29 4 60 37 55 57 255 219 313 252 31 19 55 25 82 23 36 -3 38 -5 47 -47 12 -56 36 -66 176 -76 120 -8 158 -23 166 -65 7 -34 24 -40 117 -40 l67 0 0 30 c0 54 60 91 90 55 7 -8 21 -15 32 -15 19 0 19 1 4 25 -17 26 -21 82 -7 104 8 12 20 9 73 -17 35 -18 73 -32 84 -32 50 0 58 -69 12 -103 -15 -11 -51 -22 -83 -26 -54 -6 -55 -7 -41 -26 14 -20 15 -20 87 -1 95 24 116 23 147 -7 20 -20 25 -36 25 -71 l0 -46 41 0 c23 0 52 -7 65 -16 22 -16 24 -16 33 0 14 25 35 19 81 -23 23 -21 52 -41 64 -45 12 -4 32 -23 43 -41 23 -37 40 -37 70 -1 16 20 67 20 100 1 35 -20 48 -18 52 7 3 22 8 23 76 22 65 0 73 2 78 21 4 17 23 25 105 45 54 13 103 26 108 29 5 4 12 21 16 38 6 28 4 33 -13 33 -11 0 -26 7 -33 16 -11 14 -11 18 4 28 9 7 25 33 36 59 21 50 37 62 94 72 53 10 83 38 102 95 17 51 27 58 111 75 25 5 37 17 58 55 32 59 69 90 107 90 26 0 29 3 29 33 0 64 27 77 106 52 21 -7 22 -4 20 80 -1 85 0 87 30 115 17 15 37 29 43 31 16 6 32 142 17 151 -18 12 -69 9 -148 -8 -41 -8 -90 -13 -113 -9 -58 8 -192 78 -252 130 -70 62 -90 108 -96 227 l-5 97 58 92 c57 88 59 93 46 123 -16 39 -69 76 -109 76 -24 0 -42 11 -79 51 -60 64 -128 165 -128 191 0 30 54 78 87 78 15 0 89 23 164 52 l136 53 7 70 c8 79 13 72 -93 138 -51 32 -62 44 -71 77 -5 22 -15 58 -21 81 -7 30 -19 45 -42 57 -17 10 -44 30 -60 45 -24 23 -28 33 -23 59 10 50 29 72 95 107 71 38 76 54 34 119 -20 31 -38 45 -64 52 -19 5 -46 21 -60 36 -22 24 -24 33 -24 132 0 69 -5 115 -13 130 -9 15 -11 37 -7 63 l7 39 -56 0 c-65 0 -241 -53 -250 -75 -7 -19 12 -75 34 -100 23 -26 13 -51 -34 -93 -54 -47 -109 -72 -159 -72 -27 0 -49 -6 -57 -15 -28 -34 -54 -5 -52 59 1 22 16 45 61 90 34 34 61 66 61 71 0 5 -10 33 -22 62 -21 51 -21 53 -4 98 15 39 16 51 5 77 -12 30 -11 32 27 66 90 81 131 120 162 156 30 35 32 41 32 117 0 44 4 88 10 98 9 18 42 34 93 45 15 4 27 13 27 22 0 8 24 41 53 72 66 70 132 159 142 192 4 14 17 35 28 48 20 22 20 22 1 22 -48 0 -56 44 -23 120 19 44 24 49 62 55 23 4 59 16 79 26 21 11 39 19 42 19 15 0 36 -35 36 -60 0 -55 54 -44 128 27 72 69 76 83 42 169 l-29 71 28 135 c27 131 27 135 11 184 -28 80 -5 193 56 283 20 30 24 48 24 109 0 44 5 81 14 95 7 12 16 45 19 74 7 57 23 96 71 161 61 84 77 101 111 113 30 11 33 16 28 41 -4 21 0 35 17 53 l22 23 -24 15 c-159 99 -201 116 -340 132 -87 10 -126 19 -147 34 -37 27 -45 26 -99 -5 -40 -24 -48 -25 -82 -15 -29 8 -45 8 -64 0 -29 -13 -51 -2 -61 32 -9 28 -81 27 -88 -1 -7 -29 -53 -26 -99 7 -36 24 -110 126 -180 245 -26 46 -26 46 -90 50 -53 4 -74 0 -131 -25 l-69 -29 -82 51 -83 51 -84 -25 c-131 -38 -143 -36 -164 35 -9 30 -14 35 -38 32 -29 -4 -32 0 -42 60 -5 33 -11 40 -63 64 -227 106 -258 128 -248 170 5 20 0 34 -24 60 -35 41 -36 52 -10 136 24 78 24 77 0 71 -14 -4 -22 -17 -26 -43 -10 -60 -36 -93 -119 -149 -85 -57 -114 -62 -202 -36 -98 29 -133 86 -75 122 15 9 29 18 30 19 2 1 -6 16 -19 33 -19 26 -22 41 -21 109 2 70 0 81 -21 101 -29 27 -77 41 -139 41 -39 0 -53 -5 -78 -30 -35 -35 -32 -33 -64 -19 -29 13 -41 46 -51 133 -10 84 -34 106 -118 106 -76 0 -109 20 -127 78 -7 20 -30 71 -52 112 l-40 75 -44 -4 c-40 -3 -44 -5 -44 -30 0 -15 -6 -36 -14 -46 -12 -17 -18 -15 -100 44 -101 73 -121 105 -137 218 -12 89 -18 113 -27 112 -4 -1 -83 -18 -177 -40z m-254 -8866 c15 -41 -3 -73 -41 -73 -28 0 -30 2 -30 38 0 63 51 88 71 35z"/>
-                <path class="terroir-country" vector-effect="non-scaling-stroke" d="M10049 1898 c0 -2 -3 -28 -6 -58 -3 -30 -9 -62 -14 -72 -14 -25 -11 -54 6 -68 18 -15 13 -55 -11 -102 -17 -32 -40 -35 -82 -11 -25 14 -34 15 -75 3 -42 -11 -47 -16 -47 -41 0 -36 -40 -63 -118 -81 -46 -10 -55 -16 -67 -45 -12 -28 -18 -33 -38 -28 -15 4 -28 0 -40 -13 -19 -21 -21 -35 -11 -95 6 -37 6 -38 -21 -31 -27 7 -28 6 -22 -27 4 -19 20 -46 37 -61 16 -15 30 -30 30 -32 0 -3 -20 -19 -44 -35 -43 -30 -44 -32 -34 -67 5 -20 7 -42 4 -50 -3 -9 1 -14 13 -14 24 0 74 -25 94 -47 8 -10 18 -30 22 -45 5 -21 2 -30 -14 -40 -12 -7 -21 -21 -21 -31 0 -10 -5 -28 -11 -39 -11 -20 -10 -21 22 -13 56 13 101 11 111 -5 8 -13 -5 -48 -70 -181 -1 -3 10 -4 25 -2 33 5 133 -41 133 -62 0 -7 -21 -31 -46 -53 -29 -24 -45 -45 -41 -54 3 -8 58 -35 123 -60 72 -28 123 -54 128 -65 5 -10 12 -25 16 -33 4 -8 15 -16 24 -18 12 -3 16 4 16 25 0 48 21 107 43 125 18 15 19 18 5 18 -25 0 -30 16 -23 61 7 38 9 41 35 37 26 -4 29 -1 40 41 7 25 15 105 19 176 l7 130 47 88 c26 49 47 97 47 107 0 10 -11 60 -24 112 -14 51 -29 146 -35 211 -9 111 -11 121 -45 170 l-35 52 -7 163 c-6 149 -8 162 -25 162 -11 0 -19 -1 -20 -2z"/>
-              </g>
-              <circle class="terroir-region-glow" cx="645" cy="365" r="48"/>
-              <circle class="terroir-region" cx="645" cy="365" r="18"/>
-              <line class="terroir-pin-line" x1="645" y1="365" x2="900" y2="180"/>
-              <circle class="terroir-pin-dot" cx="900" cy="180" r="7"/>
-            </svg>
-          </div>
-          <div class="terroir-data">
-            <div class="terroir-breadcrumb">Frankrijk · Bourgogne · Chablis</div>
-            <div class="terroir-rows">
-              <div class="terroir-row">
-                <span class="terroir-icon" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 22s7-6.5 7-12a7 7 0 1 0-14 0c0 5.5 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg>
-                </span>
-                <div><div class="terroir-label">Plaats</div><div class="terroir-value">47°49′ N<br>3°48′ E</div></div>
-              </div>
-              <div class="terroir-row">
-                <span class="terroir-icon" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><path d="M3 20 L10 8 L14 14 L17 10 L21 20 Z"/></svg>
-                </span>
-                <div><div class="terroir-label">Hoogte</div><div class="terroir-value">180 m</div></div>
-              </div>
-            </div>
-            <div class="terroir-climate">
-              <div class="terroir-label">Klimaat</div>
-              <div class="terroir-slider">
-                <div class="terroir-track"></div>
-                <div class="terroir-tick" style="left: 33.33%"></div>
-                <div class="terroir-tick" style="left: 66.66%"></div>
-                <div class="terroir-marker" style="left: 33.33%"></div>
-              </div>
-              <div class="terroir-scale">
-                <span>Koud</span><span class="active">Koel</span><span>Gematigd</span><span>Warm</span>
-              </div>
-              <div class="terroir-types">
-                <span class="active">Continentaal</span>
-                <span>Mediterraan</span>
-                <span>Maritiem</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div>
-          <div class="modal-section-label">Proefnotities</div>
-          <p class="modal-text">Diep goudgeel met een lichte amberglans — de kleur verraadt al de rijpe leeftijd. Het glas opent met tonen van gedroogd citrusfruit, bijenwas en geroosterd brood, gevolgd door honing, amandelspijs en een subtiel rookteken van vuursteen. Op het gehemelte zijdezacht, met citroenconfit en witte abrikoos gedragen door een levende mineraliteit van natte kalksteen. De afdronk is lang, zout en droog — met een echo van amandelbitter en de zeebries van een krijtbodem die al miljoenen jaren oud is.</p>
-        </div>
-        <div>
-          <div class="modal-section-label">Over de producent</div>
-          <p class="modal-text">Domaine Defaix is gevestigd in Milly en maakt al wijn sinds 1610 — zestien generaties lang. Daniël-Étienne koos bewust een andere weg: lange rijping op de droesem, biologische teelt, en vergisting op wilde gisten die soms wel zes maanden duurt. Zijn wijnen worden pas vrijgegeven wanneer zij er klaar voor zijn — en niet een dag eerder.</p>
-        </div>
-        <div>
-          <div class="modal-section-label">Weetjes</div>
-          <p class="modal-text">Blanchot — van het Germaanse <em>blank</em>, helder — staat al beschreven in 1537. Het perceel ligt op de oostkant van de Grand Cru-helling en ontvangt alleen ochtendzon, waardoor het als laatste klimaat van heel Chablis wordt geoogst. Grand Cru-wijnen van Defaix rijpen tot vijftien jaar op de droesem. De 1991 — een jaar van late vorst en hagel — werd pas vele jaren na de oogst vrijgegeven, een stil protest tegen de cultuur van snelle consumptie.</p>
-        </div>
-        <div>
-          <div class="modal-section-label">Spijs-combinaties</div>
-          <div class="modal-pairings">
-            <span class="modal-pairing-tag">Tarbot hollandaise</span>
-            <span class="modal-pairing-tag">Coquilles St. Jacques</span>
-            <span class="modal-pairing-tag">Langoustines</span>
-            <span class="modal-pairing-tag">Comté 24 maanden</span>
-            <span class="modal-pairing-tag">Zeebaars</span>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <div class="modal-price">Op aanvraag</div>
-          <a class="modal-wa" href="https://wa.me/31687441353?text=Hoi%2C%20ik%20ben%20ge%C3%AFnteresseerd%20in%20de%20Chablis%20Grand%20Cru%20Blanchot%201991%20van%20Defaix.%20Is%20deze%20nog%20beschikbaar%3F" target="_blank" rel="noopener noreferrer">
-            Bestellen via WhatsApp
-          </a>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
 
 <!-- CONTACT -->
 <section id="contact">
@@ -1987,6 +1714,16 @@ Geen fratsen. Gewoon hele goede wijn.
 </main>
 
 <script>
+  // Skip gates if already verified this session
+  if (sessionStorage.getItem('battonaasje_private_verified') === 'true') {
+    document.getElementById('private-gate').classList.add('hidden');
+  }
+  if (sessionStorage.getItem('battonaasje_age_verified') === 'true') {
+    document.getElementById('age-gate').classList.add('hidden');
+  } else if (sessionStorage.getItem('battonaasje_private_verified') === 'true') {
+    document.getElementById('age-gate').classList.remove('hidden');
+  }
+
   document.getElementById('age-day').addEventListener('input', function() {
     if (this.value.length >= 2) document.getElementById('age-month').focus();
   });
@@ -2014,6 +1751,7 @@ Geen fratsen. Gewoon hele goede wijn.
     var input = document.getElementById('private-code').value.trim().toUpperCase();
     if (input === PRIVATE_CODE) {
       document.getElementById('private-gate').classList.add('hidden');
+      sessionStorage.setItem('battonaasje_private_verified', 'true');
       if (sessionStorage.getItem('battonaasje_age_verified') !== 'true') {
         document.getElementById('age-gate').classList.remove('hidden');
       }
@@ -2086,7 +1824,7 @@ Geen fratsen. Gewoon hele goede wijn.
   });
 
   // Scroll fade-in (exclude hero section)
-  document.querySelectorAll('#bottles .section-header, #contact .section-header, #about .section-header, #blog .section-header, .bottle-card, .contact-grid, .about-grid, .blog-grid, .coming-soon-card').forEach(function(el) {
+  document.querySelectorAll('#regions .section-header, #contact .section-header, #about .section-header, #blog .section-header, .region-card, .contact-grid, .about-grid, .blog-grid').forEach(function(el) {
     el.classList.add('reveal');
   });
   var observer = new IntersectionObserver(function(entries) {
