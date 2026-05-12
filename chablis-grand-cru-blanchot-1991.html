@@ -4,7 +4,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Chablis Grand Cru Blanchot 1991 — Defaix — Battonaasje</title>
-<meta name="description" content="Chablis Grand Cru Blanchot 1991 van Daniël-Étienne Defaix — proefnotities, terroir en beschikbaarheid.">
+<meta name="description" content="Chablis Grand Cru Blanchot 1991 van Daniël-Étienne Defaix — proefnotities, terroir Chablis, spijscombinaties en beschikbaarheid via Battonaasje.">
+<meta property="og:title" content="Chablis Grand Cru Blanchot 1991 — Defaix">
+<meta property="og:description" content="Grand Cru uit Blanchot: proefnotities, terroir en bestellen via WhatsApp. Gecureerd door Battonaasje.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://battonaasje.nl/chablis-grand-cru-blanchot-1991.html">
+<meta property="og:image" content="https://battonaasje.nl/images/chablis-grand-cru-blanchot-1991-defaix.jpg">
+<meta property="og:locale" content="nl_NL">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Chablis Grand Cru Blanchot 1991 — Defaix">
+<meta name="twitter:description" content="Grand Cru uit Blanchot: proefnotities, terroir en bestellen via WhatsApp. Gecureerd door Battonaasje.">
+<meta name="twitter:image" content="https://battonaasje.nl/images/chablis-grand-cru-blanchot-1991-defaix.jpg">
 <meta name="theme-color" content="#1a1714">
 <link rel="canonical" href="https://battonaasje.nl/chablis-grand-cru-blanchot-1991.html">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -277,45 +287,55 @@
   /* TERROIR (lighter, on paper) */
   .terroir {
     display: grid;
-    grid-template-columns: 130px 1fr;
-    gap: 28px;
-    padding: 24px 0;
+    grid-template-columns: minmax(260px, 1fr) minmax(280px, 1.08fr);
+    gap: clamp(28px, 4vw, 48px);
+    padding: clamp(28px, 4vw, 40px) 0;
     border-top: 1px solid var(--ghost);
     border-bottom: 1px solid var(--ghost);
     align-items: start;
   }
-  .terroir-svg { width: 100%; height: auto; display: block; overflow: visible; }
-  .terroir-country { fill: var(--paper); stroke: var(--faded); stroke-width: 0.6; stroke-linejoin: round; }
+  .terroir-map {
+    width: 100%;
+    max-width: 420px;
+  }
+  .terroir-svg {
+    width: 100%; height: auto; display: block; overflow: visible;
+    min-height: clamp(220px, 28vw, 320px);
+  }
+  .terroir-country { fill: var(--paper); stroke: var(--faded); stroke-width: 0.75; stroke-linejoin: round; }
   .terroir-region-glow { fill: var(--ink); opacity: 0.1; }
   .terroir-region { fill: var(--ink); }
-  .terroir-pin-line { stroke: var(--ink); stroke-width: 0.5; stroke-dasharray: 1.6 1.6; fill: none; }
+  .terroir-pin-line { stroke: var(--ink); stroke-width: 0.85; stroke-dasharray: 2 2; fill: none; }
   .terroir-pin-dot { fill: var(--ink); }
-  .terroir-data { display: flex; flex-direction: column; gap: 18px; }
-  .terroir-breadcrumb { font-size: 9px; letter-spacing: 4px; text-transform: uppercase; color: var(--faded); }
-  .terroir-rows { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-  .terroir-row { display: flex; gap: 12px; align-items: flex-start; }
-  .terroir-icon { width: 22px; height: 22px; flex: 0 0 22px; color: var(--ink); }
+  .terroir-data { display: flex; flex-direction: column; gap: 22px; }
+  .terroir-breadcrumb { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--faded); line-height: 1.5; }
+  .terroir-rows { display: grid; grid-template-columns: 1fr 1fr; gap: 20px 24px; }
+  .terroir-row { display: flex; gap: 14px; align-items: flex-start; }
+  .terroir-icon { width: 28px; height: 28px; flex: 0 0 28px; color: var(--ink); }
   .terroir-icon svg { width: 100%; height: 100%; display: block; }
-  .terroir-label { font-size: 8px; letter-spacing: 3px; text-transform: uppercase; color: var(--ghost); margin-bottom: 4px; }
-  .terroir-value { font-size: 12px; line-height: 1.4; color: var(--accent); font-family: 'Courier Prime', monospace; }
-  .terroir-climate { margin-top: 4px; }
-  .terroir-slider { position: relative; height: 14px; margin: 12px 0 10px; }
-  .terroir-track { position: absolute; top: 50%; left: 0; right: 0; height: 1px; background: var(--ghost); transform: translateY(-50%); }
-  .terroir-slider::before, .terroir-slider::after { content: ''; position: absolute; top: 3px; width: 1px; height: 8px; background: var(--ghost); }
+  .terroir-label { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--ghost); margin-bottom: 6px; }
+  .terroir-value { font-size: 15px; line-height: 1.55; color: var(--accent); font-family: 'Courier Prime', monospace; }
+  .terroir-climate { margin-top: 8px; }
+  .terroir-slider { position: relative; height: 22px; margin: 14px 0 12px; }
+  .terroir-track { position: absolute; top: 50%; left: 0; right: 0; height: 2px; background: var(--ghost); transform: translateY(-50%); }
+  .terroir-slider::before, .terroir-slider::after { content: ''; position: absolute; top: 2px; width: 2px; height: 12px; background: var(--ghost); }
   .terroir-slider::before { left: 0; } .terroir-slider::after { right: 0; }
-  .terroir-tick { position: absolute; top: 4px; width: 1px; height: 6px; background: var(--ghost); }
-  .terroir-marker { position: absolute; top: 50%; width: 9px; height: 9px; background: var(--ink); border-radius: 50%; transform: translate(-50%, -50%); }
-  .terroir-scale { display: flex; justify-content: space-between; font-size: 8px; letter-spacing: 2px; text-transform: uppercase; color: var(--faded); }
+  .terroir-tick { position: absolute; top: 5px; width: 2px; height: 8px; background: var(--ghost); }
+  .terroir-marker { position: absolute; top: 50%; width: 12px; height: 12px; background: var(--ink); border-radius: 50%; transform: translate(-50%, -50%); }
+  .terroir-scale { display: flex; justify-content: space-between; gap: 8px; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--faded); line-height: 1.3; }
   .terroir-scale span.active { color: var(--ink); }
-  .terroir-types { display: flex; flex-wrap: wrap; gap: 18px; margin-top: 14px; font-size: 8px; letter-spacing: 2px; text-transform: uppercase; color: var(--faded); }
-  .terroir-types span { display: inline-flex; align-items: center; gap: 7px; }
-  .terroir-types span::before { content: ''; width: 7px; height: 7px; border: 1px solid var(--ghost); border-radius: 50%; box-sizing: border-box; }
+  .terroir-types { display: flex; flex-wrap: wrap; gap: 14px 22px; margin-top: 18px; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--faded); }
+  .terroir-types span { display: inline-flex; align-items: center; gap: 9px; }
+  .terroir-types span::before { content: ''; width: 9px; height: 9px; border: 1px solid var(--ghost); border-radius: 50%; box-sizing: border-box; flex-shrink: 0; }
   .terroir-types span.active { color: var(--ink); }
   .terroir-types span.active::before { background: var(--ink); border-color: var(--ink); }
 
   @media (max-width: 900px) {
     .wine { grid-template-columns: 1fr; gap: 40px; }
     .wine-image-frame { position: static; max-width: 480px; margin: 0 auto; }
+    .terroir { grid-template-columns: 1fr; gap: 32px; }
+    .terroir-map { max-width: min(440px, 100%); margin: 0 auto; }
+    .terroir-svg { min-height: 240px; }
   }
   @media (max-width: 768px) {
     nav { padding: 16px 24px; }
@@ -325,9 +345,14 @@
     .wines { padding: 0 24px 64px; }
     .wines-header { padding-top: 40px; margin-bottom: 36px; }
     .wines-title { font-size: 22px; letter-spacing: 4px; }
-    .terroir { grid-template-columns: 80px 1fr; gap: 18px; padding: 20px 0; }
-    .terroir-rows { grid-template-columns: 1fr; gap: 10px; }
-    .terroir-types { gap: 12px; }
+    .terroir { grid-template-columns: 1fr; gap: 24px; padding: 24px 0; }
+    .terroir-map { max-width: 100%; }
+    .terroir-svg { min-height: 200px; }
+    .terroir-rows { grid-template-columns: 1fr; gap: 16px; }
+    .terroir-breadcrumb { font-size: 10px; }
+    .terroir-value { font-size: 14px; }
+    .terroir-scale { font-size: 9px; flex-wrap: wrap; }
+    .terroir-types { gap: 12px; font-size: 9px; }
     .wine-name { font-size: 28px; }
     footer { flex-direction: column; gap: 16px; text-align: center; padding: 32px 24px; }
   }
