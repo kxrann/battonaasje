@@ -11,10 +11,13 @@
 <meta property="og:url" content="https://battonaasje.nl">
 <meta property="og:image" content="https://battonaasje.nl/images/6eb81a7697277c0040dab9212e82.jpg">
 <meta name="theme-color" content="#1a1714">
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
+<meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+<meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=()">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action https://formspree.io;">
 <link rel="canonical" href="https://battonaasje.nl/">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap">
+<link rel="stylesheet" href="/fonts/fonts.css">
 <style>
 
   :root {
@@ -1697,17 +1700,21 @@
 
     <div>
       <p class="form-label" style="margin-bottom:20px;">Schrijf je in voor de nieuwsbrief</p>
-      <div class="email-form">
+      <form class="email-form" action="https://formspree.io/f/JOUW_FORMSPREE_ID" method="POST" id="newsletter-form">
         <div>
-          <label class="form-label">Naam</label>
-          <input type="text" class="form-input" placeholder="jouw naam">
+          <label class="form-label" for="form-naam">Naam</label>
+          <input type="text" id="form-naam" name="naam" class="form-input" placeholder="jouw naam" required autocomplete="name">
         </div>
         <div>
-          <label class="form-label">E-mailadres</label>
-          <input type="email" class="form-input" placeholder="jouw@email.nl">
+          <label class="form-label" for="form-email">E-mailadres</label>
+          <input type="email" id="form-email" name="email" class="form-input" placeholder="jouw@email.nl" required autocomplete="email">
         </div>
-        <button type="button" class="form-submit">Inschrijven →</button>
-      </div>
+        <input type="hidden" name="_subject" value="Nieuwsbrief aanmelding — Battonaasje">
+        <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off">
+        <button type="submit" class="form-submit" id="newsletter-btn">Inschrijven →</button>
+        <p id="form-success" style="display:none; font-size:11px; letter-spacing:2px; color:var(--faded); margin-top:12px;">Inschrijving ontvangen. Bedankt.</p>
+        <p id="form-error" style="display:none; font-size:11px; letter-spacing:2px; color:#a05040; margin-top:12px;">Er ging iets mis. Probeer het opnieuw.</p>
+      </form>
     </div>
   </div>
 </section>
@@ -1913,6 +1920,38 @@
       document.getElementById('age-month').value = '';
       document.getElementById('age-year').value = '';
     }
+  }
+
+  // Newsletter form — async Formspree submission
+  var newsletterForm = document.getElementById('newsletter-form');
+  if (newsletterForm) {
+    newsletterForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      var btn = document.getElementById('newsletter-btn');
+      var success = document.getElementById('form-success');
+      var error = document.getElementById('form-error');
+      btn.disabled = true;
+      btn.textContent = 'Bezig...';
+      fetch(newsletterForm.action, {
+        method: 'POST',
+        body: new FormData(newsletterForm),
+        headers: { 'Accept': 'application/json' }
+      }).then(function(res) {
+        if (res.ok) {
+          newsletterForm.reset();
+          btn.style.display = 'none';
+          success.style.display = 'block';
+        } else {
+          btn.disabled = false;
+          btn.textContent = 'Inschrijven →';
+          error.style.display = 'block';
+        }
+      }).catch(function() {
+        btn.disabled = false;
+        btn.textContent = 'Inschrijven →';
+        error.style.display = 'block';
+      });
+    });
   }
 </script>
 
