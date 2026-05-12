@@ -85,7 +85,20 @@
   .nav-back:hover { color: var(--ink); }
 
   /* REGION HERO */
+  .region-hero-bg {
+    position: relative;
+    background: url('/images/jura.jpg') center 30% / cover no-repeat;
+  }
+  .region-hero-bg::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(to right, rgba(26,23,20,0.65) 0%, rgba(26,23,20,0.28) 55%, rgba(26,23,20,0.0) 100%),
+      linear-gradient(to bottom, rgba(26,23,20,0.3) 0%, rgba(26,23,20,0.0) 40%);
+  }
   .region-hero {
+    position: relative;
     min-height: 70vh;
     display: flex;
     flex-direction: column;
@@ -99,7 +112,7 @@
     font-size: 10px;
     letter-spacing: 5px;
     text-transform: uppercase;
-    color: var(--faded);
+    color: rgba(242,237,228,0.75);
     margin-bottom: 20px;
   }
   .region-hero-title {
@@ -107,14 +120,14 @@
     font-weight: 300;
     font-size: clamp(56px, 10vw, 120px);
     letter-spacing: 6px;
-    color: var(--ink);
+    color: #f2ede4;
     line-height: 1;
     margin-bottom: 32px;
   }
   .region-hero-sub {
     font-size: 15px;
     line-height: 1.9;
-    color: var(--accent);
+    color: rgba(242,237,228,0.72);
     max-width: 560px;
     margin-bottom: 56px;
   }
@@ -221,6 +234,7 @@
   <a href="/#regions" class="nav-back">&larr; Terug naar regio's</a>
 </nav>
 
+<div class="region-hero-bg">
 <section class="region-hero">
   <p class="region-hero-tag">Frankrijk</p>
   <h1 class="region-hero-title">Jura</h1>
@@ -230,6 +244,7 @@
     <p class="region-placeholder-text">De selectie uit Jura wordt hier verzameld. Een handvol flessen, met zorg uitgekozen.</p>
   </div>
 </section>
+</div>
 
 <footer>
   <div class="footer-logo">BATTONAASJE</div>
