@@ -99,7 +99,7 @@
   .private-gate-input:focus { border-color: #8c8478; }
   .private-gate-btn { width: 100%; background: #f2ede4; color: #1a1714; border: none; padding: 18px; font-family: 'Courier Prime', monospace; font-size: 14px; letter-spacing: 4px; text-transform: uppercase; cursor: pointer; transition: opacity 0.2s; margin-bottom: 14px; }
   .private-gate-btn:hover { opacity: 0.85; }
-  .private-gate-error { font-size: 14px; letter-spacing: 2px; color: #a05040; font-style: italic; min-height: 18px; }
+  .private-gate-error { font-size: 22px; letter-spacing: 4px; color: #a05040; text-transform: uppercase; min-height: 18px; }
 
   /* AGE GATE */
   #age-gate {
@@ -1337,7 +1337,6 @@
   <div class="private-gate-inner">
     <div class="private-gate-logo">BATTONAASJE</div>
     <div class="private-gate-line"></div>
-    <p class="private-gate-label">Besloten preview</p>
     <p class="private-gate-sub">voer de toegangscode in</p>
     <input class="private-gate-input" id="private-code" type="password" placeholder="· · · · · · · ·" autocomplete="off">
     <button type="button" class="private-gate-btn" onclick="checkPrivateCode()">Toegang &rarr;</button>
@@ -1839,7 +1838,7 @@ Geen fratsen. Gewoon hele goede wijn.
       privateWrongAttempts++;
       document.getElementById('private-code').value = '';
       if (privateWrongAttempts >= 3) {
-        document.getElementById('private-error').textContent = 'te veel onjuiste pogingen — vernieuw de pagina om het opnieuw te proberen.';
+        document.getElementById('private-error').textContent = 'toegang geweigerd';
         var codeInput = document.getElementById('private-code');
         codeInput.disabled = true;
         var submitBtn = document.querySelector('#private-gate .private-gate-btn');
