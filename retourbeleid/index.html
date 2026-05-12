@@ -25,7 +25,12 @@
     backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
     border-bottom: 1px solid rgba(200,192,176,0.5);
   }
-  .nav-logo { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: 20px; letter-spacing: 12px; color: var(--ink); text-decoration: none; font-variant-ligatures: none; }
+  .nav-logo { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: 20px; letter-spacing: 12px; color: var(--ink); text-decoration: none; font-variant-ligatures: none;
+  font-kerning: none;
+  font-variant-ligatures: none;
+  font-feature-settings: "kern" 0;
+  text-rendering: optimizeSpeed;
+}
   .nav-back { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--faded); text-decoration: none; transition: color 0.2s; }
   .nav-back:hover { color: var(--ink); }
 
@@ -58,7 +63,11 @@
     display: flex; justify-content: space-between; align-items: center;
     font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--faded);
   }
-  .footer-logo { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: 18px; letter-spacing: 10px; color: var(--ink); font-variant-ligatures: none; }
+  .footer-logo { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: 18px; letter-spacing: 10px; color: var(--ink); font-variant-ligatures: none;
+  font-kerning: none;
+  font-variant-ligatures: none;
+  font-feature-settings: "kern" 0;
+}
   footer a { color: var(--faded); text-decoration: none; }
   footer a:hover { color: var(--ink); }
 
