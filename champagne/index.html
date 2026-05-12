@@ -11,7 +11,7 @@
 <meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
 <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
 <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=()">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src https://*.workers.dev; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action https://formspree.io;">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://js.mollie.com; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src https://*.workers.dev; frame-src https://js.mollie.com; object-src 'none'; base-uri 'self'; form-action https://formspree.io;">
 <link rel="canonical" href="https://battonaasje.nl/champagne/">
 <link rel="stylesheet" href="/fonts/fonts.css">
 <style>
@@ -170,6 +170,18 @@
     footer { flex-direction: column; gap: 16px; text-align: center; padding: 32px 24px; }
     .footer-legal { padding: 16px 24px 24px; gap: 14px; }
   }
+
+  .cookie-banner { position: fixed; bottom: 0; left: 0; right: 0; z-index: 200; background: var(--ink); border-top: 1px solid rgba(58,53,40,0.8); padding: 18px 56px; display: none; align-items: center; justify-content: space-between; gap: 24px; font-size: 12px; letter-spacing: 1px; line-height: 1.6; }
+  .cookie-banner.visible { display: flex; }
+  .cookie-banner-text { color: rgba(242,237,228,0.72); margin: 0; }
+  .cookie-banner-text a { color: rgba(242,237,228,0.9); }
+  .cookie-banner-actions { display: flex; gap: 10px; flex-shrink: 0; }
+  .cookie-btn { font-family: 'Courier Prime', 'Courier New', monospace; font-size: 10px; letter-spacing: 3px; text-transform: uppercase; padding: 8px 18px; border: 1px solid; cursor: pointer; transition: all 0.2s; background: none; }
+  .cookie-btn-accept { border-color: rgba(242,237,228,0.6); color: rgba(242,237,228,0.8); }
+  .cookie-btn-accept:hover { background: rgba(242,237,228,0.1); border-color: rgba(242,237,228,0.9); color: rgba(242,237,228,0.95); }
+  .cookie-btn-decline { border-color: rgba(242,237,228,0.2); color: rgba(242,237,228,0.35); }
+  .cookie-btn-decline:hover { border-color: rgba(242,237,228,0.4); color: rgba(242,237,228,0.55); }
+  @media (max-width: 768px) { .cookie-banner { flex-direction: column; padding: 16px 24px; align-items: flex-start; gap: 14px; } .cookie-banner-actions { width: 100%; } .cookie-btn { flex: 1; text-align: center; } }
 </style>
 </head>
 <body>
@@ -335,6 +347,17 @@
   }
 
   updateMainInert();
+</script>
+<div id="cookie-banner" class="cookie-banner" role="dialog" aria-label="Cookievoorkeuren">
+  <p class="cookie-banner-text">Wij gebruiken functionele cookies. Na uw toestemming plaatst ook onze betaalprovider cookies. <a href="/cookiebeleid/">Meer info</a></p>
+  <div class="cookie-banner-actions">
+    <button class="cookie-btn cookie-btn-accept" onclick="cookieConsent('accepted')">Accepteren</button>
+    <button class="cookie-btn cookie-btn-decline" onclick="cookieConsent('declined')">Weigeren</button>
+  </div>
+</div>
+<script>
+(function(){var c=localStorage.getItem('battonaasje_cookie_consent');if(!c)document.getElementById('cookie-banner').classList.add('visible');})();
+function cookieConsent(c){localStorage.setItem('battonaasje_cookie_consent',c);document.getElementById('cookie-banner').classList.remove('visible');}
 </script>
 </body>
 </html>

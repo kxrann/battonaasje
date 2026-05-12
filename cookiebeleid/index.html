@@ -78,6 +78,18 @@
     .footer-legal { padding: 16px 24px 28px; gap: 14px; }
     .cookie-table td:first-child { white-space: normal; }
   }
+
+  .cookie-banner { position: fixed; bottom: 0; left: 0; right: 0; z-index: 200; background: var(--ink); border-top: 1px solid rgba(58,53,40,0.8); padding: 18px 56px; display: none; align-items: center; justify-content: space-between; gap: 24px; font-size: 12px; letter-spacing: 1px; line-height: 1.6; }
+  .cookie-banner.visible { display: flex; }
+  .cookie-banner-text { color: rgba(242,237,228,0.72); margin: 0; }
+  .cookie-banner-text a { color: rgba(242,237,228,0.9); }
+  .cookie-banner-actions { display: flex; gap: 10px; flex-shrink: 0; }
+  .cookie-btn { font-family: 'Courier Prime', 'Courier New', monospace; font-size: 10px; letter-spacing: 3px; text-transform: uppercase; padding: 8px 18px; border: 1px solid; cursor: pointer; transition: all 0.2s; background: none; }
+  .cookie-btn-accept { border-color: rgba(242,237,228,0.6); color: rgba(242,237,228,0.8); }
+  .cookie-btn-accept:hover { background: rgba(242,237,228,0.1); border-color: rgba(242,237,228,0.9); color: rgba(242,237,228,0.95); }
+  .cookie-btn-decline { border-color: rgba(242,237,228,0.2); color: rgba(242,237,228,0.35); }
+  .cookie-btn-decline:hover { border-color: rgba(242,237,228,0.4); color: rgba(242,237,228,0.55); }
+  @media (max-width: 768px) { .cookie-banner { flex-direction: column; padding: 16px 24px; align-items: flex-start; gap: 14px; } .cookie-banner-actions { width: 100%; } .cookie-btn { flex: 1; text-align: center; } }
 </style>
 </head>
 <body>
@@ -120,9 +132,14 @@
           <td>Onthoudt dat u de leeftijdsverificatie (18+) heeft doorlopen. Wordt verwijderd zodra u het tabblad sluit.</td>
         </tr>
         <tr>
-          <td>Google Fonts</td>
-          <td>Extern verzoek (geen cookie)</td>
-          <td>De website laadt lettertypen via Google Fonts (fonts.googleapis.com). Hierbij wordt uw IP-adres doorgezonden aan Google. Er worden geen cookies geplaatst, maar Google kan uw IP-adres verwerken conform hun privacybeleid.</td>
+          <td>battonaasje_cookie_consent</td>
+          <td>Voorkeur (localStorage)</td>
+          <td>Onthoudt uw cookievoorkeur (accepteren of weigeren). Blijft bewaard totdat u uw browsergegevens wist. Geen vervaldatum.</td>
+        </tr>
+        <tr>
+          <td>[BETAALPROVIDER] cookies</td>
+          <td>Functioneel / Analytisch</td>
+          <td>Geplaatst door betaalprovider [BETAALPROVIDER] tijdens het afrekenproces. Worden gebruikt voor fraudepreventie en betalingsverwerking. Alleen actief na uw toestemming. Zie het privacybeleid van [BETAALPROVIDER] voor details.</td>
         </tr>
       </tbody>
     </table>
@@ -141,8 +158,8 @@
 
   <div class="legal-section">
     <h2>Cookiebeheer</h2>
-    <p>Omdat wij uitsluitend functionele sessiegegevens gebruiken — die technisch noodzakelijk zijn voor het correct functioneren van de website — is toestemming hiervoor niet verplicht op grond van de Telecommunicatiewet.</p>
-    <p>U kunt sessionStorage en cookies altijd wissen via de instellingen van uw browser:</p>
+    <p>Voor functionele sessionStorage-gegevens (toegangscode, leeftijdsverificatie) is geen toestemming vereist — deze zijn technisch noodzakelijk. Voor cookies van onze betaalprovider vragen wij wel uw toestemming via de cookiebanner onderaan de pagina.</p>
+    <p>U kunt uw voorkeur op elk moment wijzigen door uw browsergegevens te wissen. U kunt sessionStorage en cookies altijd wissen via de instellingen van uw browser:</p>
     <ul>
       <li>Chrome: Instellingen → Privacy en beveiliging → Browsegegevens wissen</li>
       <li>Firefox: Instellingen → Privacy en beveiliging → Cookies en sitegegevens</li>
@@ -171,5 +188,16 @@
   <a href="/cookiebeleid/" class="current">Cookiebeleid</a>
 </div>
 
+<div id="cookie-banner" class="cookie-banner" role="dialog" aria-label="Cookievoorkeuren">
+  <p class="cookie-banner-text">Wij gebruiken functionele cookies. Na uw toestemming plaatst ook onze betaalprovider cookies. <a href="/cookiebeleid/">Meer info</a></p>
+  <div class="cookie-banner-actions">
+    <button class="cookie-btn cookie-btn-accept" onclick="cookieConsent('accepted')">Accepteren</button>
+    <button class="cookie-btn cookie-btn-decline" onclick="cookieConsent('declined')">Weigeren</button>
+  </div>
+</div>
+<script>
+(function(){var c=localStorage.getItem('battonaasje_cookie_consent');if(!c)document.getElementById('cookie-banner').classList.add('visible');})();
+function cookieConsent(c){localStorage.setItem('battonaasje_cookie_consent',c);document.getElementById('cookie-banner').classList.remove('visible');}
+</script>
 </body>
 </html>
