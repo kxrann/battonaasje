@@ -505,6 +505,8 @@
   /* REGIONS */
   #regions { padding-top: 64px; }
   #regions .section-header { margin-bottom: 40px; }
+  #contact, #about, #blog { padding-top: 72px; padding-bottom: 72px; }
+  #contact .section-header, #about .section-header, #blog .section-header { margin-bottom: 48px; }
   .regions-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -1516,8 +1518,8 @@
   <a href="#main" class="nav-logo">BATTONAASJE</a>
   <ul class="nav-links">
     <li><a href="#regions">Regio's</a></li>
-    <li><a href="#contact">Contact</a></li>
     <li><a href="#about">Over mij</a></li>
+    <li><a href="#contact">Contact</a></li>
     <li><a href="#blog">Blog</a></li>
   </ul>
   <button type="button" class="nav-hamburger" id="hamburger" aria-label="Menu openen of sluiten" aria-controls="mobile-menu" aria-expanded="false">
@@ -1527,8 +1529,8 @@
 
 <div class="mobile-menu" id="mobile-menu">
   <a href="#regions" onclick="closeMobileMenu()">Regio's</a>
-  <a href="#contact" onclick="closeMobileMenu()">Contact</a>
   <a href="#about" onclick="closeMobileMenu()">Over mij</a>
+  <a href="#contact" onclick="closeMobileMenu()">Contact</a>
   <a href="#blog" onclick="closeMobileMenu()">Blog</a>
 </div>
 
@@ -1592,58 +1594,10 @@
   </div>
 </section>
 
-<!-- CONTACT -->
-<section id="contact">
-  <div class="section-header">
-    <span class="section-num">02</span>
-    <h2 class="section-title">CONTACT</h2>
-    <div class="section-line"></div>
-  </div>
-
-  <div class="contact-grid">
-    <div>
-      <p class="contact-text">
-        Interesse in een fles, een vraag over een wijn,<br>
-        of gewoon een goed gesprek over terroir?<br>
-        Stuur een bericht — ik hoor graag van je.
-      </p>
-      <div class="contact-links">
-        <a href="https://instagram.com/battonaasje" target="_blank" rel="noopener noreferrer" class="contact-link">
-          <span class="contact-link-label">Instagram</span>
-          <span class="contact-link-val">@battonaasje →</span>
-        </a>
-        <div class="contact-link" style="cursor:default;">
-          <span class="contact-link-label">E-mail</span>
-          <span class="contact-link-val">in de maak.....</span>
-        </div>
-        <div class="contact-link" style="cursor:default;">
-          <span class="contact-link-label">Locatie</span>
-          <span class="contact-link-val">Friesland, Nederland</span>
-        </div>
-      </div>
-    </div>
-
-    <div>
-      <p class="form-label" style="margin-bottom:20px;">Schrijf je in voor de nieuwsbrief</p>
-      <div class="email-form">
-        <div>
-          <label class="form-label">Naam</label>
-          <input type="text" class="form-input" placeholder="jouw naam">
-        </div>
-        <div>
-          <label class="form-label">E-mailadres</label>
-          <input type="email" class="form-input" placeholder="jouw@email.nl">
-        </div>
-        <button type="button" class="form-submit">Inschrijven →</button>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- ABOUT -->
 <section id="about">
   <div class="section-header">
-    <span class="section-num">03</span>
+    <span class="section-num">02</span>
     <h2 class="section-title">OVER MIJ</h2>
     <div class="section-line"></div>
   </div>
@@ -1685,6 +1639,54 @@
           <div class="about-stat-num">FR</div>
           <div class="about-stat-label">Friesland</div>
         </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-header">
+    <span class="section-num">03</span>
+    <h2 class="section-title">CONTACT</h2>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="contact-grid">
+    <div>
+      <p class="contact-text">
+        Interesse in een fles, een vraag over een wijn,<br>
+        of gewoon een goed gesprek over terroir?<br>
+        Stuur een bericht — ik hoor graag van je.
+      </p>
+      <div class="contact-links">
+        <a href="https://instagram.com/battonaasje" target="_blank" rel="noopener noreferrer" class="contact-link">
+          <span class="contact-link-label">Instagram</span>
+          <span class="contact-link-val">@battonaasje →</span>
+        </a>
+        <div class="contact-link" style="cursor:default;">
+          <span class="contact-link-label">E-mail</span>
+          <span class="contact-link-val">in de maak.....</span>
+        </div>
+        <div class="contact-link" style="cursor:default;">
+          <span class="contact-link-label">Locatie</span>
+          <span class="contact-link-val">Friesland, Nederland</span>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <p class="form-label" style="margin-bottom:20px;">Schrijf je in voor de nieuwsbrief</p>
+      <div class="email-form">
+        <div>
+          <label class="form-label">Naam</label>
+          <input type="text" class="form-input" placeholder="jouw naam">
+        </div>
+        <div>
+          <label class="form-label">E-mailadres</label>
+          <input type="email" class="form-input" placeholder="jouw@email.nl">
+        </div>
+        <button type="button" class="form-submit">Inschrijven →</button>
       </div>
     </div>
   </div>
