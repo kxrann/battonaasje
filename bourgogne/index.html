@@ -3,10 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Piemonte — Battonaasje</title>
-<meta name="description" content="Piemonte — gecureerde fijne wijnen uit Italië.">
+<title>Bourgogne — Battonaasje</title>
+<meta name="description" content="Bourgogne — gecureerde fijne wijnen uit Frankrijk. Chablis, Bourgogne en meer uit de Battonaasje-selectie.">
+<meta property="og:title" content="Bourgogne — Battonaasje">
+<meta property="og:description" content="Ontdek Bourgogne: Chardonnay, Pinot Noir en een gecureerde selectie waaronder Grand Cru uit Chablis.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://battonaasje.nl/bourgogne/">
+<meta property="og:image" content="https://battonaasje.nl/images/chablis-grand-cru-blanchot-1991-defaix.jpg">
+<meta property="og:locale" content="nl_NL">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Bourgogne — Battonaasje">
+<meta name="twitter:description" content="Ontdek Bourgogne: Chardonnay, Pinot Noir en een gecureerde selectie waaronder Grand Cru uit Chablis.">
+<meta name="twitter:image" content="https://battonaasje.nl/images/chablis-grand-cru-blanchot-1991-defaix.jpg">
 <meta name="theme-color" content="#1a1714">
-<link rel="canonical" href="https://battonaasje.nl/piemonte.html">
+<link rel="canonical" href="https://battonaasje.nl/bourgogne/">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap">
@@ -135,6 +145,82 @@
     line-height: 1.5;
   }
 
+  /* Regio teaser — tap/click foto voor detailpagina */
+  .region-selection {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 56px 96px;
+  }
+  .region-selection-header {
+    display: flex;
+    align-items: baseline;
+    gap: 24px;
+    margin-bottom: 40px;
+    border-top: 1px solid var(--ghost);
+    padding-top: 56px;
+  }
+  .region-selection-num {
+    font-family: 'Courier Prime', monospace;
+    font-size: 11px;
+    letter-spacing: 4px;
+    color: var(--faded);
+  }
+  .region-selection-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: 32px;
+    letter-spacing: 5px;
+    color: var(--ink);
+    text-transform: uppercase;
+  }
+  .region-wine-link {
+    display: block;
+    max-width: 380px;
+    text-decoration: none;
+    color: inherit;
+  }
+  .region-wine-link:focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 6px;
+  }
+  .region-wine-frame {
+    background: var(--aged);
+    aspect-ratio: 3/4;
+    overflow: hidden;
+    transition: opacity 0.25s ease;
+  }
+  .region-wine-link:hover .region-wine-frame { opacity: 0.9; }
+  .region-wine-frame img {
+    width: 100%; height: 100%; object-fit: cover; display: block;
+  }
+  .region-wine-caption {
+    margin-top: 18px;
+    font-size: 9px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--faded);
+  }
+  .region-wine-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: 26px;
+    letter-spacing: 3px;
+    color: var(--ink);
+    margin-top: 8px;
+    line-height: 1.2;
+  }
+  .region-wine-cta {
+    display: inline-block;
+    margin-top: 16px;
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    border-bottom: 1px solid var(--ghost);
+    padding-bottom: 2px;
+  }
+  .region-wine-link:hover .region-wine-cta { color: var(--ink); border-bottom-color: var(--ink); }
+
   footer {
     border-top: 1px solid var(--ghost);
     padding: 40px 56px;
@@ -161,10 +247,13 @@
 
   @media (max-width: 768px) {
     nav { padding: 16px 24px; }
-    .region-hero { padding: 120px 24px 60px; min-height: 60vh; }
+    .region-hero { padding: 120px 24px 50px; min-height: 50vh; }
     .region-hero-title { letter-spacing: 4px; }
+    .region-selection { padding: 0 24px 72px; }
+    .region-selection-header { padding-top: 40px; margin-bottom: 28px; }
+    .region-selection-title { font-size: 22px; letter-spacing: 4px; }
+    .region-wine-link { max-width: 100%; }
     footer { flex-direction: column; gap: 16px; text-align: center; padding: 32px 24px; }
-    .footer-legal { padding: 16px 24px 24px; gap: 14px; }
   }
 </style>
 </head>
@@ -201,18 +290,29 @@
 <main id="main" inert>
 
 <nav>
-  <a href="index.html" class="nav-logo">BATTONAASJE</a>
-  <a href="index.html#regions" class="nav-back">&larr; Terug naar regio's</a>
+  <a href="/" class="nav-logo">BATTONAASJE</a>
+  <a href="/#regions" class="nav-back">&larr; Terug naar regio's</a>
 </nav>
 
 <section class="region-hero">
-  <p class="region-hero-tag">Italië</p>
-  <h1 class="region-hero-title">Piemonte</h1>
-  <p class="region-hero-sub">Het land van Nebbiolo — Barolo, Barbaresco en alles wat in de mist groeit.</p>
-  <div class="region-placeholder">
-    <div class="region-placeholder-label">Binnenkort</div>
-    <p class="region-placeholder-text">De selectie uit Piemonte wordt hier verzameld. Een handvol flessen, met zorg uitgekozen.</p>
+  <p class="region-hero-tag">Frankrijk</p>
+  <h1 class="region-hero-title">Bourgogne</h1>
+  <p class="region-hero-sub">De bakermat van Chardonnay en Pinot Noir.</p>
+</section>
+
+<section class="region-selection" aria-labelledby="selection-heading">
+  <div class="region-selection-header">
+    <span class="region-selection-num">01</span>
+    <h2 id="selection-heading" class="region-selection-title">De Selectie</h2>
   </div>
+  <a href="/chablis-grand-cru-blanchot-1991/" class="region-wine-link" aria-label="Chablis Grand Cru Blanchot 1991 — volledige fiche bekijken">
+    <div class="region-wine-frame">
+      <img src="/images/chablis-grand-cru-blanchot-1991-defaix.jpg" alt="" width="452" height="452" loading="lazy" decoding="async">
+    </div>
+    <p class="region-wine-caption">Chablis Grand Cru · Blanchot</p>
+    <p class="region-wine-name">Daniël-Étienne Defaix · 1991</p>
+    <span class="region-wine-cta">Bekijk proefnotities en terroir</span>
+  </a>
 </section>
 
 <footer>
@@ -221,13 +321,13 @@
   <a href="https://instagram.com/battonaasje" target="_blank" rel="noopener noreferrer">@battonaasje</a>
 </footer>
 <div class="footer-legal">
-  <a href="algemene-voorwaarden.html">Algemene voorwaarden</a>
+  <a href="/algemene-voorwaarden/">Algemene voorwaarden</a>
   <span class="footer-legal-sep">·</span>
-  <a href="privacybeleid.html">Privacybeleid</a>
+  <a href="/privacybeleid/">Privacybeleid</a>
   <span class="footer-legal-sep">·</span>
-  <a href="retourbeleid.html">Retourbeleid</a>
+  <a href="/retourbeleid/">Retourbeleid</a>
   <span class="footer-legal-sep">·</span>
-  <a href="cookiebeleid.html">Cookiebeleid</a>
+  <a href="/cookiebeleid/">Cookiebeleid</a>
 </div>
 
 </main>

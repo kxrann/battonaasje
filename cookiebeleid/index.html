@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Retourbeleid — Battonaasje</title>
+<title>Cookiebeleid — Battonaasje</title>
 <meta name="robots" content="noindex,nofollow">
 <meta name="theme-color" content="#1a1714">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -42,12 +42,11 @@
   .legal-section a { color: var(--ink); }
   .legal-section strong { color: var(--ink); }
 
-  .legal-callout {
-    border: 1px solid var(--aged);
-    padding: 24px 28px;
-    margin-bottom: 14px;
-  }
-  .legal-callout p { margin-bottom: 0; }
+  .cookie-table { width: 100%; border-collapse: collapse; margin-bottom: 14px; }
+  .cookie-table th { font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: var(--ghost); text-align: left; padding: 10px 0; border-bottom: 1px solid var(--aged); font-weight: 400; }
+  .cookie-table td { font-size: 13px; line-height: 1.7; color: var(--accent); padding: 12px 0; border-bottom: 1px solid var(--aged); vertical-align: top; }
+  .cookie-table td:first-child { font-family: 'Courier Prime', monospace; color: var(--ink); padding-right: 24px; white-space: nowrap; }
+  .cookie-table tr:last-child td { border-bottom: none; }
 
   footer {
     border-top: 1px solid var(--ghost);
@@ -74,59 +73,84 @@
     main { padding: 100px 24px 60px; }
     footer { flex-direction: column; gap: 16px; text-align: center; padding: 32px 24px; }
     .footer-legal { padding: 16px 24px 28px; gap: 14px; }
+    .cookie-table td:first-child { white-space: normal; }
   }
 </style>
 </head>
 <body>
 
 <nav>
-  <a href="index.html" class="nav-logo">BATTONAASJE</a>
-  <a href="index.html" class="nav-back">&larr; Terug</a>
+  <a href="/" class="nav-logo">BATTONAASJE</a>
+  <a href="/" class="nav-back">&larr; Terug</a>
 </nav>
 
 <main>
   <p class="legal-tag">Juridisch</p>
-  <h1 class="legal-title">Retour&shy;beleid</h1>
+  <h1 class="legal-title">Cookie&shy;beleid</h1>
   <p class="legal-updated">Laatste update: mei 2026</p>
 
   <div class="legal-section">
-    <h2>Bedenktijd</h2>
-    <p>U heeft het recht om een aankoop binnen <strong>14 dagen</strong> na ontvangst te annuleren, zonder opgave van redenen. Dit is het wettelijk herroepingsrecht op grond van de Richtlijn 2011/83/EU en artikel 6:230o BW.</p>
-    <p>Om gebruik te maken van uw herroepingsrecht dient u Battonaasje binnen de bedenktijd te informeren via:</p>
+    <h2>Wat zijn cookies?</h2>
+    <p>Cookies zijn kleine tekstbestanden die een website op uw apparaat plaatst. Ze worden gebruikt om uw voorkeuren te onthouden, de website correct te laten functioneren, of uw gedrag te analyseren.</p>
+    <p>Battonaasje maakt bewust een minimaal gebruik van cookies. Wij plaatsen geen tracking- of advertentiecookies.</p>
+  </div>
+
+  <div class="legal-section">
+    <h2>Welke cookies gebruikt Battonaasje?</h2>
+    <table class="cookie-table">
+      <thead>
+        <tr>
+          <th>Naam</th>
+          <th>Type</th>
+          <th>Doel &amp; bewaartermijn</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>battonaasje_private_verified</td>
+          <td>Functioneel (sessionStorage)</td>
+          <td>Onthoudt dat u de toegangscode correct heeft ingevoerd, zodat u deze niet opnieuw hoeft in te voeren per sessie. Wordt verwijderd zodra u het tabblad sluit.</td>
+        </tr>
+        <tr>
+          <td>battonaasje_age_verified</td>
+          <td>Functioneel (sessionStorage)</td>
+          <td>Onthoudt dat u de leeftijdsverificatie (18+) heeft doorlopen. Wordt verwijderd zodra u het tabblad sluit.</td>
+        </tr>
+        <tr>
+          <td>Google Fonts</td>
+          <td>Extern verzoek (geen cookie)</td>
+          <td>De website laadt lettertypen via Google Fonts (fonts.googleapis.com). Hierbij wordt uw IP-adres doorgezonden aan Google. Er worden geen cookies geplaatst, maar Google kan uw IP-adres verwerken conform hun privacybeleid.</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>Battonaasje gebruikt geen analytics-, marketing- of sociale-mediacookies.</p>
+  </div>
+
+  <div class="legal-section">
+    <h2>SessionStorage vs. cookies</h2>
+    <p>De verificatiegegevens worden opgeslagen in <strong>sessionStorage</strong>, niet in een cookie. SessionStorage is gebonden aan het huidige browsertabblad en wordt automatisch verwijderd zodra u het tabblad of de browser sluit. Er vindt geen overdracht naar onze servers plaats.</p>
+  </div>
+
+  <div class="legal-section">
+    <h2>Google Fonts en privacy</h2>
+    <p>Battonaasje laadt lettertypen van Google Fonts. Dit houdt in dat bij het bezoeken van onze website een verzoek wordt gedaan aan de servers van Google, waarbij uw IP-adres wordt doorgegeven. Battonaasje heeft hierover geen controle. Raadpleeg het <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">privacybeleid van Google</a> voor meer informatie.</p>
+    <p>Als u dit wilt voorkomen, kunt u een browserextensie gebruiken die externe lettertypen blokkeert.</p>
+  </div>
+
+  <div class="legal-section">
+    <h2>Cookiebeheer</h2>
+    <p>Omdat wij uitsluitend functionele sessiegegevens gebruiken — die technisch noodzakelijk zijn voor het correct functioneren van de website — is toestemming hiervoor niet verplicht op grond van de Telecommunicatiewet.</p>
+    <p>U kunt sessionStorage en cookies altijd wissen via de instellingen van uw browser:</p>
     <ul>
-      <li>WhatsApp: +31 6 87 44 13 53</li>
-      <li>Het contactformulier op battonaasje.nl</li>
+      <li>Chrome: Instellingen → Privacy en beveiliging → Browsegegevens wissen</li>
+      <li>Firefox: Instellingen → Privacy en beveiliging → Cookies en sitegegevens</li>
+      <li>Safari: Instellingen → Privacy → Websitegegevens beheren</li>
     </ul>
   </div>
 
   <div class="legal-section">
-    <h2>Uitzonderingen</h2>
-    <div class="legal-callout">
-      <p>Het herroepingsrecht is <strong>niet</strong> van toepassing op flessen die zijn geopend of waarvan het verzegeling is verbroken. Ongeopende flessen kunnen worden geretourneerd, mits in originele staat.</p>
-    </div>
-    <p>Wijn is een levensmiddel dat gevoelig is voor temperatuur, licht en transport. Battonaasje verzoekt u bij ontvangst de zending direct te controleren op zichtbare schade.</p>
-  </div>
-
-  <div class="legal-section">
-    <h2>Beschadigde of onjuiste levering</h2>
-    <p>Heeft u een beschadigde of onjuiste fles ontvangen? Meld dit binnen <strong>48 uur na ontvangst</strong> via WhatsApp (+31 6 87 44 13 53), met foto's van de schade en de verpakking.</p>
-    <p>Battonaasje zal in overleg met u een passende oplossing bieden: vervanging, creditering of restitutie van het aankoopbedrag.</p>
-  </div>
-
-  <div class="legal-section">
-    <h2>Retourzending</h2>
-    <p>Na goedkeuring van uw retourverzoek ontvangt u instructies voor de retourzending. De kosten voor retourzending zijn voor rekening van de koper, tenzij sprake is van een onjuiste of beschadigde levering door Battonaasje.</p>
-    <p>Producten dienen deugdelijk verpakt te worden geretourneerd. Battonaasje is niet aansprakelijk voor schade tijdens de retourlevering.</p>
-  </div>
-
-  <div class="legal-section">
-    <h2>Terugbetaling</h2>
-    <p>Na ontvangst en inspectie van de retourzending zal Battonaasje het aankoopbedrag binnen <strong>14 dagen</strong> terugstorten via dezelfde betaalmethode als waarmee de oorspronkelijke betaling is gedaan.</p>
-  </div>
-
-  <div class="legal-section">
     <h2>Vragen?</h2>
-    <p>Neem gerust contact op via WhatsApp (+31 6 87 44 13 53) of het contactformulier op battonaasje.nl. Wij helpen u graag verder.</p>
+    <p>Heeft u vragen over ons cookiebeleid? Neem contact op via WhatsApp (+31 6 87 44 13 53) of het contactformulier op battonaasje.nl.</p>
   </div>
 </main>
 
@@ -136,13 +160,13 @@
   <a href="https://instagram.com/battonaasje" target="_blank" rel="noopener noreferrer">@battonaasje</a>
 </footer>
 <div class="footer-legal">
-  <a href="algemene-voorwaarden.html">Algemene voorwaarden</a>
+  <a href="/algemene-voorwaarden/">Algemene voorwaarden</a>
   <span class="footer-legal-sep">·</span>
-  <a href="privacybeleid.html">Privacybeleid</a>
+  <a href="/privacybeleid/">Privacybeleid</a>
   <span class="footer-legal-sep">·</span>
-  <a href="retourbeleid.html" class="current">Retourbeleid</a>
+  <a href="/retourbeleid/">Retourbeleid</a>
   <span class="footer-legal-sep">·</span>
-  <a href="cookiebeleid.html">Cookiebeleid</a>
+  <a href="/cookiebeleid/" class="current">Cookiebeleid</a>
 </div>
 
 </body>
