@@ -402,6 +402,59 @@
   .cookie-btn-decline:hover { border-color: rgba(242,237,228,0.4); color: rgba(242,237,228,0.55); }
   @media (max-width: 480px) { .nav-back { max-width: 22px; letter-spacing: 0; } }
   @media (max-width: 768px) { .cookie-banner { flex-direction: column; padding: 16px 24px; align-items: flex-start; gap: 14px; } .cookie-banner-actions { width: 100%; } .cookie-btn { flex: 1; text-align: center; } }
+
+  /* TERROIR MAP ANIMATIONS */
+  @keyframes terroir-ping {
+    0%   { transform: scale(1); opacity: 0.5; }
+    100% { transform: scale(5.5); opacity: 0; }
+  }
+  @keyframes terroir-dot-pop {
+    0%   { transform: scale(0); opacity: 0; }
+    65%  { transform: scale(1.35); }
+    100% { transform: scale(1); }
+  }
+  @keyframes terroir-march {
+    to { stroke-dashoffset: -3.6; }
+  }
+  @keyframes terroir-dot-breathe {
+    0%, 100% { transform: scale(1); }
+    50%       { transform: scale(1.55); opacity: 0.6; }
+  }
+  @keyframes terroir-slider-in {
+    from { left: 0%; opacity: 0; }
+  }
+  @keyframes terroir-fade-up {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: none; }
+  }
+
+  .terroir-ping-ring {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: terroir-ping 2.4s ease-out infinite;
+  }
+  .terroir-region {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: terroir-dot-pop 0.7s cubic-bezier(0.22,1,0.36,1) 0.6s both;
+  }
+  .terroir-pin-line {
+    animation: terroir-march 0.9s linear infinite;
+  }
+  .terroir-pin-dot {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: terroir-dot-breathe 2.4s ease-in-out 1.2s infinite;
+  }
+  .terroir-marker {
+    animation: terroir-slider-in 1s cubic-bezier(0.22,1,0.36,1) 0.4s both;
+  }
+  .terroir-data {
+    animation: terroir-fade-up 0.7s ease 0.2s both;
+  }
+  .terroir-types {
+    animation: terroir-fade-up 0.5s ease 1.4s both;
+  }
 </style>
 </head>
 <body>
@@ -474,6 +527,7 @@
             </g>
             <circle class="terroir-region-glow" cx="645" cy="365" r="48"/>
             <circle class="terroir-region" cx="645" cy="365" r="18"/>
+            <circle class="terroir-ping-ring" cx="645" cy="365" r="18" fill="none" stroke="var(--ink)" stroke-width="0.8"/>
             <line class="terroir-pin-line" x1="645" y1="365" x2="900" y2="180"/>
             <circle class="terroir-pin-dot" cx="900" cy="180" r="7"/>
           </svg>
