@@ -157,6 +157,24 @@
     line-height: 1.5;
   }
 
+  /* WINE SELECTION */
+  .region-selection { max-width: 1280px; margin: 0 auto; padding: 0 56px 96px; }
+  .region-selection-header { display: flex; align-items: baseline; gap: 24px; margin-bottom: 40px; border-top: 1px solid var(--ghost); padding-top: 56px; }
+  .region-selection-num { font-family: 'Courier Prime', monospace; font-size: 11px; letter-spacing: 4px; color: var(--faded); }
+  .region-selection-title { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: 32px; letter-spacing: 5px; color: var(--ink); text-transform: uppercase; }
+  .region-wine-link { display: block; max-width: 380px; text-decoration: none; color: inherit; }
+  .region-wine-link:focus-visible { outline: 2px solid var(--ink); outline-offset: 6px; }
+  .region-wine-frame { background: var(--aged); aspect-ratio: 3/4; overflow: hidden; transition: opacity 0.25s ease; }
+  .region-wine-link:hover .region-wine-frame { opacity: 0.9; }
+  .region-wine-frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .img-placeholder { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; background: var(--aged); border: 1px solid var(--faded); color: var(--faded); }
+  .img-placeholder svg { width: 32px; height: 32px; opacity: 0.6; }
+  .img-placeholder-label { font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: var(--faded); }
+  .region-wine-caption { margin-top: 18px; font-size: 9px; letter-spacing: 4px; text-transform: uppercase; color: var(--faded); }
+  .region-wine-name { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: 26px; letter-spacing: 3px; color: var(--ink); margin-top: 8px; line-height: 1.2; }
+  .region-wine-cta { display: inline-block; margin-top: 16px; font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); border-bottom: 1px solid var(--ghost); padding-bottom: 2px; }
+  .region-wine-link:hover .region-wine-cta { color: var(--ink); border-bottom-color: var(--ink); }
+
   footer {
     border-top: 1px solid var(--ghost);
     padding: 40px 56px;
@@ -190,6 +208,10 @@
     nav { padding: 16px 24px; }
     .region-hero { padding: 120px 24px 60px; min-height: 60vh; }
     .region-hero-title { letter-spacing: 4px; }
+    .region-selection { padding: 0 24px 72px; }
+    .region-selection-header { padding-top: 40px; margin-bottom: 28px; }
+    .region-selection-title { font-size: 22px; letter-spacing: 4px; }
+    .region-wine-link { max-width: min(480px, 100%); margin: 0 auto; }
     footer { flex-direction: column; gap: 16px; text-align: center; padding: 32px 24px; }
     .footer-legal { padding: 16px 24px 24px; gap: 14px; }
   }
@@ -252,6 +274,24 @@
   <p class="region-hero-sub">Krijtbodems, mousserende klassiekers en groei­ende grower-namen.</p>
 </section>
 </div>
+
+<section class="region-selection" aria-labelledby="selection-heading">
+  <div class="region-selection-header">
+    <span class="region-selection-num">01</span>
+    <h2 id="selection-heading" class="region-selection-title">De Selectie</h2>
+  </div>
+  <a href="/frerejean-freres-champagne/" class="region-wine-link" aria-label="Frerejean Frères Champagne — volledige fiche bekijken">
+    <div class="region-wine-frame">
+      <div class="img-placeholder">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2h8l1 7c0 3.31-2.69 6-6 6s-6-2.69-6-6L8 2z"/><line x1="12" y1="15" x2="12" y2="22"/><line x1="8" y1="22" x2="16" y2="22"/></svg>
+        <span class="img-placeholder-label">Foto volgt</span>
+      </div>
+    </div>
+    <p class="region-wine-caption">Champagne · Côte des Blancs</p>
+    <p class="region-wine-name">Frerejean Frères</p>
+    <span class="region-wine-cta">Bekijk proefnotities en terroir</span>
+  </a>
+</section>
 
 <footer>
   <div class="footer-logo">BATTONAASJE</div>
