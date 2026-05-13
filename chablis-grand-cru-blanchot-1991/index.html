@@ -412,42 +412,30 @@
   .photo-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto auto;
     gap: 3px;
-    margin-top: 0;
   }
   .photo-slot {
-    display: block;
-    position: relative;
-    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
     background: var(--aged);
-    overflow: hidden;
+    border: 1px solid var(--faded);
   }
   .photo-slot:nth-child(1) { aspect-ratio: 4/3; }
   .photo-slot:nth-child(2) { aspect-ratio: 3/4; grid-row: span 2; }
   .photo-slot:nth-child(3) { aspect-ratio: 4/3; }
   .photo-slot:nth-child(4) { aspect-ratio: 4/3; }
-  .photo-file-input {
-    position: absolute; inset: 0; opacity: 0;
-    width: 100%; height: 100%; cursor: pointer; z-index: 1;
-  }
-  .photo-ph {
-    position: absolute; inset: 0;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    gap: 14px; border: 1px solid var(--ghost);
-    transition: border-color 0.2s, background 0.2s;
-  }
-  .photo-slot:hover .photo-ph { border-color: var(--faded); background: var(--paper); }
-  .photo-ph-icon { width: 26px; height: 26px; opacity: 0.4; color: var(--ink); transition: opacity 0.2s; }
-  .photo-slot:hover .photo-ph-icon { opacity: 0.7; }
-  .photo-ph-label { font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: var(--ghost); transition: color 0.2s; }
-  .photo-slot:hover .photo-ph-label { color: var(--faded); }
-  .photo-img { width: 100%; height: 100%; object-fit: cover; display: none; position: absolute; inset: 0; }
-  .photo-img.loaded { display: block; }
+  .photo-ph-icon { width: 32px; height: 32px; opacity: 0.5; color: var(--ink); }
+  .photo-ph-label { font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: var(--faded); }
   @media (max-width: 768px) {
     .gallery-section { padding: 0 24px 64px; }
-    .photo-grid { grid-template-columns: 1fr 1fr; gap: 2px; }
-    .photo-slot:nth-child(2) { grid-row: span 1; aspect-ratio: 4/3; }
+    .photo-grid { grid-template-columns: 1fr; gap: 2px; }
+    .photo-slot:nth-child(1),
+    .photo-slot:nth-child(2),
+    .photo-slot:nth-child(3),
+    .photo-slot:nth-child(4) { aspect-ratio: 4/3; grid-row: span 1; min-height: 200px; }
   }
 
   /* TERROIR MAP ANIMATIONS */
@@ -659,41 +647,25 @@
   </div>
   <div class="photo-grid">
 
-    <label class="photo-slot" for="photo-1">
-      <input type="file" id="photo-1" accept="image/*" class="photo-file-input">
-      <div class="photo-ph">
-        <svg class="photo-ph-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="6" width="22" height="15" rx="2"/><path d="M16 6l-1.5-3h-5L8 6"/><circle cx="12" cy="13.5" r="3.5"/></svg>
-        <span class="photo-ph-label">Foto toevoegen</span>
-      </div>
-      <img class="photo-img" alt="">
-    </label>
+    <div class="photo-slot">
+      <svg class="photo-ph-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2h8l1 7c0 3.31-2.69 6-6 6s-6-2.69-6-6L8 2z"/><line x1="12" y1="15" x2="12" y2="22"/><line x1="8" y1="22" x2="16" y2="22"/></svg>
+      <span class="photo-ph-label">Foto volgt</span>
+    </div>
 
-    <label class="photo-slot" for="photo-2">
-      <input type="file" id="photo-2" accept="image/*" class="photo-file-input">
-      <div class="photo-ph">
-        <svg class="photo-ph-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="6" width="22" height="15" rx="2"/><path d="M16 6l-1.5-3h-5L8 6"/><circle cx="12" cy="13.5" r="3.5"/></svg>
-        <span class="photo-ph-label">Foto toevoegen</span>
-      </div>
-      <img class="photo-img" alt="">
-    </label>
+    <div class="photo-slot">
+      <svg class="photo-ph-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2h8l1 7c0 3.31-2.69 6-6 6s-6-2.69-6-6L8 2z"/><line x1="12" y1="15" x2="12" y2="22"/><line x1="8" y1="22" x2="16" y2="22"/></svg>
+      <span class="photo-ph-label">Foto volgt</span>
+    </div>
 
-    <label class="photo-slot" for="photo-3">
-      <input type="file" id="photo-3" accept="image/*" class="photo-file-input">
-      <div class="photo-ph">
-        <svg class="photo-ph-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="6" width="22" height="15" rx="2"/><path d="M16 6l-1.5-3h-5L8 6"/><circle cx="12" cy="13.5" r="3.5"/></svg>
-        <span class="photo-ph-label">Foto toevoegen</span>
-      </div>
-      <img class="photo-img" alt="">
-    </label>
+    <div class="photo-slot">
+      <svg class="photo-ph-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2h8l1 7c0 3.31-2.69 6-6 6s-6-2.69-6-6L8 2z"/><line x1="12" y1="15" x2="12" y2="22"/><line x1="8" y1="22" x2="16" y2="22"/></svg>
+      <span class="photo-ph-label">Foto volgt</span>
+    </div>
 
-    <label class="photo-slot" for="photo-4">
-      <input type="file" id="photo-4" accept="image/*" class="photo-file-input">
-      <div class="photo-ph">
-        <svg class="photo-ph-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="6" width="22" height="15" rx="2"/><path d="M16 6l-1.5-3h-5L8 6"/><circle cx="12" cy="13.5" r="3.5"/></svg>
-        <span class="photo-ph-label">Foto toevoegen</span>
-      </div>
-      <img class="photo-img" alt="">
-    </label>
+    <div class="photo-slot">
+      <svg class="photo-ph-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2h8l1 7c0 3.31-2.69 6-6 6s-6-2.69-6-6L8 2z"/><line x1="12" y1="15" x2="12" y2="22"/><line x1="8" y1="22" x2="16" y2="22"/></svg>
+      <span class="photo-ph-label">Foto volgt</span>
+    </div>
 
   </div>
 </section>
@@ -825,22 +797,6 @@
 <script>
 (function(){var c=localStorage.getItem('battonaasje_cookie_consent');if(!c)document.getElementById('cookie-banner').classList.add('visible');})();
 function cookieConsent(c){localStorage.setItem('battonaasje_cookie_consent',c);document.getElementById('cookie-banner').classList.remove('visible');}
-document.querySelectorAll('.photo-file-input').forEach(function(input){
-  input.addEventListener('change',function(){
-    if(!this.files||!this.files[0])return;
-    var slot=this.closest('.photo-slot');
-    var img=slot.querySelector('.photo-img');
-    var ph=slot.querySelector('.photo-ph');
-    var reader=new FileReader();
-    reader.onload=function(e){
-      img.src=e.target.result;
-      img.classList.add('loaded');
-      ph.style.opacity='0';
-      ph.style.pointerEvents='none';
-    };
-    reader.readAsDataURL(this.files[0]);
-  });
-});
 </script>
 </body>
 </html>
