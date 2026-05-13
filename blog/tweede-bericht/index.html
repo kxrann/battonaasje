@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<!-- ═══════════════════════════════════════════════════════════
+     NIEUW BLOGBERICHT AANMAKEN
+     1. Dupliceer de map /blog/tweede-bericht/ en geef de nieuwe map een slug,
+        bijv. /blog/mijn-onderwerp/
+     2. Pas de onderstaande regels aan:
+        — <title>, og:title, og:description, og:url, canonical
+        — .post-date, .post-category, h1.post-title, .post-subtitle
+        — De afbeelding (of laat de placeholder staan)
+        — De inhoud van .post-body
+     3. Voeg een kaart toe in index.html (zie commentaar daar)
+     ═══════════════════════════════════════════════════════════ -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ut enim ad minim veniam quis nostrud — Battonaasje</title>
+<meta name="description" content="Lorem ipsum dolor sit amet, consectetur adipiscing elit.">
+<meta property="og:title" content="Lorem ipsum dolor sit amet — Battonaasje">
+<meta property="og:description" content="Lorem ipsum dolor sit amet, consectetur adipiscing elit.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://battonaasje.nl/blog/tweede-bericht/">
+<meta property="og:locale" content="nl_NL">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#1a1714">
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
+<meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+<meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=()">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src https://*.workers.dev; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none';">
+<link rel="canonical" href="https://battonaasje.nl/blog/tweede-bericht/">
+<link rel="stylesheet" href="/fonts/fonts.css">
+<style>
+  :root { --ink: #1a1714; --paper: #f2ede4; --aged: #e8e2d6; --ghost: #c8c0b0; --faded: #8c8478; --accent: #3a3528; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--paper); color: var(--ink); font-family: 'Courier Prime', 'Courier New', monospace; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  :focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+  #private-gate :focus-visible, #age-gate :focus-visible { outline-color: #f2ede4; }
+
+  /* PRIVATE GATE */
+  #private-gate { position: fixed; inset: 0; background: #1a1714; z-index: 99999; display: flex; align-items: center; justify-content: center; padding: 24px; }
+  #private-gate.hidden { display: none; }
+  .private-gate-inner { max-width: 520px; width: 100%; text-align: center; }
+  .private-gate-logo { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: 36px; letter-spacing: 12px; color: #f2ede4; margin-bottom: 8px; font-kerning: none; font-variant-ligatures: none; font-feature-settings: "kern" 0; }
+  .private-gate-line { width: 40px; height: 1px; background: #3a3528; margin: 0 auto 28px; }
+  .private-gate-sub { font-size: 15px; color: #3a3528; letter-spacing: 2px; margin-bottom: 28px; }
+  .private-gate-input { width: 100%; background: transparent; border: none; border-bottom: 1px solid #3a3528; padding: 16px 8px; font-family: 'Courier Prime', monospace; font-size: 24px; color: #f2ede4; text-align: center; letter-spacing: 8px; outline: none; margin-bottom: 20px; }
+  .private-gate-input::placeholder { color: #3a3528; font-size: 15px; letter-spacing: 4px; }
+  .private-gate-input:focus { border-color: #8c8478; }
+  .private-gate-btn { width: 100%; background: #f2ede4; color: #1a1714; border: none; padding: 18px; font-family: 'Courier Prime', monospace; font-size: 14px; letter-spacing: 4px; text-transform: uppercase; cursor: pointer; margin-bottom: 14px; }
+  .private-gate-btn:hover { opacity: 0.85; }
+  .private-gate-error { font-size: 22px; letter-spacing: 4px; color: #a05040; text-transform: uppercase; min-height: 18px; }
+
+  /* AGE GATE */
+  #age-gate { position: fixed; inset: 0; background: #1a1714; z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 24px; }
+  #age-gate.hidden { display: none; }
+  .age-gate-inner { max-width: 480px; width: 100%; text-align: center; }
+  .age-gate-logo { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: 36px; letter-spacing: 14px; color: #f2ede4; margin-bottom: 8px; font-kerning: none; font-variant-ligatures: none; font-feature-settings: "kern" 0; }
+  .age-gate-line { width: 60px; height: 1px; background: #8c8478; margin: 0 auto 32px; }
+  .age-gate-title { font-size: 11px; letter-spacing: 4px; text-transform: uppercase; color: #8c8478; margin-bottom: 12px; }
+  .age-gate-sub { font-size: 13px; color: #c8c0b0; font-style: italic; margin-bottom: 40px; line-height: 1.8; }
+  .age-gate-label { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: #8c8478; display: block; margin-bottom: 10px; text-align: left; }
+  .age-gate-inputs { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 24px; }
+  .age-gate-input { background: transparent; border: none; border-bottom: 1px solid #3a3528; padding: 12px 8px; font-family: 'Courier Prime', monospace; font-size: 18px; color: #f2ede4; text-align: center; outline: none; width: 100%; }
+  .age-gate-input::placeholder { color: #3a3528; font-size: 12px; letter-spacing: 2px; }
+  .age-gate-input:focus { border-color: #8c8478; }
+  .age-gate-btn { width: 100%; background: #f2ede4; color: #1a1714; border: none; padding: 16px; font-family: 'Courier Prime', monospace; font-size: 11px; letter-spacing: 4px; text-transform: uppercase; cursor: pointer; margin-bottom: 16px; }
+  .age-gate-btn:hover { opacity: 0.85; }
+  .age-gate-error { font-size: 11px; letter-spacing: 2px; color: #a05040; font-style: italic; min-height: 20px; }
+
+  /* NAV */
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; padding: 22px 56px; background: rgba(242,237,228,0.92); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid rgba(200,192,176,0.5); }
+  .nav-logo { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: 20px; letter-spacing: 12px; color: var(--ink); text-decoration: none; font-kerning: none; font-variant-ligatures: none; font-feature-settings: "kern" 0; text-rendering: optimizeSpeed; }
+  .nav-back { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--faded); text-decoration: none; transition: color 0.2s; }
+  .nav-back:hover { color: var(--ink); }
+
+  /* POST LAYOUT */
+  .post-wrap { max-width: 720px; margin: 0 auto; padding: 140px 56px 80px; }
+
+  .post-meta { display: flex; align-items: center; gap: 16px; margin-bottom: 28px; }
+  .post-date { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--ghost); }
+  .post-meta-sep { color: var(--aged); }
+  .post-category { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--faded); }
+
+  h1.post-title { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: clamp(32px, 6vw, 56px); letter-spacing: 2px; line-height: 1.1; color: var(--ink); margin-bottom: 20px; font-kerning: none; font-variant-ligatures: none; font-feature-settings: "kern" 0; }
+  .post-subtitle { font-size: 15px; line-height: 1.8; color: var(--faded); font-style: italic; margin-bottom: 48px; padding-bottom: 40px; border-bottom: 1px solid var(--aged); }
+
+  /* COVER IMAGE */
+  .post-cover { width: 100%; aspect-ratio: 16/7; background: var(--aged); border: 1px solid var(--faded); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; margin-bottom: 56px; overflow: hidden; }
+  .post-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .post-cover-ph-icon { width: 28px; height: 28px; opacity: 0.45; color: var(--ink); }
+  .post-cover-ph-label { font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: var(--faded); }
+
+  /* BODY */
+  .post-body { display: flex; flex-direction: column; gap: 24px; }
+  .post-body p { font-size: 14px; line-height: 2; color: var(--accent); }
+  .post-body h2 { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: 26px; letter-spacing: 2px; color: var(--ink); margin-top: 16px; padding-top: 32px; border-top: 1px solid var(--aged); }
+  .post-body blockquote { border-left: 2px solid var(--ghost); padding-left: 24px; font-style: italic; color: var(--faded); font-size: 15px; line-height: 1.9; }
+
+  /* FOOTER */
+  .post-footer-nav { max-width: 720px; margin: 64px auto 0; padding: 32px 56px 0; border-top: 1px solid var(--aged); display: flex; justify-content: space-between; align-items: center; }
+  .post-footer-nav a { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--faded); text-decoration: none; transition: color 0.2s; }
+  .post-footer-nav a:hover { color: var(--ink); }
+
+  footer { border-top: 1px solid var(--ghost); padding: 40px 56px; display: flex; justify-content: space-between; align-items: center; font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--faded); margin-top: 40px; }
+  .footer-logo { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: 18px; letter-spacing: 10px; color: var(--ink); font-kerning: none; font-variant-ligatures: none; font-feature-settings: "kern" 0; }
+  footer a { color: var(--faded); text-decoration: none; }
+  footer a:hover { color: var(--ink); }
+  .footer-legal { border-top: 1px solid var(--aged); display: flex; justify-content: center; align-items: center; gap: 20px; padding: 18px 56px 32px; flex-wrap: wrap; }
+  .footer-legal a { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--ghost); text-decoration: none; transition: color 0.2s; }
+  .footer-legal a:hover { color: var(--faded); }
+  .footer-legal-sep { color: var(--aged); font-size: 9px; }
+
+  .cookie-banner { position: fixed; bottom: 0; left: 0; right: 0; z-index: 200; background: var(--ink); border-top: 1px solid rgba(58,53,40,0.8); padding: 18px 56px; display: none; align-items: center; justify-content: space-between; gap: 24px; font-size: 12px; letter-spacing: 1px; line-height: 1.6; }
+  .cookie-banner.visible { display: flex; }
+  .cookie-banner-text { color: rgba(242,237,228,0.72); margin: 0; }
+  .cookie-banner-text a { color: rgba(242,237,228,0.9); }
+  .cookie-banner-actions { display: flex; gap: 10px; flex-shrink: 0; }
+  .cookie-btn { font-family: 'Courier Prime', monospace; font-size: 10px; letter-spacing: 3px; text-transform: uppercase; padding: 8px 18px; border: 1px solid; cursor: pointer; transition: all 0.2s; background: none; }
+  .cookie-btn-accept { border-color: rgba(242,237,228,0.6); color: rgba(242,237,228,0.8); }
+  .cookie-btn-accept:hover { background: rgba(242,237,228,0.1); border-color: rgba(242,237,228,0.9); color: rgba(242,237,228,0.95); }
+  .cookie-btn-decline { border-color: rgba(242,237,228,0.2); color: rgba(242,237,228,0.35); }
+  .cookie-btn-decline:hover { border-color: rgba(242,237,228,0.4); color: rgba(242,237,228,0.55); }
+
+  @media (max-width: 768px) {
+    nav { padding: 16px 24px; }
+    .nav-logo { font-size: 16px; letter-spacing: 8px; }
+    .post-wrap { padding: 100px 24px 60px; }
+    .post-footer-nav { padding: 24px 24px 0; }
+    footer { flex-direction: column; gap: 16px; text-align: center; padding: 32px 24px; }
+    .footer-legal { padding: 16px 24px 28px; gap: 14px; }
+    .cookie-banner { flex-direction: column; padding: 16px 24px; align-items: flex-start; gap: 14px; }
+    .cookie-banner-actions { width: 100%; }
+    .cookie-btn { flex: 1; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<div id="private-gate">
+  <div class="private-gate-inner">
+    <div class="private-gate-logo">BATTONAASJE</div>
+    <div class="private-gate-line"></div>
+    <p class="private-gate-sub">voer de toegangscode in</p>
+    <input class="private-gate-input" id="private-code" type="password" placeholder="· · · · · · · ·" autocomplete="off">
+    <button type="button" class="private-gate-btn" onclick="checkPrivateCode()">Toegang &rarr;</button>
+    <div class="private-gate-error" id="private-error"></div>
+  </div>
+</div>
+
+<div id="age-gate" class="hidden">
+  <div class="age-gate-inner">
+    <div class="age-gate-logo">BATTONAASJE</div>
+    <div class="age-gate-line"></div>
+    <div class="age-gate-title">Verificatie</div>
+    <p class="age-gate-sub">Vul uw geboortedatum in om toegang te krijgen tot deze website.</p>
+    <span class="age-gate-label">Geboortedatum</span>
+    <div class="age-gate-inputs">
+      <input class="age-gate-input" id="age-day" type="number" min="1" max="31" placeholder="DD" autocomplete="bday-day" inputmode="numeric" aria-label="Geboortedag">
+      <input class="age-gate-input" id="age-month" type="number" min="1" max="12" placeholder="MM" autocomplete="bday-month" inputmode="numeric" aria-label="Geboortemaand">
+      <input class="age-gate-input" id="age-year" type="number" min="1900" max="2099" placeholder="JJJJ" autocomplete="bday-year" inputmode="numeric" aria-label="Geboortejaar">
+    </div>
+    <button type="button" class="age-gate-btn" onclick="checkAge()">Bevestigen &rarr;</button>
+    <div class="age-gate-error" id="age-error"></div>
+  </div>
+</div>
+
+<main id="main" inert>
+
+<nav>
+  <a href="/" class="nav-logo">BATTONAASJE</a>
+  <a href="/#blog" class="nav-back">&larr; Blog</a>
+</nav>
+
+<div class="post-wrap">
+
+  <!-- ═══ AANPASSEN: datum, categorie, titel, subtitel ═══ -->
+  <div class="post-meta">
+    <span class="post-date">April 2026</span>
+    <span class="post-meta-sep">·</span>
+    <span class="post-category">Wijn</span>
+  </div>
+  <h1 class="post-title">Ut enim ad minim veniam quis nostrud</h1>
+  <p class="post-subtitle">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua — een korte introductie die de toon van het bericht zet.</p>
+  <!-- ═══════════════════════════════════════════════════ -->
+
+  <!-- OMSLAGFOTO: vervang dit blok door <img src="/images/jouw-foto.jpg" alt="Omschrijving"> als de foto klaar is -->
+  <div class="post-cover">
+    <svg class="post-cover-ph-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="6" width="22" height="15" rx="2"/><path d="M16 6l-1.5-3h-5L8 6"/><circle cx="12" cy="13.5" r="3.5"/></svg>
+    <span class="post-cover-ph-label">Foto volgt</span>
+  </div>
+
+  <!-- ═══ INHOUD: schrijf hier het bericht ═══ -->
+  <div class="post-body">
+
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+
+    <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+
+    <blockquote>
+      Een citaat of treffende zin kan hier staan — iets dat blijft hangen.
+    </blockquote>
+
+    <h2>Een tussenkop</h2>
+
+    <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+
+    <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+
+  </div>
+  <!-- ════════════════════════════════════════ -->
+
+</div>
+
+<div class="post-footer-nav">
+  <a href="/#blog">&larr; Terug naar blog</a>
+  <a href="/">Battonaasje</a>
+</div>
+
+<footer>
+  <div class="footer-logo">BATTONAASJE</div>
+  <span>friesland · nederland · © 2026</span>
+  <a href="https://instagram.com/battonaasje" target="_blank" rel="noopener noreferrer">@battonaasje</a>
+</footer>
+<div class="footer-legal">
+  <a href="/algemene-voorwaarden/">Algemene voorwaarden</a>
+  <span class="footer-legal-sep">·</span>
+  <a href="/privacybeleid/">Privacybeleid</a>
+  <span class="footer-legal-sep">·</span>
+  <a href="/retourbeleid/">Retourbeleid</a>
+  <span class="footer-legal-sep">·</span>
+  <a href="/cookiebeleid/">Cookiebeleid</a>
+</div>
+
+</main>
+
+<script>
+  if (sessionStorage.getItem('battonaasje_private_verified') === 'true') {
+    document.getElementById('private-gate').classList.add('hidden');
+  }
+  if (sessionStorage.getItem('battonaasje_age_verified') === 'true') {
+    document.getElementById('age-gate').classList.add('hidden');
+  } else if (sessionStorage.getItem('battonaasje_private_verified') === 'true') {
+    document.getElementById('age-gate').classList.remove('hidden');
+  }
+
+  function updateMainInert() {
+    var main = document.getElementById('main');
+    if (!main) return;
+    var gated =
+      !document.getElementById('private-gate').classList.contains('hidden') ||
+      !document.getElementById('age-gate').classList.contains('hidden');
+    if (gated) main.setAttribute('inert', '');
+    else main.removeAttribute('inert');
+  }
+
+  var GATE_WORKER = 'https://battonaasje-gate.kyranboi123.workers.dev';
+  var privateWrongAttempts = 0;
+  async function checkPrivateCode() {
+    var input = document.getElementById('private-code').value.trim();
+    var btn = document.querySelector('#private-gate .private-gate-btn');
+    var errorEl = document.getElementById('private-error');
+    btn.disabled = true;
+    btn.textContent = '· · ·';
+    errorEl.textContent = '';
+    try {
+      var res = await fetch(GATE_WORKER + '/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: input })
+      });
+      var data = await res.json();
+      if (data.ok) {
+        document.getElementById('private-gate').classList.add('hidden');
+        sessionStorage.setItem('battonaasje_private_verified', 'true');
+        if (sessionStorage.getItem('battonaasje_age_verified') !== 'true') {
+          document.getElementById('age-gate').classList.remove('hidden');
+        }
+        updateMainInert();
+      } else {
+        privateWrongAttempts++;
+        document.getElementById('private-code').value = '';
+        btn.disabled = false;
+        btn.textContent = 'Toegang →';
+        if (privateWrongAttempts >= 3) {
+          errorEl.textContent = 'toegang geweigerd';
+          document.getElementById('private-code').disabled = true;
+          btn.disabled = true;
+        } else {
+          errorEl.textContent = 'onjuiste code — probeer opnieuw';
+        }
+      }
+    } catch (err) {
+      btn.disabled = false;
+      btn.textContent = 'Toegang →';
+      errorEl.textContent = 'verbindingsfout — probeer opnieuw';
+    }
+  }
+  document.getElementById('private-code').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') checkPrivateCode();
+  });
+
+  document.getElementById('age-day').addEventListener('input', function() {
+    if (this.value.length >= 2) document.getElementById('age-month').focus();
+  });
+  document.getElementById('age-month').addEventListener('input', function() {
+    if (this.value.length >= 2) document.getElementById('age-year').focus();
+  });
+  document.getElementById('age-year').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') checkAge();
+  });
+
+  function checkAge() {
+    var day = parseInt(document.getElementById('age-day').value);
+    var month = parseInt(document.getElementById('age-month').value);
+    var year = parseInt(document.getElementById('age-year').value);
+    if (!day || !month || !year || year < 1900 || year > 2099) {
+      document.getElementById('age-error').textContent = 'Vul een geldige geboortedatum in.';
+      return;
+    }
+    var birthDate = new Date(year, month - 1, day);
+    var today = new Date();
+    var age = today.getFullYear() - birthDate.getFullYear();
+    var m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) age--;
+    if (age >= 18) {
+      document.getElementById('age-gate').classList.add('hidden');
+      sessionStorage.setItem('battonaasje_age_verified', 'true');
+      updateMainInert();
+    } else {
+      document.getElementById('age-error').textContent = 'Helaas — u moet 18 jaar of ouder zijn.';
+    }
+  }
+
+  updateMainInert();
+</script>
+<div id="cookie-banner" class="cookie-banner" role="dialog" aria-label="Cookievoorkeuren">
+  <p class="cookie-banner-text">Wij gebruiken functionele cookies. <a href="/cookiebeleid/">Meer info</a></p>
+  <div class="cookie-banner-actions">
+    <button class="cookie-btn cookie-btn-accept" onclick="cookieConsent('accepted')">Accepteren</button>
+    <button class="cookie-btn cookie-btn-decline" onclick="cookieConsent('declined')">Weigeren</button>
+  </div>
+</div>
+<script>
+(function(){var c=localStorage.getItem('battonaasje_cookie_consent');if(!c)document.getElementById('cookie-banner').classList.add('visible');})();
+function cookieConsent(c){localStorage.setItem('battonaasje_cookie_consent',c);document.getElementById('cookie-banner').classList.remove('visible');}
+</script>
+</body>
+</html>
