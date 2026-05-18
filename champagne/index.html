@@ -11,7 +11,7 @@
 <meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
 <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
 <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=()">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://js.mollie.com https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https://*.r2.dev; connect-src https://*.workers.dev; frame-src https://js.mollie.com https://challenges.cloudflare.com; object-src 'none'; base-uri 'self'; form-action https://formspree.io;">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://js.mollie.com https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https://*.r2.dev; connect-src https://*.workers.dev https://challenges.cloudflare.com; frame-src https://js.mollie.com https://challenges.cloudflare.com; object-src 'none'; base-uri 'self'; form-action https://formspree.io;">
 <link rel="canonical" href="https://battonaasje.nl/champagne/">
 <link rel="stylesheet" href="/fonts/fonts.css">
 <style>
@@ -346,11 +346,23 @@
       slot.setAttribute('data-sitekey', TURNSTILE_SITE_KEY);
       slot.setAttribute('data-callback', 'onTurnstileToken');
       slot.setAttribute('data-theme', 'dark');
+      slot.setAttribute('data-size', 'flexible');
+      slot.setAttribute('data-error-callback', 'onTurnstileError');
+      slot.setAttribute('data-expired-callback', 'onTurnstileExpired');
       var ts = document.createElement('script');
       ts.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
       ts.async = true; ts.defer = true;
       document.head.appendChild(ts);
     }
+    window.onTurnstileError = function() {
+      window.cfTurnstileToken = null;
+      var err = document.getElementById('private-error');
+      if (err) err.textContent = 'beveiligingscheck mislukt — refresh pagina';
+    };
+    window.onTurnstileExpired = function() {
+      window.cfTurnstileToken = null;
+      if (window.turnstile) window.turnstile.reset();
+    };
   }
 
   var GATE_WORKER = 'https://battonaasje-gate.kyranboi123.workers.dev';
