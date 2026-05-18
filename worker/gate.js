@@ -371,8 +371,8 @@ async function resizeImage(file, maxWidth, quality) {
 async function uploadPhoto(input, slug, slot) {
   var file = input.files[0];
   if (!file) return;
-  var tile = input.closest('.slot-tile');
-  tile.classList.add('uploading');
+  var tile = input.parentNode.querySelector('.slot-tile');
+  if (tile) tile.classList.add('uploading');
   try {
     var blob = await resizeImage(file, 1600, 0.85);
     var form = new FormData();
@@ -387,7 +387,7 @@ async function uploadPhoto(input, slug, slot) {
     showToast('Foto opgeslagen');
     setTimeout(function() { location.reload(); }, 400);
   } catch (err) {
-    tile.classList.remove('uploading');
+    if (tile) tile.classList.remove('uploading');
     showToast('Fout: ' + err.message, true);
   }
   input.value = '';
