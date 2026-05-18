@@ -23,10 +23,13 @@ const ALLOWED_ORIGINS = [
 // ─── Rate limiting ────────────────────────────────────────────────────────────
 const verifyAttempts = new Map();
 const trackAttempts  = new Map();
+const readAttempts   = new Map();
 const VERIFY_WINDOW_MS    = 60_000;
 const VERIFY_MAX_ATTEMPTS = 10;
 const TRACK_WINDOW_MS     = 60_000;
 const TRACK_MAX_ATTEMPTS  = 60;   // 1 per second average — generous
+const READ_WINDOW_MS      = 60_000;
+const READ_MAX_ATTEMPTS   = 120;  // 2 per second — protects R2 from spam
 
 function isRateLimited(store, ip, max, windowMs) {
   const now   = Date.now();
@@ -152,6 +155,16 @@ async function getAllPhotos(env) {
 async function handlePhotosRead(request, env) {
   const origin = request.headers.get('Origin') || '';
   const url    = new URL(request.url);
+  const ip     = request.headers.get('CF-Connecting-IP') || 'unknown';
+
+  // Skip rate limit for admin "all" mode — it requires LOG_SECRET anyway
+  if (url.searchParams.get('all') !== '1') {
+    if (isRateLimited(readAttempts, ip, READ_MAX_ATTEMPTS, READ_WINDOW_MS)) {
+      return new Response(JSON.stringify({ ok: false, error: 'rate_limited' }), {
+        status: 429, headers: { 'Content-Type': 'application/json', ...corsHeaders(origin) },
+      });
+    }
+  }
 
   if (url.searchParams.get('all') === '1') {
     const provided = url.searchParams.get('secret') || '';
@@ -433,7 +446,13 @@ async function setStock(env, slug, count) {
 // ── GET /stock — public JSON read ────────────────────────────────────────────
 async function handleStockRead(request, env) {
   const origin = request.headers.get('Origin') || '';
-  const stock  = await getStockMap(env);
+  const ip     = request.headers.get('CF-Connecting-IP') || 'unknown';
+  if (isRateLimited(readAttempts, ip, READ_MAX_ATTEMPTS, READ_WINDOW_MS)) {
+    return new Response(JSON.stringify({ ok: false, error: 'rate_limited' }), {
+      status: 429, headers: { 'Content-Type': 'application/json', ...corsHeaders(origin) },
+    });
+  }
+  const stock = await getStockMap(env);
   return new Response(JSON.stringify({ ok: true, stock }), {
     status: 200,
     headers: {
