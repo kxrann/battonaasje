@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bedankt — Battonaasje</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#1a1714">
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src https://*.workers.dev; object-src 'none'; base-uri 'self';">
+<link rel="canonical" href="https://battonaasje.nl/bedankt/">
+<link rel="stylesheet" href="/fonts/fonts.css">
+<style>
+  :root {
+    --ink: #1a1714;
+    --paper: #f2ede4;
+    --aged: #e8e2d6;
+    --ghost: #c8c0b0;
+    --faded: #8c8478;
+    --accent: #3a3528;
+    --ok: #2a7a3b;
+    --err: #a05040;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Courier Prime', 'Courier New', monospace;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 24px;
+  }
+  .card {
+    max-width: 540px;
+    width: 100%;
+    text-align: center;
+  }
+  .logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: 22px;
+    letter-spacing: 12px;
+    margin-bottom: 6px;
+    font-kerning: none;
+  }
+  .logo-line { width: 60px; height: 1px; background: var(--faded); margin: 0 auto 40px; }
+  .status-icon { font-size: 64px; line-height: 1; margin-bottom: 20px; }
+  .status-icon.ok  { color: var(--ok); }
+  .status-icon.err { color: var(--err); }
+  .status-icon.pending { color: var(--faded); }
+  h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: 38px;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    line-height: 1.15;
+  }
+  .lead {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--accent);
+    margin-bottom: 32px;
+  }
+  .order {
+    background: var(--aged);
+    padding: 24px 28px;
+    text-align: left;
+    margin-bottom: 28px;
+  }
+  .order-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--ghost);
+    font-size: 13px;
+  }
+  .order-line:last-child { border-bottom: none; padding-bottom: 0; }
+  .order-line:first-child { padding-top: 0; }
+  .order-label { font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: var(--faded); }
+  .order-value { color: var(--ink); }
+  .order-total { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-style: italic; }
+  .actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 24px; }
+  .btn {
+    display: inline-block;
+    text-decoration: none;
+    padding: 14px 24px;
+    font-family: 'Courier Prime', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    cursor: pointer;
+    border: none;
+    transition: opacity 0.2s;
+  }
+  .btn-dark { background: var(--ink); color: var(--paper); }
+  .btn-dark:hover { opacity: 0.88; }
+  .btn-light { background: transparent; color: var(--ink); border: 1px solid var(--ghost); }
+  .btn-light:hover { border-color: var(--ink); }
+  .small { font-size: 11px; color: var(--faded); margin-top: 28px; letter-spacing: 1px; }
+  .spinner {
+    width: 28px; height: 28px;
+    border: 2px solid var(--ghost);
+    border-top-color: var(--ink);
+    border-radius: 50%;
+    margin: 0 auto 20px;
+    animation: spin 0.9s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<main class="card" id="card">
+  <div class="logo">BATTONAASJE</div>
+  <div class="logo-line"></div>
+
+  <!-- Loading state (default) -->
+  <div id="state-loading">
+    <div class="spinner"></div>
+    <h1>Even geduld</h1>
+    <p class="lead">We controleren je betaling…</p>
+  </div>
+
+  <!-- Paid -->
+  <div id="state-paid" hidden>
+    <div class="status-icon ok">✓</div>
+    <h1>Bedankt!</h1>
+    <p class="lead">Je bestelling is ontvangen en de betaling is bevestigd.<br>Je krijgt een bevestiging per email.</p>
+    <div class="order">
+      <div class="order-line"><span class="order-label">Wijn</span><span class="order-value" id="paid-name">—</span></div>
+      <div class="order-line"><span class="order-label">Aantal</span><span class="order-value" id="paid-qty">—</span></div>
+      <div class="order-line"><span class="order-label">Email</span><span class="order-value" id="paid-email">—</span></div>
+      <div class="order-line"><span class="order-label">Totaal betaald</span><span class="order-value order-total" id="paid-total">—</span></div>
+    </div>
+    <div class="actions">
+      <a href="/" class="btn btn-dark">Terug naar de collectie</a>
+    </div>
+    <p class="small">We nemen binnen 1 werkdag contact op voor de verzending.</p>
+  </div>
+
+  <!-- Open / Pending -->
+  <div id="state-pending" hidden>
+    <div class="status-icon pending">⋯</div>
+    <h1>Betaling onderweg</h1>
+    <p class="lead">Je betaling wordt nog verwerkt. Dit kan een paar minuten duren — sluit deze pagina niet.</p>
+    <div class="actions">
+      <button type="button" class="btn btn-dark" onclick="poll()">Opnieuw controleren</button>
+      <a href="/" class="btn btn-light">Terug naar de site</a>
+    </div>
+  </div>
+
+  <!-- Failed / Canceled / Expired -->
+  <div id="state-failed" hidden>
+    <div class="status-icon err">✗</div>
+    <h1>Betaling niet voltooid</h1>
+    <p class="lead" id="failed-msg">De betaling is geannuleerd of verlopen. Er is niets afgeschreven.</p>
+    <div class="actions">
+      <a href="/" class="btn btn-dark">Terug naar de collectie</a>
+    </div>
+  </div>
+
+  <!-- Unknown / error -->
+  <div id="state-error" hidden>
+    <div class="status-icon err">!</div>
+    <h1>Geen bestelling gevonden</h1>
+    <p class="lead">We konden je bestelling niet vinden. Open de wijn-pagina opnieuw en probeer het nog eens.</p>
+    <div class="actions">
+      <a href="/" class="btn btn-dark">Terug naar de collectie</a>
+    </div>
+  </div>
+</main>
+
+<script>
+  var PAY_WORKER = 'https://battonaasje-payments.kyranboi123.workers.dev';
+
+  function show(stateId) {
+    ['state-loading','state-paid','state-pending','state-failed','state-error'].forEach(function(id) {
+      document.getElementById(id).hidden = (id !== stateId);
+    });
+  }
+
+  function fmt(n) { return Number(n || 0).toFixed(2).replace('.', ','); }
+
+  async function poll() {
+    show('state-loading');
+    var id = sessionStorage.getItem('battonaasje_last_payment_id');
+    if (!id) { show('state-error'); return; }
+    try {
+      var res = await fetch(PAY_WORKER + '/status?id=' + encodeURIComponent(id));
+      var data = await res.json();
+      if (!data.ok) { show('state-error'); return; }
+      if (data.status === 'paid') {
+        document.getElementById('paid-name').textContent  = data.name || '—';
+        document.getElementById('paid-qty').textContent   = data.qty || '—';
+        document.getElementById('paid-email').textContent = data.email || '—';
+        document.getElementById('paid-total').textContent = '€' + fmt(data.total);
+        // Clear stored ID so refresh doesn't re-show old order
+        sessionStorage.removeItem('battonaasje_last_payment_id');
+        show('state-paid');
+      } else if (data.status === 'open' || data.status === 'pending' || data.status === 'authorized') {
+        show('state-pending');
+      } else {
+        // failed, canceled, expired
+        sessionStorage.removeItem('battonaasje_last_payment_id');
+        show('state-failed');
+      }
+    } catch (err) {
+      show('state-error');
+    }
+  }
+
+  poll();
+</script>
+
+</body>
+</html>

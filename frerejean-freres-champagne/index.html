@@ -485,6 +485,44 @@
   .terroir-types {
     animation: terroir-fade-up 0.5s ease 1.4s both;
   }
+
+  /* CHECKOUT — direct bestellen via Mollie */
+  .wine-buy {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: var(--ink); color: var(--paper);
+    border: none;
+    padding: 16px 28px;
+    font-family: 'Courier Prime', monospace;
+    font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
+    cursor: pointer; transition: opacity 0.2s;
+  }
+  .wine-buy:hover { opacity: 0.88; }
+  .wine-price-unit { font-size: 11px; color: var(--faded); letter-spacing: 2px; font-family: 'Courier Prime', monospace; font-style: normal; margin-left: 6px; }
+  .checkout-overlay { position: fixed; inset: 0; z-index: 9000; background: rgba(26,23,20,0.85); display: flex; align-items: center; justify-content: center; padding: 24px; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+  .checkout-overlay[hidden] { display: none; }
+  .checkout-card { background: var(--paper); padding: 44px 36px 36px; max-width: 460px; width: 100%; position: relative; }
+  .checkout-close { position: absolute; top: 12px; right: 16px; background: none; border: none; font-size: 28px; color: var(--faded); cursor: pointer; line-height: 1; padding: 4px 10px; }
+  .checkout-close:hover { color: var(--ink); }
+  .checkout-title { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: 24px; letter-spacing: 5px; text-transform: uppercase; margin-bottom: 4px; }
+  .checkout-wine { font-size: 13px; color: var(--accent); margin-bottom: 24px; font-style: italic; }
+  .checkout-line { display: flex; justify-content: space-between; align-items: baseline; padding: 14px 0; border-top: 1px solid var(--ghost); font-size: 13px; }
+  .checkout-line-label { font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: var(--faded); }
+  .checkout-line-value { color: var(--ink); }
+  .checkout-field { display: block; margin: 18px 0 0; }
+  .checkout-field-label { font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: var(--faded); display: block; margin-bottom: 6px; }
+  .checkout-field input { display: block; width: 100%; background: transparent; border: none; border-bottom: 1px solid var(--ghost); padding: 8px 0; font-family: 'Courier Prime', monospace; font-size: 16px; color: var(--ink); outline: none; letter-spacing: 1px; }
+  .checkout-field input:focus { border-bottom-color: var(--ink); }
+  .checkout-total { display: flex; justify-content: space-between; align-items: baseline; padding: 18px 0 22px; border-top: 1px solid var(--ghost); margin-top: 22px; }
+  .checkout-total-value { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-style: italic; color: var(--ink); }
+  .checkout-pay { display: block; width: 100%; background: var(--ink); color: var(--paper); border: none; padding: 18px; font-family: 'Courier Prime', monospace; font-size: 11px; letter-spacing: 3px; text-transform: uppercase; cursor: pointer; transition: opacity 0.2s; }
+  .checkout-pay:hover { opacity: 0.88; }
+  .checkout-pay:disabled { opacity: 0.5; cursor: wait; }
+  .checkout-error { color: #a05040; font-size: 12px; margin-top: 12px; min-height: 18px; letter-spacing: 1px; }
+  .checkout-fineprint { font-size: 10px; letter-spacing: 1px; color: var(--faded); margin-top: 16px; line-height: 1.6; text-align: center; }
+  @media (max-width: 480px) {
+    .checkout-card { padding: 36px 24px 28px; }
+    .checkout-title { font-size: 20px; letter-spacing: 4px; }
+  }
 </style>
 </head>
 <body>
@@ -625,11 +663,8 @@
       </div>
 
       <div class="wine-footer">
-        <div class="wine-price">Op aanvraag</div>
-        <a class="wine-wa" href="https://wa.me/31687441353?text=Hoi%2C%20ik%20ben%20ge%C3%AFnteresseerd%20in%20de%20Premier%20Cru%20Champagne%20van%20Frerejean%20Fr%C3%A8res.%20Is%20deze%20nog%20beschikbaar%3F" target="_blank" rel="noopener noreferrer">
-          <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.124.558 4.118 1.531 5.845L.057 23.882l6.187-1.452A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.006-1.369l-.36-.214-3.722.873.936-3.623-.235-.372A9.818 9.818 0 1112 21.818z"/></svg>
-          Bestellen via WhatsApp
-        </a>
+        <div class="wine-price">€75,00<span class="wine-price-unit">/ FLES</span></div>
+        <button type="button" class="wine-buy" onclick="openCheckout()">Direct bestellen →</button>
       </div>
     </div>
   </article>
@@ -680,7 +715,109 @@
   <a href="/cookiebeleid/">Cookiebeleid</a>
 </div>
 
+
+<!-- ═══ CHECKOUT MODAL ═══ -->
+<div class="checkout-overlay" id="checkout-overlay" hidden>
+  <div class="checkout-card" role="dialog" aria-labelledby="checkout-title" aria-modal="true">
+    <button type="button" class="checkout-close" onclick="closeCheckout()" aria-label="Sluiten">×</button>
+    <h3 id="checkout-title" class="checkout-title">Bestellen</h3>
+    <p class="checkout-wine">Frerejean Frères Premier Cru</p>
+    <div class="checkout-line">
+      <span class="checkout-line-label">Prijs per stuk</span>
+      <span class="checkout-line-value">€75,00</span>
+    </div>
+    <label class="checkout-field">
+      <span class="checkout-field-label">Aantal (max 12)</span>
+      <input type="number" id="checkout-qty" min="1" max="12" value="1" inputmode="numeric">
+    </label>
+    <label class="checkout-field">
+      <span class="checkout-field-label">Email (voor bevestiging)</span>
+      <input type="email" id="checkout-email" required autocomplete="email" placeholder="naam@email.nl">
+    </label>
+    <div class="checkout-total">
+      <span class="checkout-line-label">Totaal</span>
+      <span class="checkout-total-value">€<span id="checkout-total">75,00</span></span>
+    </div>
+    <button type="button" class="checkout-pay" id="checkout-pay" onclick="startCheckout()">Betalen met iDEAL of creditcard →</button>
+    <div class="checkout-error" id="checkout-error" role="alert"></div>
+    <p class="checkout-fineprint">Beveiligde betaling via Mollie · Verzending NL/BE</p>
+  </div>
+</div>
+
 </main>
+
+<script>
+/* CHECKOUT (Mollie) */
+var PAY_WORKER = 'https://battonaasje-payments.kyranboi123.workers.dev';
+var WINE_SLUG = 'frerejean-freres-champagne';
+var WINE_UNIT_PRICE = 75.0;
+
+function fmt(n) { return n.toFixed(2).replace('.', ','); }
+
+function openCheckout() {
+  document.getElementById('checkout-overlay').hidden = false;
+  document.body.style.overflow = 'hidden';
+  recalcTotal();
+  setTimeout(function() { var e = document.getElementById('checkout-email'); if (e) e.focus(); }, 50);
+}
+function closeCheckout() {
+  document.getElementById('checkout-overlay').hidden = true;
+  document.body.style.overflow = '';
+}
+function recalcTotal() {
+  var input = document.getElementById('checkout-qty');
+  var qty = parseInt(input.value) || 1;
+  if (qty < 1) qty = 1; if (qty > 12) qty = 12;
+  input.value = qty;
+  document.getElementById('checkout-total').textContent = fmt(qty * WINE_UNIT_PRICE);
+}
+document.getElementById('checkout-qty').addEventListener('input', recalcTotal);
+document.getElementById('checkout-overlay').addEventListener('click', function(e) {
+  if (e.target === this) closeCheckout();
+});
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape' && !document.getElementById('checkout-overlay').hidden) closeCheckout();
+});
+
+async function startCheckout() {
+  var btn = document.getElementById('checkout-pay');
+  var errorEl = document.getElementById('checkout-error');
+  var email = document.getElementById('checkout-email').value.trim();
+  var qty = parseInt(document.getElementById('checkout-qty').value);
+  errorEl.textContent = '';
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    errorEl.textContent = 'Vul een geldig e-mailadres in.';
+    return;
+  }
+  if (!qty || qty < 1 || qty > 12) {
+    errorEl.textContent = 'Aantal moet tussen 1 en 12 zijn.';
+    return;
+  }
+  btn.disabled = true;
+  btn.textContent = '· · ·';
+  try {
+    var res = await fetch(PAY_WORKER + '/order', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        slug: WINE_SLUG,
+        qty: qty,
+        email: email,
+        redirectUrl: 'https://battonaasje.nl/bedankt/'
+      })
+    });
+    var data = await res.json();
+    if (!res.ok || !data.ok) throw new Error(data.error || 'payment_error');
+    sessionStorage.setItem('battonaasje_last_payment_id', data.id);
+    window.location.href = data.checkoutUrl;
+  } catch (err) {
+    btn.disabled = false;
+    btn.textContent = 'Betalen met iDEAL of creditcard →';
+    errorEl.textContent = 'Er ging iets mis. Probeer opnieuw of neem contact op.';
+  }
+}
+</script>
+
 
 <script>
   if (sessionStorage.getItem('battonaasje_private_verified') === 'true') {

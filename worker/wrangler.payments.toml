@@ -1,0 +1,14 @@
+name = "battonaasje-payments"
+main = "payments.js"
+compatibility_date = "2024-01-01"
+
+# Create the ORDERS KV namespace first:
+#   wrangler kv:namespace create ORDERS
+# Then paste the id below:
+[[kv_namespaces]]
+binding = "ORDERS"
+id = "REPLACE_WITH_YOUR_ORDERS_KV_ID"
+
+# Required secrets (set via wrangler or dashboard):
+#   MOLLIE_API_KEY  → test_xxx for testing, live_xxx for real money
+#   LOG_SECRET      → same password as gate Worker, protects /orders viewer
