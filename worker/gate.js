@@ -316,7 +316,7 @@ ${SHARED_CSS}
 </div>
 <div class="sub">Foto-beheer · uploads worden automatisch verkleind tot 1600px JPEG · onmiddellijk zichtbaar op battonaasje.nl</div>
 
-${r2ok ? '' : '<div class="warn"><strong>R2 niet geconfigureerd.</strong> Voeg de PHOTOS bucket-binding en R2_PUBLIC_URL env var toe in de Worker Settings. Tot die tijd kun je geen foto\\'s uploaden.</div>'}
+${r2ok ? '' : '<div class="warn"><strong>R2 niet geconfigureerd.</strong> Voeg de PHOTOS bucket-binding en R2_PUBLIC_URL env var toe in de Worker Settings. Tot die tijd kun je geen fotos uploaden.</div>'}
 
 ${wineCards}
 
