@@ -874,15 +874,48 @@ export default {
         });
       }
 
-      let code;
+      let code, tsToken;
       try {
         const body = await request.json();
-        code = (body.code || '').trim().toUpperCase();
+        code    = (body.code || '').trim().toUpperCase();
+        tsToken = body.cfTurnstileToken || null;
       } catch {
         return new Response(JSON.stringify({ ok: false }), {
           status: 400,
           headers: { 'Content-Type': 'application/json', ...corsHeaders(origin) },
         });
+      }
+
+      // Turnstile validation (only enforced if TURNSTILE_SECRET is configured)
+      if (env.TURNSTILE_SECRET) {
+        if (!tsToken) {
+          await logAttempt(env, ip, country, ua, false);
+          return new Response(JSON.stringify({ ok: false, error: 'turnstile_missing' }), {
+            status: 401, headers: { 'Content-Type': 'application/json', ...corsHeaders(origin) },
+          });
+        }
+        const tsForm = new URLSearchParams();
+        tsForm.append('secret',   env.TURNSTILE_SECRET);
+        tsForm.append('response', tsToken);
+        tsForm.append('remoteip', ip);
+        let tsOk = false;
+        try {
+          const tsRes  = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: tsForm,
+          });
+          const tsData = await tsRes.json();
+          tsOk = !!tsData.success;
+        } catch (err) {
+          console.error('Turnstile verify failed', err);
+        }
+        if (!tsOk) {
+          await logAttempt(env, ip, country, ua, false);
+          return new Response(JSON.stringify({ ok: false, error: 'turnstile_failed' }), {
+            status: 401, headers: { 'Content-Type': 'application/json', ...corsHeaders(origin) },
+          });
+        }
       }
 
       const gateCode = (env.GATE_CODE || '').toUpperCase();

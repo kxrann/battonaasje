@@ -11,7 +11,7 @@
 <meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
 <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
 <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=()">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://js.mollie.com; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src https://*.workers.dev; frame-src https://js.mollie.com; object-src 'none'; base-uri 'self'; form-action https://formspree.io;">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://js.mollie.com https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src https://*.workers.dev; frame-src https://js.mollie.com https://challenges.cloudflare.com; object-src 'none'; base-uri 'self'; form-action https://formspree.io;">
 <link rel="canonical" href="https://battonaasje.nl/piemonte/">
 <link rel="stylesheet" href="/fonts/fonts.css">
 <style>
@@ -238,6 +238,7 @@
     <div class="private-gate-line"></div>
     <p class="private-gate-sub">voer de toegangscode in</p>
     <input class="private-gate-input" id="private-code" type="password" placeholder="· · · · · · · ·" autocomplete="off">
+    <div id="turnstile-slot" style="min-height:0;margin-bottom:14px"></div>
     <button type="button" class="private-gate-btn" onclick="checkPrivateCode()">Toegang &rarr;</button>
     <div class="private-gate-error" id="private-error"></div>
   </div>
@@ -330,12 +331,35 @@
     else main.removeAttribute('inert');
   }
 
+
+  /* TURNSTILE BOT PROTECTION — leave key empty to disable */
+  var TURNSTILE_SITE_KEY = '';
+
+  window.onTurnstileToken = function(tok) { window.cfTurnstileToken = tok; };
+  if (TURNSTILE_SITE_KEY) {
+    var slot = document.getElementById('turnstile-slot');
+    if (slot) {
+      slot.className = 'cf-turnstile';
+      slot.setAttribute('data-sitekey', TURNSTILE_SITE_KEY);
+      slot.setAttribute('data-callback', 'onTurnstileToken');
+      slot.setAttribute('data-theme', 'dark');
+      var ts = document.createElement('script');
+      ts.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
+      ts.async = true; ts.defer = true;
+      document.head.appendChild(ts);
+    }
+  }
+
   var GATE_WORKER = 'https://battonaasje-gate.kyranboi123.workers.dev';
   var privateWrongAttempts = 0;
   async function checkPrivateCode() {
     var input = document.getElementById('private-code').value.trim();
     var btn = document.querySelector('#private-gate .private-gate-btn');
     var errorEl = document.getElementById('private-error');
+    if (TURNSTILE_SITE_KEY && !window.cfTurnstileToken) {
+      errorEl.textContent = 'beveiligingscheck laadt — even wachten';
+      return;
+    }
     btn.disabled = true;
     btn.textContent = '· · ·';
     errorEl.textContent = '';
@@ -343,7 +367,7 @@
       var res = await fetch(GATE_WORKER + '/verify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code: input })
+        body: JSON.stringify({ code: input, cfTurnstileToken: window.cfTurnstileToken || null })
       });
       var data = await res.json();
       if (data.ok) {
@@ -364,6 +388,7 @@
           btn.disabled = true;
         } else {
           errorEl.textContent = 'onjuiste code — probeer opnieuw';
+          if (TURNSTILE_SITE_KEY && window.turnstile) { window.turnstile.reset(); window.cfTurnstileToken = null; }
         }
       }
     } catch (err) {
