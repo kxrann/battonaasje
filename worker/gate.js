@@ -1,12 +1,18 @@
-// Battonaasje — private gate verification Worker
+// Battonaasje — private gate verification + pageview analytics Worker
 // Deploy to Cloudflare Workers.
 //
-// Required secrets (set with wrangler secret put):
-//   GATE_CODE   — the private access code visitors type
-//   LOG_SECRET  — a password that protects the /logs viewer
+// Required secrets (set with wrangler secret put, or via dashboard):
+//   GATE_CODE     — the private access code visitors type
+//   LOG_SECRET    — a password that protects the /logs and /stats viewers
 //
 // Required KV binding (see wrangler.gate.toml):
-//   ACCESS_LOG  — stores one entry per login attempt, 30-day TTL
+//   ACCESS_LOG  — stores both access attempts (log:*) and pageviews (pv:*)
+//
+// Endpoints:
+//   POST /verify           — verifies GATE_CODE
+//   POST /track            — records a pageview (body: { page })
+//   GET  /logs?secret=...  — HTML viewer of last 200 access attempts
+//   GET  /stats?secret=... — HTML viewer of pageview analytics
 
 const ALLOWED_ORIGINS = [
   'https://battonaasje.nl',
@@ -15,20 +21,22 @@ const ALLOWED_ORIGINS = [
 ];
 
 // ─── Rate limiting ────────────────────────────────────────────────────────────
-// In-memory store resets per isolate restart — good enough for brute-force.
-const attempts = new Map();
-const WINDOW_MS    = 60_000; // 1 minute
-const MAX_ATTEMPTS = 10;     // per IP per window
+const verifyAttempts = new Map();
+const trackAttempts  = new Map();
+const VERIFY_WINDOW_MS    = 60_000;
+const VERIFY_MAX_ATTEMPTS = 10;
+const TRACK_WINDOW_MS     = 60_000;
+const TRACK_MAX_ATTEMPTS  = 60;   // 1 per second average — generous
 
-function isRateLimited(ip) {
+function isRateLimited(store, ip, max, windowMs) {
   const now   = Date.now();
-  const entry = attempts.get(ip);
+  const entry = store.get(ip);
   if (!entry || now > entry.resetAt) {
-    attempts.set(ip, { count: 1, resetAt: now + WINDOW_MS });
+    store.set(ip, { count: 1, resetAt: now + windowMs });
     return false;
   }
   entry.count++;
-  return entry.count > MAX_ATTEMPTS;
+  return entry.count > max;
 }
 
 // ─── CORS ─────────────────────────────────────────────────────────────────────
@@ -42,12 +50,12 @@ function corsHeaders(origin) {
   };
 }
 
-// ─── KV logging ──────────────────────────────────────────────────────────────
-// Key: log:<16-char-padded-ms-timestamp>
+// ─── KV: access log ──────────────────────────────────────────────────────────
+// Key:   log:<16-char-padded-ms-timestamp>
 // Value: JSON — { ts, ip, country, ua, ok }
-// TTL: 30 days
+// TTL:   30 days
 async function logAttempt(env, ip, country, ua, ok) {
-  if (!env.ACCESS_LOG) return; // KV not bound (local dev without binding)
+  if (!env.ACCESS_LOG) return;
   const ts  = Date.now();
   const key = `log:${String(ts).padStart(16, '0')}`;
   const val = JSON.stringify({
@@ -60,59 +68,74 @@ async function logAttempt(env, ip, country, ua, ok) {
   try {
     await env.ACCESS_LOG.put(key, val, { expirationTtl: 30 * 24 * 60 * 60 });
   } catch (err) {
-    // Swallow — never break /verify because logging failed
     console.error('logAttempt failed', err);
+  }
+}
+
+// ─── KV: pageview counters ───────────────────────────────────────────────────
+// Key:   pv:YYYY-MM-DD:<path>
+// Value: integer count as string
+// TTL:   90 days
+//
+// Race conditions on read-modify-write are acceptable for analytics —
+// numbers are approximate by nature.
+function sanitizePath(p) {
+  let s = (p || '/').trim().slice(0, 80);
+  // Allow only: letters, digits, /, -, _
+  s = s.replace(/[^a-zA-Z0-9/_-]/g, '');
+  if (!s.startsWith('/')) s = '/' + s;
+  return s || '/';
+}
+
+function todayISO() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+async function recordPageview(env, page) {
+  if (!env.ACCESS_LOG) return;
+  const date = todayISO();
+  const key  = `pv:${date}:${page}`;
+  try {
+    const current = await env.ACCESS_LOG.get(key);
+    const next    = (parseInt(current, 10) || 0) + 1;
+    await env.ACCESS_LOG.put(key, String(next), { expirationTtl: 90 * 24 * 60 * 60 });
+  } catch (err) {
+    console.error('recordPageview failed', err);
   }
 }
 
 // ─── /logs HTML viewer ────────────────────────────────────────────────────────
 async function handleLogs(request, env) {
-  const logSecret = env.LOG_SECRET || '';
-  const url       = new URL(request.url);
-  const provided  = url.searchParams.get('secret') || '';
-
-  if (!logSecret || provided !== logSecret) {
+  const provided = new URL(request.url).searchParams.get('secret') || '';
+  if (!env.LOG_SECRET || provided !== env.LOG_SECRET) {
     return new Response('Unauthorized', { status: 401 });
   }
 
-  // List up to 200 most-recent keys (keys are ms-timestamp-sorted ascending)
   let keys = [];
   try {
     const listed = await env.ACCESS_LOG.list({ prefix: 'log:', limit: 1000 });
-    keys = listed.keys.slice(-200).reverse(); // newest first
+    keys = listed.keys.slice(-200).reverse();
   } catch {
     return new Response('KV error', { status: 500 });
   }
 
-  // Fetch all values in parallel
   const entries = await Promise.all(
     keys.map(async ({ name }) => {
       try {
         const raw = await env.ACCESS_LOG.get(name);
         return raw ? JSON.parse(raw) : null;
-      } catch {
-        return null;
-      }
+      } catch { return null; }
     })
   );
 
-  const rows = entries
-    .filter(Boolean)
-    .map((e) => {
-      const date = new Date(e.ts).toLocaleString('nl-NL', { timeZone: 'Europe/Amsterdam' });
-      const ok   = e.ok
-        ? '<td style="color:#2a7a3b;font-weight:600">✓ OK</td>'
-        : '<td style="color:#a05040;font-weight:600">✗ Mislukt</td>';
-      const ua   = e.ua.replace(/</g, '&lt;');
-      return `<tr>
-        <td>${date}</td>
-        ${ok}
-        <td>${e.ip}</td>
-        <td>${e.country}</td>
-        <td style="font-size:11px;color:#666;max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${ua}</td>
-      </tr>`;
-    })
-    .join('\n');
+  const rows = entries.filter(Boolean).map((e) => {
+    const date = new Date(e.ts).toLocaleString('nl-NL', { timeZone: 'Europe/Amsterdam' });
+    const ok   = e.ok
+      ? '<td style="color:#2a7a3b;font-weight:600">✓ OK</td>'
+      : '<td style="color:#a05040;font-weight:600">✗ Mislukt</td>';
+    const ua   = e.ua.replace(/</g, '&lt;');
+    return `<tr><td>${date}</td>${ok}<td>${e.ip}</td><td>${e.country}</td><td class="ua">${ua}</td></tr>`;
+  }).join('\n');
 
   const total   = entries.filter(Boolean).length;
   const success = entries.filter((e) => e?.ok).length;
@@ -124,24 +147,16 @@ async function handleLogs(request, env) {
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Battonaasje — Toegangslog</title>
-<style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Courier New', monospace; background: #f2ede4; color: #1a1714; padding: 48px 32px; }
-  h1 { font-size: 22px; letter-spacing: 6px; text-transform: uppercase; margin-bottom: 8px; }
-  .sub { font-size: 11px; letter-spacing: 2px; color: #8c8478; margin-bottom: 32px; }
-  .stats { display: flex; gap: 24px; margin-bottom: 32px; flex-wrap: wrap; }
-  .stat { background: #e8e2d6; padding: 14px 20px; min-width: 120px; }
-  .stat-label { font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: #8c8478; margin-bottom: 6px; }
-  .stat-value { font-size: 28px; color: #1a1714; }
-  table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  th { text-align: left; font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: #8c8478; border-bottom: 1px solid #c8c0b0; padding: 10px 12px; }
-  td { padding: 10px 12px; border-bottom: 1px solid #e8e2d6; vertical-align: top; }
-  tr:hover td { background: #ede8df; }
-  .empty { padding: 48px; text-align: center; color: #8c8478; font-style: italic; }
-</style>
+${SHARED_CSS}
 </head>
 <body>
-  <h1>Battonaasje</h1>
+  <div class="topbar">
+    <h1>Battonaasje</h1>
+    <nav class="topnav">
+      <a href="/logs?secret=${encodeURIComponent(provided)}" class="active">Toegangslog</a>
+      <a href="/stats?secret=${encodeURIComponent(provided)}">Bezoekers</a>
+    </nav>
+  </div>
   <div class="sub">Toegangslog — laatste ${total} pogingen (max 200, bewaard 30 dagen)</div>
   <div class="stats">
     <div class="stat"><div class="stat-label">Totaal</div><div class="stat-value">${total}</div></div>
@@ -150,27 +165,176 @@ async function handleLogs(request, env) {
   </div>
   ${total === 0 ? '<div class="empty">Nog geen pogingen gelogd.</div>' : `
   <table>
-    <thead>
-      <tr>
-        <th>Tijdstip (AMS)</th>
-        <th>Uitkomst</th>
-        <th>IP-adres</th>
-        <th>Land</th>
-        <th>Browser</th>
-      </tr>
-    </thead>
-    <tbody>
-      ${rows}
-    </tbody>
+    <thead><tr><th>Tijdstip (AMS)</th><th>Uitkomst</th><th>IP-adres</th><th>Land</th><th>Browser</th></tr></thead>
+    <tbody>${rows}</tbody>
   </table>`}
-</body>
-</html>`;
+</body></html>`;
 
-  return new Response(html, {
-    status: 200,
-    headers: { 'Content-Type': 'text/html; charset=utf-8' },
-  });
+  return new Response(html, { status: 200, headers: { 'Content-Type': 'text/html; charset=utf-8' } });
 }
+
+// ─── /stats HTML viewer ──────────────────────────────────────────────────────
+async function handleStats(request, env) {
+  const provided = new URL(request.url).searchParams.get('secret') || '';
+  if (!env.LOG_SECRET || provided !== env.LOG_SECRET) {
+    return new Response('Unauthorized', { status: 401 });
+  }
+
+  // Page through all pv:* keys (max 1000 per list call)
+  let allKeys = [];
+  let cursor;
+  try {
+    do {
+      const opts = { prefix: 'pv:', limit: 1000 };
+      if (cursor) opts.cursor = cursor;
+      const listed = await env.ACCESS_LOG.list(opts);
+      allKeys = allKeys.concat(listed.keys);
+      cursor = listed.list_complete ? null : listed.cursor;
+    } while (cursor);
+  } catch {
+    return new Response('KV error', { status: 500 });
+  }
+
+  // Fetch all counts in parallel
+  const entries = await Promise.all(
+    allKeys.map(async ({ name }) => {
+      const raw = await env.ACCESS_LOG.get(name);
+      const parts = name.split(':'); // [ "pv", "YYYY-MM-DD", "/path" ]
+      const date  = parts[1];
+      const path  = parts.slice(2).join(':') || '/';
+      return { date, path, count: parseInt(raw, 10) || 0 };
+    })
+  );
+
+  const today    = todayISO();
+  const week     = new Set();
+  const weekDate = new Date();
+  for (let i = 0; i < 7; i++) {
+    week.add(weekDate.toISOString().slice(0, 10));
+    weekDate.setUTCDate(weekDate.getUTCDate() - 1);
+  }
+
+  // Aggregate totals
+  let totalAll   = 0;
+  let totalToday = 0;
+  let totalWeek  = 0;
+  const perPage  = new Map();   // path -> count
+  const perDay   = new Map();   // date -> count
+
+  for (const e of entries) {
+    totalAll += e.count;
+    if (e.date === today)   totalToday += e.count;
+    if (week.has(e.date))   totalWeek  += e.count;
+    perPage.set(e.path, (perPage.get(e.path) || 0) + e.count);
+    perDay.set(e.date,  (perDay.get(e.date)  || 0) + e.count);
+  }
+
+  const topPages = [...perPage.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 50);
+
+  // Build last 30 days (in chronological order)
+  const days = [];
+  const cursorDate = new Date();
+  for (let i = 29; i >= 0; i--) {
+    const d = new Date(cursorDate);
+    d.setUTCDate(cursorDate.getUTCDate() - i);
+    const iso = d.toISOString().slice(0, 10);
+    days.push({ date: iso, count: perDay.get(iso) || 0 });
+  }
+  const maxDayCount = Math.max(1, ...days.map((d) => d.count));
+
+  const pagesRows = topPages.length === 0
+    ? '<tr><td colspan="2" class="empty-cell">Nog geen bezoekers geregistreerd.</td></tr>'
+    : topPages.map(([path, count]) => {
+        const label = path.replace(/</g, '&lt;');
+        return `<tr><td><a href="https://battonaasje.nl${path}" target="_blank" rel="noopener">${label}</a></td><td style="text-align:right;font-weight:600">${count}</td></tr>`;
+      }).join('\n');
+
+  const chartBars = days.map((d) => {
+    const h = Math.round((d.count / maxDayCount) * 100);
+    const dayLabel = d.date.slice(8); // DD
+    const isToday = d.date === today;
+    return `<div class="bar-wrap" title="${d.date}: ${d.count} bezoeken">
+      <div class="bar-count">${d.count || ''}</div>
+      <div class="bar" style="height:${h}%;${isToday ? 'background:#1a1714' : ''}"></div>
+      <div class="bar-label">${dayLabel}</div>
+    </div>`;
+  }).join('\n');
+
+  const html = `<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Battonaasje — Bezoekers</title>
+${SHARED_CSS}
+<style>
+  .chart { display: flex; align-items: flex-end; gap: 4px; height: 200px; background: #ede8df; padding: 20px 16px 8px; margin-bottom: 8px; border-bottom: 1px solid #c8c0b0; }
+  .bar-wrap { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; height: 100%; min-width: 0; }
+  .bar { width: 100%; max-width: 24px; background: #3a3528; min-height: 2px; transition: opacity 0.15s; }
+  .bar-wrap:hover .bar { opacity: 0.7; }
+  .bar-count { font-size: 9px; color: #8c8478; margin-bottom: 4px; min-height: 12px; }
+  .bar-label { font-size: 9px; color: #8c8478; margin-top: 4px; letter-spacing: 1px; }
+  .chart-caption { font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: #8c8478; margin-bottom: 32px; }
+  td a { color: #1a1714; text-decoration: none; border-bottom: 1px solid #c8c0b0; }
+  td a:hover { border-bottom-color: #1a1714; }
+  .empty-cell { padding: 32px; text-align: center; color: #8c8478; font-style: italic; }
+</style>
+</head>
+<body>
+  <div class="topbar">
+    <h1>Battonaasje</h1>
+    <nav class="topnav">
+      <a href="/logs?secret=${encodeURIComponent(provided)}">Toegangslog</a>
+      <a href="/stats?secret=${encodeURIComponent(provided)}" class="active">Bezoekers</a>
+    </nav>
+  </div>
+  <div class="sub">Bezoekersstatistieken — bewaard 90 dagen, alleen geverifieerde sessies</div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-label">Vandaag</div><div class="stat-value">${totalToday}</div></div>
+    <div class="stat"><div class="stat-label">Deze week</div><div class="stat-value">${totalWeek}</div></div>
+    <div class="stat"><div class="stat-label">Totaal (90d)</div><div class="stat-value">${totalAll}</div></div>
+  </div>
+
+  <div class="section-title">Laatste 30 dagen</div>
+  <div class="chart">${chartBars}</div>
+  <div class="chart-caption">Bezoeken per dag</div>
+
+  <div class="section-title">Populaire pagina's</div>
+  <table>
+    <thead><tr><th>Pagina</th><th style="text-align:right">Bezoeken</th></tr></thead>
+    <tbody>${pagesRows}</tbody>
+  </table>
+</body></html>`;
+
+  return new Response(html, { status: 200, headers: { 'Content-Type': 'text/html; charset=utf-8' } });
+}
+
+// ─── Shared CSS for /logs and /stats ─────────────────────────────────────────
+const SHARED_CSS = `<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Courier New', monospace; background: #f2ede4; color: #1a1714; padding: 48px 32px; }
+  .topbar { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 16px; margin-bottom: 4px; }
+  h1 { font-size: 22px; letter-spacing: 6px; text-transform: uppercase; }
+  .topnav { display: flex; gap: 16px; }
+  .topnav a { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: #8c8478; text-decoration: none; padding-bottom: 4px; border-bottom: 1px solid transparent; }
+  .topnav a:hover { color: #1a1714; }
+  .topnav a.active { color: #1a1714; border-bottom-color: #1a1714; }
+  .sub { font-size: 11px; letter-spacing: 2px; color: #8c8478; margin-bottom: 32px; }
+  .section-title { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: #8c8478; margin: 32px 0 12px; padding-bottom: 8px; border-bottom: 1px solid #c8c0b0; }
+  .stats { display: flex; gap: 24px; margin-bottom: 32px; flex-wrap: wrap; }
+  .stat { background: #e8e2d6; padding: 14px 20px; min-width: 120px; }
+  .stat-label { font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: #8c8478; margin-bottom: 6px; }
+  .stat-value { font-size: 28px; color: #1a1714; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { text-align: left; font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: #8c8478; border-bottom: 1px solid #c8c0b0; padding: 10px 12px; }
+  td { padding: 10px 12px; border-bottom: 1px solid #e8e2d6; vertical-align: top; }
+  tr:hover td { background: #ede8df; }
+  .ua { font-size: 11px; color: #666; max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .empty { padding: 48px; text-align: center; color: #8c8478; font-style: italic; }
+</style>`;
 
 // ─── Main handler ─────────────────────────────────────────────────────────────
 export default {
@@ -183,57 +347,68 @@ export default {
       return new Response(null, { status: 204, headers: corsHeaders(origin) });
     }
 
-    // Audit log viewer
-    if (request.method === 'GET' && url.pathname === '/logs') {
-      return handleLogs(request, env);
-    }
+    // HTML viewers
+    if (request.method === 'GET' && url.pathname === '/logs')  return handleLogs(request, env);
+    if (request.method === 'GET' && url.pathname === '/stats') return handleStats(request, env);
 
     if (request.method !== 'POST') {
       return new Response('Method Not Allowed', { status: 405 });
-    }
-
-    // Only /verify accepts POST
-    if (url.pathname !== '/verify' && url.pathname !== '/') {
-      return new Response('Not Found', { status: 404 });
     }
 
     const ip      = request.headers.get('CF-Connecting-IP') || 'unknown';
     const country = request.headers.get('CF-IPCountry')     || '??';
     const ua      = request.headers.get('User-Agent')       || '';
 
-    if (isRateLimited(ip)) {
-      await logAttempt(env, ip, country, ua, false);
-      return new Response(JSON.stringify({ ok: false, error: 'too_many_attempts' }), {
-        status: 429,
-        headers: {
-          'Content-Type': 'application/json',
-          'Retry-After': '60',
-          ...corsHeaders(origin),
-        },
-      });
+    // ── POST /track — record pageview ──────────────────────────────────────
+    if (url.pathname === '/track') {
+      if (isRateLimited(trackAttempts, ip, TRACK_MAX_ATTEMPTS, TRACK_WINDOW_MS)) {
+        return new Response('', { status: 429, headers: corsHeaders(origin) });
+      }
+      let body;
+      try { body = await request.json(); } catch {
+        return new Response('', { status: 400, headers: corsHeaders(origin) });
+      }
+      const page = sanitizePath(body.page);
+      await recordPageview(env, page);
+      return new Response('', { status: 204, headers: corsHeaders(origin) });
     }
 
-    let code;
-    try {
-      const body = await request.json();
-      code = (body.code || '').trim().toUpperCase();
-    } catch {
-      return new Response(JSON.stringify({ ok: false }), {
-        status: 400,
+    // ── POST /verify — gate authentication ────────────────────────────────
+    if (url.pathname === '/verify' || url.pathname === '/') {
+      if (isRateLimited(verifyAttempts, ip, VERIFY_MAX_ATTEMPTS, VERIFY_WINDOW_MS)) {
+        await logAttempt(env, ip, country, ua, false);
+        return new Response(JSON.stringify({ ok: false, error: 'too_many_attempts' }), {
+          status: 429,
+          headers: {
+            'Content-Type': 'application/json',
+            'Retry-After': '60',
+            ...corsHeaders(origin),
+          },
+        });
+      }
+
+      let code;
+      try {
+        const body = await request.json();
+        code = (body.code || '').trim().toUpperCase();
+      } catch {
+        return new Response(JSON.stringify({ ok: false }), {
+          status: 400,
+          headers: { 'Content-Type': 'application/json', ...corsHeaders(origin) },
+        });
+      }
+
+      const gateCode = (env.GATE_CODE || '').toUpperCase();
+      const valid    = code.length > 0 && code === gateCode;
+
+      await logAttempt(env, ip, country, ua, valid);
+
+      return new Response(JSON.stringify({ ok: valid }), {
+        status: valid ? 200 : 401,
         headers: { 'Content-Type': 'application/json', ...corsHeaders(origin) },
       });
     }
 
-    const gateCode = (env.GATE_CODE || '').toUpperCase();
-    const valid    = code.length > 0 && code === gateCode;
-
-    // Log the attempt — must await so the KV write completes before
-    // the Worker isolate is allowed to terminate.
-    await logAttempt(env, ip, country, ua, valid);
-
-    return new Response(JSON.stringify({ ok: valid }), {
-      status: valid ? 200 : 401,
-      headers: { 'Content-Type': 'application/json', ...corsHeaders(origin) },
-    });
+    return new Response('Not Found', { status: 404 });
   },
 };

@@ -381,5 +381,32 @@
 (function(){var c=localStorage.getItem('battonaasje_cookie_consent');if(!c)document.getElementById('cookie-banner').classList.add('visible');})();
 function cookieConsent(c){localStorage.setItem('battonaasje_cookie_consent',c);document.getElementById('cookie-banner').classList.remove('visible');}
 </script>
+<script>
+/* Pageview tracking — privacy-friendly, no cookies. Fires only after age-gate passed,
+   once per session per page. Monkey-patches sessionStorage so first verification also triggers. */
+(function setupTracking() {
+  var TRACK_URL = 'https://battonaasje-gate.kyranboi123.workers.dev/track';
+  function fire() {
+    try {
+      if (sessionStorage.getItem('battonaasje_age_verified') !== 'true') return;
+      var key = 'battonaasje_tracked_' + location.pathname;
+      if (sessionStorage.getItem(key)) return;
+      sessionStorage.setItem(key, '1');
+      fetch(TRACK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ page: location.pathname }),
+        keepalive: true
+      }).catch(function(){});
+    } catch (e) {}
+  }
+  fire();
+  var origSet = sessionStorage.setItem.bind(sessionStorage);
+  sessionStorage.setItem = function(k, v) {
+    origSet(k, v);
+    if (k === 'battonaasje_age_verified' && v === 'true') fire();
+  };
+})();
+</script>
 </body>
 </html>
