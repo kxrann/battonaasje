@@ -262,9 +262,9 @@ async function handleFotoAdmin(request, env) {
             ? `<img src="${s.url}" alt="${s.label}" loading="lazy">
                <button type="button" class="slot-del" title="Verwijderen" onclick="deletePhoto('${w.slug}','${s.key}')">×</button>`
             : `<div class="slot-empty"><span>+</span></div>`}
-          <input type="file" accept="image/*" onchange="uploadPhoto(this, '${w.slug}', '${s.key}')" hidden>
-          <button type="button" class="slot-upload" onclick="this.parentNode.querySelector('input').click()">${s.url ? 'Vervangen' : 'Upload'}</button>
         </div>
+        <input type="file" accept="image/*" onchange="uploadPhoto(this, '${w.slug}', '${s.key}')" hidden>
+        <button type="button" class="slot-upload" onclick="this.parentNode.querySelector('input[type=file]').click()">${s.url ? 'Vervangen' : 'Upload'}</button>
       </div>`).join('');
 
     return `<section class="wine-card">
