@@ -227,6 +227,32 @@ async function handlePhotoUpload(request, env) {
   });
 }
 
+// ── GET /photo-source?secret=...&slug=...&slot=... ──────────────────────────
+// Streams an R2 photo back with permissive CORS so the admin can draw it on
+// a canvas for client-side rotation. Admin-only.
+async function handlePhotoSource(request, env) {
+  const url      = new URL(request.url);
+  const provided = url.searchParams.get('secret') || '';
+  if (!env.LOG_SECRET || provided !== env.LOG_SECRET) return new Response('Unauthorized', { status: 401 });
+  if (!env.PHOTOS) return new Response('No R2', { status: 500 });
+
+  const slug = url.searchParams.get('slug') || '';
+  const slot = url.searchParams.get('slot') || '';
+  if (!SLUG_RE.test(slug) || !isValidSlot(slot)) return new Response('Bad request', { status: 400 });
+
+  const obj = await env.PHOTOS.get(`wines/${slug}/${slot}.jpg`);
+  if (!obj) return new Response('Not Found', { status: 404 });
+
+  return new Response(obj.body, {
+    status: 200,
+    headers: {
+      'Content-Type':                'image/jpeg',
+      'Cache-Control':               'no-store',
+      'Access-Control-Allow-Origin': '*',
+    },
+  });
+}
+
 // ── POST /photo/delete?secret=... body: { slug, slot } ───────────────────────
 async function handlePhotoDelete(request, env) {
   const provided = new URL(request.url).searchParams.get('secret') || '';
@@ -273,6 +299,7 @@ async function handleFotoAdmin(request, env) {
         <div class="slot-tile">
           ${s.url
             ? `<img src="${s.url}" alt="${s.label}" loading="lazy">
+               <button type="button" class="slot-rot" title="Roteer 90° met de klok mee" onclick="rotatePhoto('${w.slug}','${s.key}')">↻</button>
                <button type="button" class="slot-del" title="Verwijderen" onclick="deletePhoto('${w.slug}','${s.key}')">×</button>`
             : `<div class="slot-empty"><span>+</span></div>`}
         </div>
@@ -304,7 +331,8 @@ ${SHARED_CSS}
   .slot-tile img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .slot-empty { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #c8c0b0; font-size: 36px; font-weight: 300; }
   .slot-del { position: absolute; top: 6px; right: 6px; width: 26px; height: 26px; border-radius: 50%; background: rgba(0,0,0,0.7); color: #fff; border: none; cursor: pointer; font-size: 18px; line-height: 1; padding: 0; opacity: 0; transition: opacity 0.15s; }
-  .slot-tile:hover .slot-del { opacity: 1; }
+  .slot-rot { position: absolute; top: 6px; left: 6px; width: 26px; height: 26px; border-radius: 50%; background: rgba(0,0,0,0.7); color: #fff; border: none; cursor: pointer; font-size: 16px; line-height: 1; padding: 0; opacity: 0; transition: opacity 0.15s; display: flex; align-items: center; justify-content: center; }
+  .slot-tile:hover .slot-del, .slot-tile:hover .slot-rot { opacity: 1; }
   .slot-upload { padding: 6px 10px; background: #1a1714; color: #f2ede4; border: none; font-family: 'Courier Prime', monospace; font-size: 9px; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: opacity 0.2s; }
   .slot-upload:hover { opacity: 0.85; }
   .slot-tile.uploading { opacity: 0.4; pointer-events: none; }
@@ -391,6 +419,60 @@ async function uploadPhoto(input, slug, slot) {
     showToast('Fout: ' + err.message, true);
   }
   input.value = '';
+}
+
+async function rotatePhoto(slug, slot) {
+  var slotEl = document.querySelector('[data-slug="' + slug + '"][data-slot="' + slot + '"]');
+  var tile = slotEl ? slotEl.querySelector('.slot-tile') : null;
+  if (tile) tile.classList.add('uploading');
+  try {
+    // Fetch original from R2 via worker proxy (has CORS so canvas can read it)
+    var srcRes = await fetch('/photo-source?secret=' + encodeURIComponent(SECRET) +
+                             '&slug=' + encodeURIComponent(slug) +
+                             '&slot=' + encodeURIComponent(slot));
+    if (!srcRes.ok) throw new Error('bron_niet_gevonden');
+    var blob = await srcRes.blob();
+
+    // Decode image
+    var imgUrl = URL.createObjectURL(blob);
+    var img = new Image();
+    await new Promise(function(resolve, reject) {
+      img.onload = resolve;
+      img.onerror = function() { reject(new Error('decode_failed')); };
+      img.src = imgUrl;
+    });
+
+    // Rotate 90° clockwise on a canvas (swap w/h)
+    var canvas = document.createElement('canvas');
+    canvas.width  = img.naturalHeight;
+    canvas.height = img.naturalWidth;
+    var ctx = canvas.getContext('2d');
+    ctx.translate(canvas.width / 2, canvas.height / 2);
+    ctx.rotate(Math.PI / 2);
+    ctx.drawImage(img, -img.naturalWidth / 2, -img.naturalHeight / 2);
+    URL.revokeObjectURL(imgUrl);
+
+    // Encode back to JPEG
+    var rotated = await new Promise(function(resolve, reject) {
+      canvas.toBlob(function(b) { b ? resolve(b) : reject(new Error('encode_failed')); }, 'image/jpeg', 0.9);
+    });
+
+    // Upload as same slot — overwrites
+    var form = new FormData();
+    form.append('slug', slug);
+    form.append('slot', slot);
+    form.append('file', rotated, slot + '.jpg');
+    var res = await fetch('/photo/upload?secret=' + encodeURIComponent(SECRET), {
+      method: 'POST', body: form
+    });
+    var data = await res.json();
+    if (!data.ok) throw new Error(data.error || 'upload_failed');
+    showToast('Geroteerd');
+    setTimeout(function() { location.reload(); }, 400);
+  } catch (err) {
+    if (tile) tile.classList.remove('uploading');
+    showToast('Fout: ' + err.message, true);
+  }
 }
 
 async function deletePhoto(slug, slot) {
@@ -835,6 +917,7 @@ export default {
 
     // Admin POST endpoints
     if (request.method === 'POST' && url.pathname === '/voorraad')      return handleVoorraadAdmin(request, env);
+    if (request.method === 'GET'  && url.pathname === '/photo-source')  return handlePhotoSource(request, env);
     if (request.method === 'POST' && url.pathname === '/photo/upload')  return handlePhotoUpload(request, env);
     if (request.method === 'POST' && url.pathname === '/photo/delete')  return handlePhotoDelete(request, env);
 
