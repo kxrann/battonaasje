@@ -997,11 +997,55 @@ function withSecurityHeaders(response) {
   return new Response(response.body, { status: response.status, headers });
 }
 
+// ─── Scheduled handler: weekly KV backup to R2 ──────────────────────────────
+// Configure cron trigger in Cloudflare dashboard:
+//   Worker → Triggers → Cron Triggers → "0 3 * * 1"  (3:00 UTC every Monday)
+async function runBackup(env) {
+  if (!env.ACCESS_LOG || !env.PHOTOS) {
+    console.log('Backup skipped — KV or R2 binding missing');
+    return;
+  }
+  console.log('Starting KV backup to R2…');
+
+  // List all keys from ACCESS_LOG namespace
+  let allKeys = [];
+  let cursor;
+  do {
+    const opts = { limit: 1000 };
+    if (cursor) opts.cursor = cursor;
+    const listed = await env.ACCESS_LOG.list(opts);
+    allKeys = allKeys.concat(listed.keys);
+    cursor = listed.list_complete ? null : listed.cursor;
+  } while (cursor);
+
+  // Fetch all values (in batches to avoid hitting subrequest limits)
+  const data = {};
+  const BATCH = 50;
+  for (let i = 0; i < allKeys.length; i += BATCH) {
+    const slice = allKeys.slice(i, i + BATCH);
+    const vals = await Promise.all(slice.map(({ name }) => env.ACCESS_LOG.get(name)));
+    slice.forEach(({ name }, j) => { data[name] = vals[j]; });
+  }
+
+  // Write JSON to R2 under backups/<date>.json
+  const now  = new Date().toISOString().slice(0, 10);
+  const body = JSON.stringify({ exported_at: new Date().toISOString(), count: allKeys.length, data });
+  const key  = `backups/access-log-${now}.json`;
+  await env.PHOTOS.put(key, body, {
+    httpMetadata: { contentType: 'application/json', cacheControl: 'private, no-store' },
+  });
+
+  console.log(`Backup complete: ${allKeys.length} keys → r2://battonaasje-photos/${key}`);
+}
+
 // ─── Main handler ─────────────────────────────────────────────────────────────
 export default {
   async fetch(request, env) {
     const response = await handleRequest(request, env);
     return withSecurityHeaders(response);
+  },
+  async scheduled(_event, env, ctx) {
+    ctx.waitUntil(runBackup(env));
   },
 };
 

@@ -75,12 +75,45 @@
   .home:hover { opacity: 0.88; }
   .small { font-size: 10px; letter-spacing: 2px; color: #8c8478; margin-top: 24px; }
   @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+
+  /* ═══ ACCESSIBILITY ═══ */
+  /* Skip-link — keyboard users jump past nav */
+  .skip-link {
+    position: absolute; top: -100px; left: 0;
+    background: var(--ink); color: var(--paper);
+    padding: 12px 20px;
+    font-family: 'Courier Prime', monospace;
+    font-size: 12px; letter-spacing: 2px; text-transform: uppercase;
+    text-decoration: none;
+    z-index: 10000;
+    transition: top 0.15s ease-out;
+  }
+  .skip-link:focus { top: 0; outline: 2px solid var(--paper); outline-offset: -2px; }
+
+  /* Stronger, visible focus indicator across the site */
+  :focus-visible {
+    outline: 2px solid var(--ink) !important;
+    outline-offset: 3px !important;
+    border-radius: 2px;
+  }
+  #private-gate :focus-visible, #age-gate :focus-visible { outline-color: #f2ede4 !important; }
+
+  /* Screen-reader-only utility class */
+  .sr-only {
+    position: absolute !important;
+    width: 1px !important; height: 1px !important;
+    padding: 0 !important; margin: -1px !important;
+    overflow: hidden !important; clip: rect(0,0,0,0) !important;
+    white-space: nowrap !important; border: 0 !important;
+  }
 </style>
 <meta http-equiv="Cross-Origin-Opener-Policy" content="same-origin">
 <meta http-equiv="X-DNS-Prefetch-Control" content="off">
 <meta name="format-detection" content="telephone=no">
 </head>
 <body>
+<a href="#main" class="skip-link">Naar inhoud</a>
+
 <main class="card">
   <div class="logo">BATTONAASJE</div>
   <div class="line"></div>

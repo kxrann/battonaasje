@@ -676,7 +676,38 @@
     a { color: #000 !important; text-decoration: none !important; }
     h2, h3, .wine-name { page-break-after: avoid; }
     .wine-text { page-break-inside: avoid; orphans: 3; widows: 3; }
-  }</style>
+  }
+  /* ═══ ACCESSIBILITY ═══ */
+  /* Skip-link — keyboard users jump past nav */
+  .skip-link {
+    position: absolute; top: -100px; left: 0;
+    background: var(--ink); color: var(--paper);
+    padding: 12px 20px;
+    font-family: 'Courier Prime', monospace;
+    font-size: 12px; letter-spacing: 2px; text-transform: uppercase;
+    text-decoration: none;
+    z-index: 10000;
+    transition: top 0.15s ease-out;
+  }
+  .skip-link:focus { top: 0; outline: 2px solid var(--paper); outline-offset: -2px; }
+
+  /* Stronger, visible focus indicator across the site */
+  :focus-visible {
+    outline: 2px solid var(--ink) !important;
+    outline-offset: 3px !important;
+    border-radius: 2px;
+  }
+  #private-gate :focus-visible, #age-gate :focus-visible { outline-color: #f2ede4 !important; }
+
+  /* Screen-reader-only utility class */
+  .sr-only {
+    position: absolute !important;
+    width: 1px !important; height: 1px !important;
+    padding: 0 !important; margin: -1px !important;
+    overflow: hidden !important; clip: rect(0,0,0,0) !important;
+    white-space: nowrap !important; border: 0 !important;
+  }
+</style>
 <link rel="icon" type="image/png" sizes="512x512" href="/favicon.png">
 <link rel="apple-touch-icon" sizes="512x512" href="/favicon.png">
 <link rel="shortcut icon" href="/favicon.png">
@@ -685,6 +716,8 @@
 <meta name="format-detection" content="telephone=no">
 </head>
 <body>
+<a href="#main" class="skip-link">Naar inhoud</a>
+
 
 <div id="private-gate">
   <div class="private-gate-inner">
@@ -692,10 +725,11 @@
     <div class="private-gate-line"></div>
     <p class="private-gate-sub">voer de toegangscode in</p>
     <input type="text" name="hp_name" id="hp_name" tabindex="-1" autocomplete="off" style="position:absolute;left:-10000px;width:1px;height:1px;opacity:0" aria-hidden="true">
+    <label for="private-code" class="sr-only">Toegangscode</label>
     <input class="private-gate-input" id="private-code" type="password" placeholder="· · · · · · · ·" autocomplete="off">
     <div id="turnstile-slot" style="min-height:0;margin-bottom:14px"></div>
     <button type="button" class="private-gate-btn" onclick="checkPrivateCode()">Toegang &rarr;</button>
-    <div class="private-gate-error" id="private-error"></div>
+    <div class="private-gate-error" id="private-error" aria-live="polite" aria-atomic="true"></div>
   </div>
 </div>
 
@@ -712,7 +746,7 @@
       <input class="age-gate-input" id="age-year" type="number" min="1900" max="2099" placeholder="JJJJ" autocomplete="bday-year" inputmode="numeric" aria-label="Geboortejaar">
     </div>
     <button type="button" class="age-gate-btn" onclick="checkAge()">Bevestigen &rarr;</button>
-    <div class="age-gate-error" id="age-error"></div>
+    <div class="age-gate-error" id="age-error" aria-live="polite" aria-atomic="true"></div>
   </div>
 </div>
 
@@ -825,7 +859,7 @@
 
       <div class="wine-footer">
         <div class="wine-footer-meta">
-          <div class="stock-badge" id="stock-badge" data-status="loading" hidden><span class="stock-dot"></span><span class="stock-text" id="stock-text">Voorraad laden…</span></div>
+          <div class="stock-badge" id="stock-badge" data-status="loading" hidden><span class="stock-dot"></span><span class="stock-text" id="stock-text" aria-live="polite">Voorraad laden…</span></div>
           <div class="wine-price">€295,00<span class="wine-price-unit">/ FLES</span></div>
         </div>
         <button type="button" class="wine-buy" id="wine-buy-btn" onclick="openCheckout()">Direct bestellen →</button>

@@ -190,6 +190,37 @@
     h2, h3, .wine-name { page-break-after: avoid; }
     .wine-text { page-break-inside: avoid; orphans: 3; widows: 3; }
   }
+
+  /* ═══ ACCESSIBILITY ═══ */
+  /* Skip-link — keyboard users jump past nav */
+  .skip-link {
+    position: absolute; top: -100px; left: 0;
+    background: var(--ink); color: var(--paper);
+    padding: 12px 20px;
+    font-family: 'Courier Prime', monospace;
+    font-size: 12px; letter-spacing: 2px; text-transform: uppercase;
+    text-decoration: none;
+    z-index: 10000;
+    transition: top 0.15s ease-out;
+  }
+  .skip-link:focus { top: 0; outline: 2px solid var(--paper); outline-offset: -2px; }
+
+  /* Stronger, visible focus indicator across the site */
+  :focus-visible {
+    outline: 2px solid var(--ink) !important;
+    outline-offset: 3px !important;
+    border-radius: 2px;
+  }
+  #private-gate :focus-visible, #age-gate :focus-visible { outline-color: #f2ede4 !important; }
+
+  /* Screen-reader-only utility class */
+  .sr-only {
+    position: absolute !important;
+    width: 1px !important; height: 1px !important;
+    padding: 0 !important; margin: -1px !important;
+    overflow: hidden !important; clip: rect(0,0,0,0) !important;
+    white-space: nowrap !important; border: 0 !important;
+  }
 </style>
 <link rel="icon" type="image/png" sizes="512x512" href="/favicon.png">
 <link rel="apple-touch-icon" sizes="512x512" href="/favicon.png">
@@ -199,6 +230,8 @@
 <meta name="format-detection" content="telephone=no">
 </head>
 <body>
+<a href="#main" class="skip-link">Naar inhoud</a>
+
 
 <nav>
   <a href="/" class="nav-logo">BATTONAASJE</a>

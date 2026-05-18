@@ -190,6 +190,37 @@
     h2, h3, .wine-name { page-break-after: avoid; }
     .wine-text { page-break-inside: avoid; orphans: 3; widows: 3; }
   }
+
+  /* ═══ ACCESSIBILITY ═══ */
+  /* Skip-link — keyboard users jump past nav */
+  .skip-link {
+    position: absolute; top: -100px; left: 0;
+    background: var(--ink); color: var(--paper);
+    padding: 12px 20px;
+    font-family: 'Courier Prime', monospace;
+    font-size: 12px; letter-spacing: 2px; text-transform: uppercase;
+    text-decoration: none;
+    z-index: 10000;
+    transition: top 0.15s ease-out;
+  }
+  .skip-link:focus { top: 0; outline: 2px solid var(--paper); outline-offset: -2px; }
+
+  /* Stronger, visible focus indicator across the site */
+  :focus-visible {
+    outline: 2px solid var(--ink) !important;
+    outline-offset: 3px !important;
+    border-radius: 2px;
+  }
+  #private-gate :focus-visible, #age-gate :focus-visible { outline-color: #f2ede4 !important; }
+
+  /* Screen-reader-only utility class */
+  .sr-only {
+    position: absolute !important;
+    width: 1px !important; height: 1px !important;
+    padding: 0 !important; margin: -1px !important;
+    overflow: hidden !important; clip: rect(0,0,0,0) !important;
+    white-space: nowrap !important; border: 0 !important;
+  }
 </style>
 <link rel="icon" type="image/png" sizes="512x512" href="/favicon.png">
 <link rel="apple-touch-icon" sizes="512x512" href="/favicon.png">
@@ -199,6 +230,8 @@
 <meta name="format-detection" content="telephone=no">
 </head>
 <body>
+<a href="#main" class="skip-link">Naar inhoud</a>
+
 
 <nav>
   <a href="/" class="nav-logo">BATTONAASJE</a>
@@ -222,15 +255,22 @@
 
   <div class="legal-section">
     <h2>Welke gegevens verwerken wij?</h2>
-    <p>Battonaasje verwerkt alleen gegevens die u zelf aan ons verstrekt:</p>
+    <p>Battonaasje verwerkt twee soorten gegevens:</p>
+    <p><strong>1. Gegevens die u zelf aan ons verstrekt:</strong></p>
     <ul>
       <li>Naam en telefoonnummer, via WhatsApp bij het plaatsen van een bestelling</li>
       <li>Afleveradres, indien van toepassing</li>
-      <li>Geboortedatum, voor leeftijdsverificatie (18+) via het formulier op de website — deze wordt niet opgeslagen op onze servers</li>
+      <li>E-mailadres, bij online bestellingen voor de betaalbevestiging</li>
+      <li>Geboortedatum, voor leeftijdsverificatie (18+) via het formulier op de website — deze wordt uitsluitend lokaal in uw browser opgeslagen (sessionStorage) en niet naar onze servers verzonden</li>
       <li>Berichten die u ons stuurt via het contactformulier of WhatsApp</li>
     </ul>
-    <p>Wij verzamelen geen gegevens via cookies of trackingtools. Zie ook ons <a href="/cookiebeleid/">cookiebeleid</a>.</p>
-    <p>Bij online betalingen worden uw betaalgegevens (rekeningnummer, kaartgegevens) direct door betaalprovider <strong>[BETAALPROVIDER]</strong> verwerkt. Battonaasje ontvangt uitsluitend de betalingsstatus (geslaagd/mislukt) en een order-ID.</p>
+    <p><strong>2. Technische gegevens (automatisch verzameld voor beveiliging en analyse):</strong></p>
+    <ul>
+      <li>IP-adres, land (op landniveau, via Cloudflare edge-geolocatie) en browser-info — uitsluitend bij toegangspogingen tot de besloten omgeving, voor beveiligingsdoeleinden (max 30 dagen bewaard)</li>
+      <li>Bezochte pagina-paden (zonder IP-koppeling), geaggregeerd per dag, voor bezoekersstatistieken (max 90 dagen bewaard)</li>
+    </ul>
+    <p>Wij gebruiken geen cookies voor analytics of trackingdoeleinden. Zie ook ons <a href="/cookiebeleid/">cookiebeleid</a>.</p>
+    <p>Bij online betalingen worden uw betaalgegevens (rekeningnummer, kaartgegevens) direct door betaalprovider <strong>Mollie</strong> verwerkt. Battonaasje ontvangt uitsluitend de betalingsstatus (geslaagd/mislukt) en een order-ID.</p>
   </div>
 
   <div class="legal-section">
@@ -249,16 +289,25 @@
     <h2>Verwerkers</h2>
     <p>Battonaasje maakt gebruik van de volgende verwerkers die namens ons persoonsgegevens verwerken:</p>
     <ul>
-      <li><strong>[BETAALPROVIDER]</strong> — betaalverwerking. Uw betaalgegevens worden uitsluitend door [BETAALPROVIDER] verwerkt conform hun eigen privacybeleid. Battonaasje heeft geen toegang tot uw volledige betaalgegevens.</li>
+      <li><strong>Cloudflare, Inc.</strong> — hosting van onze beveiligings- en analytics-Workers, alsmede DDoS- en bot-bescherming. Cloudflare verwerkt IP-adressen en browser-gegevens conform haar eigen privacybeleid.</li>
+      <li><strong>Mollie B.V.</strong> — betaalverwerking. Uw betaalgegevens worden uitsluitend door Mollie verwerkt conform hun eigen privacybeleid. Battonaasje heeft geen toegang tot uw volledige betaalgegevens.</li>
+      <li><strong>GitHub, Inc.</strong> — hosting van de statische website-bestanden via GitHub Pages.</li>
       <li><strong>Formspree</strong> — verwerking van nieuwsbriefinschrijvingen via het contactformulier op de website.</li>
     </ul>
-    <p>Met alle verwerkers zijn verwerkersovereenkomsten gesloten conform de AVG.</p>
+    <p>Met alle verwerkers zijn verwerkersovereenkomsten gesloten conform de AVG. Cloudflare en Mollie zijn AVG-compliant en hosten gegevens binnen de EU/EER.</p>
   </div>
 
   <div class="legal-section">
     <h2>Bewaartermijnen</h2>
-    <p>Bestell- en contactgegevens bewaren wij niet langer dan noodzakelijk voor de uitvoering van de overeenkomst. Gegevens die op grond van de belastingwetgeving bewaard moeten worden, worden 7 jaar bewaard.</p>
-    <p>De geboortedatum die via het leeftijdsformulier wordt ingevoerd, wordt alleen lokaal in uw browser opgeslagen (sessionStorage) en wordt na het sluiten van het browsertabblad automatisch verwijderd.</p>
+    <p>Wij bewaren persoonsgegevens niet langer dan noodzakelijk:</p>
+    <ul>
+      <li><strong>Bestelgegevens</strong> — 7 jaar (wettelijke bewaarplicht belastingwetgeving)</li>
+      <li><strong>Toegangslog (IP, land, browser bij gate-pogingen)</strong> — automatisch verwijderd na <strong>30 dagen</strong></li>
+      <li><strong>Geaggregeerde bezoekersstatistieken</strong> (paden, landen, zonder IP) — automatisch verwijderd na <strong>90 dagen</strong></li>
+      <li><strong>Geboortedatum (leeftijdsverificatie)</strong> — alleen lokaal in uw browser (sessionStorage), wordt automatisch verwijderd bij sluiten van het tabblad. Wij ontvangen deze nooit.</li>
+      <li><strong>Contactberichten</strong> — bewaard zolang noodzakelijk voor de afhandeling, maximaal 12 maanden</li>
+    </ul>
+    <p>Verwijdering gebeurt automatisch via een time-to-live (TTL) op onze opslag — er is geen handmatige tussenkomst nodig.</p>
   </div>
 
   <div class="legal-section">
@@ -278,7 +327,16 @@
 
   <div class="legal-section">
     <h2>Beveiliging</h2>
-    <p>Battonaasje neemt passende technische en organisatorische maatregelen om uw persoonsgegevens te beschermen tegen ongeautoriseerde toegang, verlies of misbruik. De website maakt gebruik van HTTPS-versleuteling.</p>
+    <p>Battonaasje neemt passende technische en organisatorische maatregelen om uw persoonsgegevens te beschermen tegen ongeautoriseerde toegang, verlies of misbruik. Onder andere:</p>
+    <ul>
+      <li><strong>HTTPS/TLS-versleuteling</strong> voor alle verbindingen, met HSTS (HTTP Strict Transport Security)</li>
+      <li><strong>Strict Content Security Policy</strong> ter bescherming tegen cross-site scripting</li>
+      <li><strong>Toegangscontrole</strong> via besloten gate met rate-limiting en CAPTCHA (Cloudflare Turnstile)</li>
+      <li><strong>DDoS-bescherming</strong> en bot-detectie via Cloudflare</li>
+      <li><strong>Versleutelde opslag</strong> van Worker-secrets</li>
+      <li><strong>Automatische TTL-gebaseerde verwijdering</strong> van logs en statistieken</li>
+    </ul>
+    <p>Mocht u een beveiligingskwetsbaarheid ontdekken, meld dit dan via <a href="/.well-known/security.txt">/.well-known/security.txt</a>.</p>
   </div>
 
   <div class="legal-section">
