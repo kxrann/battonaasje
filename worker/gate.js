@@ -57,8 +57,12 @@ async function logAttempt(env, ip, country, ua, ok) {
     ua:      (ua || '').slice(0, 250),
     ok,
   });
-  // fire-and-forget — don't slow down the verify response
-  env.ACCESS_LOG.put(key, val, { expirationTtl: 30 * 24 * 60 * 60 }).catch(() => {});
+  try {
+    await env.ACCESS_LOG.put(key, val, { expirationTtl: 30 * 24 * 60 * 60 });
+  } catch (err) {
+    // Swallow — never break /verify because logging failed
+    console.error('logAttempt failed', err);
+  }
 }
 
 // ─── /logs HTML viewer ────────────────────────────────────────────────────────
@@ -223,8 +227,9 @@ export default {
     const gateCode = (env.GATE_CODE || '').toUpperCase();
     const valid    = code.length > 0 && code === gateCode;
 
-    // Log the attempt (fire-and-forget, doesn't delay response)
-    logAttempt(env, ip, country, ua, valid);
+    // Log the attempt — must await so the KV write completes before
+    // the Worker isolate is allowed to terminate.
+    await logAttempt(env, ip, country, ua, valid);
 
     return new Response(JSON.stringify({ ok: valid }), {
       status: valid ? 200 : 401,
