@@ -228,6 +228,33 @@
   .cookie-btn-decline:hover { border-color: rgba(242,237,228,0.4); color: rgba(242,237,228,0.55); }
   @media (max-width: 480px) { .nav-back { max-width: 22px; letter-spacing: 0; } }
   @media (max-width: 768px) { .cookie-banner { flex-direction: column; padding: 16px 24px; align-items: flex-start; gap: 14px; } .cookie-banner-actions { width: 100%; } .cookie-btn { flex: 1; text-align: center; } }
+
+  /* ═══ RESPONSIVENESS & SMOOTHNESS BASELINE (auto-injected) ═══ */
+  html { scroll-padding-top: 80px; }
+  /* Touch devices: suppress sticky-hover after tap */
+  @media (hover: none) and (pointer: coarse) {
+    .region-card:hover .region-img,
+    .bottle-card:hover,
+    .blog-card:hover,
+    .wine-buy:hover,
+    .photo-slot:hover { transform: none !important; box-shadow: none !important; opacity: 1 !important; }
+  }
+  /* Respect reduced-motion */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+    html { scroll-behavior: auto !important; }
+    .reveal { opacity: 1 !important; transform: none !important; }
+    .terroir-ping-ring, .terroir-pin-line, .terroir-pin-dot, .terroir-marker { animation: none !important; }
+  }
+  /* iOS Safari: prevent zoom on input focus (requires font-size >= 16px) */
+  @media (max-width: 768px) {
+    input[type=text], input[type=email], input[type=password], input[type=number],
+    input[type=tel], textarea, select { font-size: 16px !important; }
+  }
 </style>
 <link rel="icon" type="image/png" sizes="512x512" href="/favicon.png">
 <link rel="apple-touch-icon" sizes="512x512" href="/favicon.png">
