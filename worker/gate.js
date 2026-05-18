@@ -104,6 +104,303 @@ async function recordPageview(env, page) {
   }
 }
 
+// ─── R2: photo management ────────────────────────────────────────────────────
+// R2 keys:   wines/<slug>/<slot>.jpg
+//            slot ∈ { main, gallery-1, gallery-2, gallery-3, gallery-4 }
+// Binding:   PHOTOS (R2 bucket binding)
+// Env:       R2_PUBLIC_URL — e.g. "https://pub-xxxxxxxx.r2.dev"
+
+const PHOTO_SLOTS = ['main', 'gallery-1', 'gallery-2', 'gallery-3', 'gallery-4'];
+const MAX_UPLOAD_BYTES = 8 * 1024 * 1024; // 8 MB after client-side compression
+
+function isValidSlot(s) {
+  return typeof s === 'string' && PHOTO_SLOTS.includes(s);
+}
+
+function photoUrl(env, slug, slot) {
+  if (!env.R2_PUBLIC_URL) return null;
+  return `${env.R2_PUBLIC_URL}/wines/${slug}/${slot}.jpg`;
+}
+
+async function getPhotosForSlug(env, slug) {
+  if (!env.PHOTOS || !env.R2_PUBLIC_URL) {
+    return { main: null, gallery: [null, null, null, null] };
+  }
+  const listed = await env.PHOTOS.list({ prefix: `wines/${slug}/` });
+  const out = { main: null, gallery: [null, null, null, null] };
+  for (const obj of listed.objects) {
+    const fname = obj.key.split('/').pop().replace('.jpg', '');
+    if (fname === 'main') {
+      out.main = `${env.R2_PUBLIC_URL}/${obj.key}?v=${obj.uploaded.getTime()}`;
+    } else if (fname.startsWith('gallery-')) {
+      const i = parseInt(fname.split('-')[1], 10) - 1;
+      if (i >= 0 && i < 4) out.gallery[i] = `${env.R2_PUBLIC_URL}/${obj.key}?v=${obj.uploaded.getTime()}`;
+    }
+  }
+  return out;
+}
+
+async function getAllPhotos(env) {
+  const result = {};
+  for (const w of KNOWN_WINES) {
+    result[w.slug] = await getPhotosForSlug(env, w.slug);
+  }
+  return result;
+}
+
+// ── GET /photos?slug=... or /photos?all=1 (admin only) ──────────────────────
+async function handlePhotosRead(request, env) {
+  const origin = request.headers.get('Origin') || '';
+  const url    = new URL(request.url);
+
+  if (url.searchParams.get('all') === '1') {
+    const provided = url.searchParams.get('secret') || '';
+    if (!env.LOG_SECRET || provided !== env.LOG_SECRET) {
+      return new Response('Unauthorized', { status: 401 });
+    }
+    const photos = await getAllPhotos(env);
+    return new Response(JSON.stringify({ ok: true, photos }), {
+      status: 200, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
+    });
+  }
+
+  const slug = url.searchParams.get('slug') || '';
+  if (!SLUG_RE.test(slug)) {
+    return new Response(JSON.stringify({ ok: false, error: 'invalid_slug' }), {
+      status: 400, headers: { 'Content-Type': 'application/json', ...corsHeaders(origin) },
+    });
+  }
+  const photos = await getPhotosForSlug(env, slug);
+  return new Response(JSON.stringify({ ok: true, photos }), {
+    status: 200,
+    headers: {
+      'Content-Type':  'application/json',
+      'Cache-Control': 'public, max-age=60',
+      ...corsHeaders(origin),
+    },
+  });
+}
+
+// ── POST /photo/upload?secret=... multipart: slug, slot, file ────────────────
+async function handlePhotoUpload(request, env) {
+  const provided = new URL(request.url).searchParams.get('secret') || '';
+  if (!env.LOG_SECRET || provided !== env.LOG_SECRET) return new Response('Unauthorized', { status: 401 });
+  if (!env.PHOTOS)                                    return new Response(JSON.stringify({ ok: false, error: 'no_r2' }), { status: 500, headers: { 'Content-Type': 'application/json' } });
+
+  let form;
+  try { form = await request.formData(); } catch {
+    return new Response(JSON.stringify({ ok: false, error: 'invalid_form' }), { status: 400, headers: { 'Content-Type': 'application/json' } });
+  }
+  const slug = String(form.get('slug') || '');
+  const slot = String(form.get('slot') || '');
+  const file = form.get('file');
+
+  if (!SLUG_RE.test(slug))           return new Response(JSON.stringify({ ok: false, error: 'invalid_slug' }), { status: 400, headers: { 'Content-Type': 'application/json' } });
+  if (!isValidSlot(slot))            return new Response(JSON.stringify({ ok: false, error: 'invalid_slot' }), { status: 400, headers: { 'Content-Type': 'application/json' } });
+  if (!file || typeof file === 'string') return new Response(JSON.stringify({ ok: false, error: 'no_file' }), { status: 400, headers: { 'Content-Type': 'application/json' } });
+  if (file.size > MAX_UPLOAD_BYTES)  return new Response(JSON.stringify({ ok: false, error: 'too_large' }), { status: 413, headers: { 'Content-Type': 'application/json' } });
+
+  const key = `wines/${slug}/${slot}.jpg`;
+  try {
+    await env.PHOTOS.put(key, file.stream(), {
+      httpMetadata: { contentType: 'image/jpeg', cacheControl: 'public, max-age=31536000' },
+    });
+  } catch (err) {
+    console.error('R2 put failed', err);
+    return new Response(JSON.stringify({ ok: false, error: 'r2_failed' }), { status: 500, headers: { 'Content-Type': 'application/json' } });
+  }
+  return new Response(JSON.stringify({ ok: true, url: photoUrl(env, slug, slot) + '?t=' + Date.now() }), {
+    status: 200, headers: { 'Content-Type': 'application/json' },
+  });
+}
+
+// ── POST /photo/delete?secret=... body: { slug, slot } ───────────────────────
+async function handlePhotoDelete(request, env) {
+  const provided = new URL(request.url).searchParams.get('secret') || '';
+  if (!env.LOG_SECRET || provided !== env.LOG_SECRET) return new Response('Unauthorized', { status: 401 });
+  if (!env.PHOTOS) return new Response(JSON.stringify({ ok: false, error: 'no_r2' }), { status: 500, headers: { 'Content-Type': 'application/json' } });
+
+  let body;
+  try { body = await request.json(); } catch {
+    return new Response(JSON.stringify({ ok: false, error: 'invalid_body' }), { status: 400, headers: { 'Content-Type': 'application/json' } });
+  }
+  const slug = String(body.slug || '');
+  const slot = String(body.slot || '');
+  if (!SLUG_RE.test(slug))   return new Response(JSON.stringify({ ok: false, error: 'invalid_slug' }), { status: 400, headers: { 'Content-Type': 'application/json' } });
+  if (!isValidSlot(slot))    return new Response(JSON.stringify({ ok: false, error: 'invalid_slot' }), { status: 400, headers: { 'Content-Type': 'application/json' } });
+
+  try {
+    await env.PHOTOS.delete(`wines/${slug}/${slot}.jpg`);
+  } catch (err) {
+    console.error('R2 delete failed', err);
+  }
+  return new Response(JSON.stringify({ ok: true }), { status: 200, headers: { 'Content-Type': 'application/json' } });
+}
+
+// ── GET /foto-upload?secret=... — admin HTML ─────────────────────────────────
+async function handleFotoAdmin(request, env) {
+  const provided = new URL(request.url).searchParams.get('secret') || '';
+  if (!env.LOG_SECRET || provided !== env.LOG_SECRET) return new Response('Unauthorized', { status: 401 });
+
+  const allPhotos = await getAllPhotos(env);
+  const r2ok      = !!env.PHOTOS && !!env.R2_PUBLIC_URL;
+
+  const wineCards = KNOWN_WINES.map((w) => {
+    const photos = allPhotos[w.slug] || { main: null, gallery: [null, null, null, null] };
+    const slots = [
+      { key: 'main',      label: 'Hoofdfoto (fles)', url: photos.main, aspect: '3/4' },
+      { key: 'gallery-1', label: 'Gallery 1',        url: photos.gallery[0], aspect: '4/3' },
+      { key: 'gallery-2', label: 'Gallery 2',        url: photos.gallery[1], aspect: '4/3' },
+      { key: 'gallery-3', label: 'Gallery 3',        url: photos.gallery[2], aspect: '4/3' },
+      { key: 'gallery-4', label: 'Gallery 4',        url: photos.gallery[3], aspect: '4/3' },
+    ];
+    const slotsHtml = slots.map((s) => `
+      <div class="slot" data-slug="${w.slug}" data-slot="${s.key}" style="--ar:${s.aspect}">
+        <div class="slot-label">${s.label}</div>
+        <div class="slot-tile">
+          ${s.url
+            ? `<img src="${s.url}" alt="${s.label}" loading="lazy">
+               <button type="button" class="slot-del" title="Verwijderen" onclick="deletePhoto('${w.slug}','${s.key}')">×</button>`
+            : `<div class="slot-empty"><span>+</span></div>`}
+          <input type="file" accept="image/*" onchange="uploadPhoto(this, '${w.slug}', '${s.key}')" hidden>
+          <button type="button" class="slot-upload" onclick="this.parentNode.querySelector('input').click()">${s.url ? 'Vervangen' : 'Upload'}</button>
+        </div>
+      </div>`).join('');
+
+    return `<section class="wine-card">
+      <h2 class="wine-card-title">${w.name}</h2>
+      <div class="wine-card-slug">${w.slug}</div>
+      <div class="slot-grid">${slotsHtml}</div>
+    </section>`;
+  }).join('\n');
+
+  const html = `<!DOCTYPE html>
+<html lang="nl"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Battonaasje — Foto's</title>
+${SHARED_CSS}
+<style>
+  .warn { background: #fff4e0; border-left: 3px solid #c68b2c; padding: 14px 18px; margin-bottom: 24px; font-size: 12px; color: #6b4f1a; line-height: 1.6; }
+  .wine-card { background: #fff; padding: 28px 24px; margin-bottom: 20px; border: 1px solid #c8c0b0; }
+  .wine-card-title { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: 22px; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 4px; }
+  .wine-card-slug { font-size: 11px; color: #8c8478; margin-bottom: 20px; letter-spacing: 1px; }
+  .slot-grid { display: grid; grid-template-columns: 1.2fr repeat(4, 1fr); gap: 14px; }
+  .slot { display: flex; flex-direction: column; gap: 8px; }
+  .slot-label { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: #8c8478; }
+  .slot-tile { position: relative; background: #ede8df; border: 1px solid #c8c0b0; aspect-ratio: var(--ar, 4/3); overflow: hidden; }
+  .slot-tile img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .slot-empty { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #c8c0b0; font-size: 36px; font-weight: 300; }
+  .slot-del { position: absolute; top: 6px; right: 6px; width: 26px; height: 26px; border-radius: 50%; background: rgba(0,0,0,0.7); color: #fff; border: none; cursor: pointer; font-size: 18px; line-height: 1; padding: 0; opacity: 0; transition: opacity 0.15s; }
+  .slot-tile:hover .slot-del { opacity: 1; }
+  .slot-upload { padding: 6px 10px; background: #1a1714; color: #f2ede4; border: none; font-family: 'Courier Prime', monospace; font-size: 9px; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: opacity 0.2s; }
+  .slot-upload:hover { opacity: 0.85; }
+  .slot-tile.uploading { opacity: 0.4; pointer-events: none; }
+  .slot-tile.uploading::after { content: '· · ·'; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #1a1714; letter-spacing: 4px; }
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: #1a1714; color: #f2ede4; padding: 12px 24px; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; opacity: 0; transition: opacity 0.25s; pointer-events: none; z-index: 1000; }
+  .toast.visible { opacity: 1; }
+  .toast.err { background: #a05040; }
+  @media (max-width: 768px) {
+    .slot-grid { grid-template-columns: 1fr 1fr; }
+    .slot:first-child { grid-column: 1 / -1; }
+  }
+</style>
+</head><body>
+<div class="topbar">
+  <h1>Battonaasje</h1>
+  <nav class="topnav">
+    <a href="/logs?secret=${encodeURIComponent(provided)}">Toegangslog</a>
+    <a href="/stats?secret=${encodeURIComponent(provided)}">Bezoekers</a>
+    <a href="/voorraad?secret=${encodeURIComponent(provided)}">Voorraad</a>
+    <a href="/foto-upload?secret=${encodeURIComponent(provided)}" class="active">Foto's</a>
+  </nav>
+</div>
+<div class="sub">Foto-beheer · uploads worden automatisch verkleind tot 1600px JPEG · onmiddellijk zichtbaar op battonaasje.nl</div>
+
+${r2ok ? '' : '<div class="warn"><strong>R2 niet geconfigureerd.</strong> Voeg de PHOTOS bucket-binding en R2_PUBLIC_URL env var toe in de Worker Settings. Tot die tijd kun je geen foto\\'s uploaden.</div>'}
+
+${wineCards}
+
+<div class="toast" id="toast"></div>
+
+<script>
+var SECRET = ${JSON.stringify(provided)};
+
+function showToast(msg, err) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.toggle('err', !!err);
+  t.classList.add('visible');
+  setTimeout(function() { t.classList.remove('visible'); }, 2400);
+}
+
+async function resizeImage(file, maxWidth, quality) {
+  return new Promise(function(resolve, reject) {
+    var url = URL.createObjectURL(file);
+    var img = new Image();
+    img.onload = function() {
+      var scale = Math.min(1, maxWidth / img.width);
+      var w = Math.round(img.width * scale);
+      var h = Math.round(img.height * scale);
+      var canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      URL.revokeObjectURL(url);
+      canvas.toBlob(function(blob) {
+        if (!blob) return reject(new Error('canvas_failed'));
+        resolve(blob);
+      }, 'image/jpeg', quality);
+    };
+    img.onerror = function() { URL.revokeObjectURL(url); reject(new Error('image_load_failed')); };
+    img.src = url;
+  });
+}
+
+async function uploadPhoto(input, slug, slot) {
+  var file = input.files[0];
+  if (!file) return;
+  var tile = input.closest('.slot-tile');
+  tile.classList.add('uploading');
+  try {
+    var blob = await resizeImage(file, 1600, 0.85);
+    var form = new FormData();
+    form.append('slug', slug);
+    form.append('slot', slot);
+    form.append('file', blob, slot + '.jpg');
+    var res = await fetch('/photo/upload?secret=' + encodeURIComponent(SECRET), {
+      method: 'POST', body: form
+    });
+    var data = await res.json();
+    if (!data.ok) throw new Error(data.error || 'upload_failed');
+    showToast('Foto opgeslagen');
+    setTimeout(function() { location.reload(); }, 400);
+  } catch (err) {
+    tile.classList.remove('uploading');
+    showToast('Fout: ' + err.message, true);
+  }
+  input.value = '';
+}
+
+async function deletePhoto(slug, slot) {
+  if (!confirm('Foto verwijderen?')) return;
+  try {
+    var res = await fetch('/photo/delete?secret=' + encodeURIComponent(SECRET), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ slug: slug, slot: slot })
+    });
+    var data = await res.json();
+    if (!data.ok) throw new Error(data.error || 'delete_failed');
+    showToast('Foto verwijderd');
+    setTimeout(function() { location.reload(); }, 400);
+  } catch (err) {
+    showToast('Fout: ' + err.message, true);
+  }
+}
+</script>
+</body></html>`;
+  return new Response(html, { status: 200, headers: { 'Content-Type': 'text/html; charset=utf-8' } });
+}
+
 // ─── KV: stock management ────────────────────────────────────────────────────
 // Key:   stock:<slug>
 // Value: integer count as string (no TTL — manual management)
@@ -214,6 +511,7 @@ ${SHARED_CSS}
     <a href="/logs?secret=${encodeURIComponent(provided)}">Toegangslog</a>
     <a href="/stats?secret=${encodeURIComponent(provided)}">Bezoekers</a>
     <a href="/voorraad?secret=${encodeURIComponent(provided)}" class="active">Voorraad</a>
+    <a href="/foto-upload?secret=${encodeURIComponent(provided)}">Foto's</a>
   </nav>
 </div>
 <div class="sub">Voorraad-beheer · wijzigingen zijn direct zichtbaar op battonaasje.nl</div>
@@ -311,6 +609,7 @@ ${SHARED_CSS}
       <a href="/logs?secret=${encodeURIComponent(provided)}" class="active">Toegangslog</a>
       <a href="/stats?secret=${encodeURIComponent(provided)}">Bezoekers</a>
       <a href="/voorraad?secret=${encodeURIComponent(provided)}">Voorraad</a>
+      <a href="/foto-upload?secret=${encodeURIComponent(provided)}">Foto's</a>
     </nav>
   </div>
   <div class="sub">Toegangslog — laatste ${total} pogingen (max 200, bewaard 30 dagen)</div>
@@ -445,6 +744,7 @@ ${SHARED_CSS}
       <a href="/logs?secret=${encodeURIComponent(provided)}">Toegangslog</a>
       <a href="/stats?secret=${encodeURIComponent(provided)}" class="active">Bezoekers</a>
       <a href="/voorraad?secret=${encodeURIComponent(provided)}">Voorraad</a>
+      <a href="/foto-upload?secret=${encodeURIComponent(provided)}">Foto's</a>
     </nav>
   </div>
   <div class="sub">Bezoekersstatistieken — bewaard 90 dagen, alleen geverifieerde sessies</div>
@@ -505,15 +805,19 @@ export default {
     }
 
     // HTML viewers
-    if (request.method === 'GET' && url.pathname === '/logs')     return handleLogs(request, env);
-    if (request.method === 'GET' && url.pathname === '/stats')    return handleStats(request, env);
-    if (request.method === 'GET' && url.pathname === '/voorraad') return handleVoorraadAdmin(request, env);
+    if (request.method === 'GET' && url.pathname === '/logs')         return handleLogs(request, env);
+    if (request.method === 'GET' && url.pathname === '/stats')        return handleStats(request, env);
+    if (request.method === 'GET' && url.pathname === '/voorraad')     return handleVoorraadAdmin(request, env);
+    if (request.method === 'GET' && url.pathname === '/foto-upload')  return handleFotoAdmin(request, env);
 
-    // Public stock JSON for frontend
+    // Public JSON
     if (request.method === 'GET' && url.pathname === '/stock')    return handleStockRead(request, env);
+    if (request.method === 'GET' && url.pathname === '/photos')   return handlePhotosRead(request, env);
 
-    // Voorraad admin update
-    if (request.method === 'POST' && url.pathname === '/voorraad') return handleVoorraadAdmin(request, env);
+    // Admin POST endpoints
+    if (request.method === 'POST' && url.pathname === '/voorraad')      return handleVoorraadAdmin(request, env);
+    if (request.method === 'POST' && url.pathname === '/photo/upload')  return handlePhotoUpload(request, env);
+    if (request.method === 'POST' && url.pathname === '/photo/delete')  return handlePhotoDelete(request, env);
 
     if (request.method !== 'POST') {
       return new Response('Method Not Allowed', { status: 405 });

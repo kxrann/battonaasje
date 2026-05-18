@@ -21,7 +21,7 @@
 <meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
 <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
 <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=()">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://js.mollie.com; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src https://*.workers.dev; frame-src https://js.mollie.com; object-src 'none'; base-uri 'self'; form-action https://formspree.io;">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://js.mollie.com; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https://*.r2.dev; connect-src https://*.workers.dev; frame-src https://js.mollie.com; object-src 'none'; base-uri 'self'; form-action https://formspree.io;">
 <link rel="canonical" href="https://battonaasje.nl/chablis-grand-cru-blanchot-1991/">
 <link rel="stylesheet" href="/fonts/fonts.css">
 <style>
@@ -543,6 +543,12 @@
   .stock-badge[data-status="sold"] .stock-dot { background: #a05040; }
   @keyframes stock-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
   .wine-buy:disabled { opacity: 0.5; cursor: not-allowed; background: var(--faded); }
+
+  /* PHOTO DISPLAY */
+  .wine-image-frame img.wine-photo,
+  .photo-slot img.gallery-photo { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .photo-slot.has-photo > svg.photo-ph-icon,
+  .photo-slot.has-photo > .photo-ph-label { display: none; }
 </style>
 </head>
 <body>
@@ -593,7 +599,7 @@
   </div>
 
   <article class="wine">
-    <div class="wine-image-frame">
+    <div class="wine-image-frame" id="photo-main">
       <div class="img-placeholder">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2h8l1 7c0 3.31-2.69 6-6 6s-6-2.69-6-6L8 2z"/><line x1="12" y1="15" x2="12" y2="22"/><line x1="8" y1="22" x2="16" y2="22"/></svg>
         <span class="img-placeholder-label">Foto volgt</span>
@@ -700,22 +706,22 @@
   </div>
   <div class="photo-grid">
 
-    <div class="photo-slot">
+    <div class="photo-slot" data-photo-slot="gallery-1">
       <svg class="photo-ph-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2h8l1 7c0 3.31-2.69 6-6 6s-6-2.69-6-6L8 2z"/><line x1="12" y1="15" x2="12" y2="22"/><line x1="8" y1="22" x2="16" y2="22"/></svg>
       <span class="photo-ph-label">Foto volgt</span>
     </div>
 
-    <div class="photo-slot">
+    <div class="photo-slot" data-photo-slot="gallery-2">
       <svg class="photo-ph-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2h8l1 7c0 3.31-2.69 6-6 6s-6-2.69-6-6L8 2z"/><line x1="12" y1="15" x2="12" y2="22"/><line x1="8" y1="22" x2="16" y2="22"/></svg>
       <span class="photo-ph-label">Foto volgt</span>
     </div>
 
-    <div class="photo-slot">
+    <div class="photo-slot" data-photo-slot="gallery-3">
       <svg class="photo-ph-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2h8l1 7c0 3.31-2.69 6-6 6s-6-2.69-6-6L8 2z"/><line x1="12" y1="15" x2="12" y2="22"/><line x1="8" y1="22" x2="16" y2="22"/></svg>
       <span class="photo-ph-label">Foto volgt</span>
     </div>
 
-    <div class="photo-slot">
+    <div class="photo-slot" data-photo-slot="gallery-4">
       <svg class="photo-ph-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2h8l1 7c0 3.31-2.69 6-6 6s-6-2.69-6-6L8 2z"/><line x1="12" y1="15" x2="12" y2="22"/><line x1="8" y1="22" x2="16" y2="22"/></svg>
       <span class="photo-ph-label">Foto volgt</span>
     </div>
@@ -901,6 +907,41 @@ function updateStockUI() {
 }
 
 loadStock();
+
+/* PHOTOS — replace placeholders with real photos from R2 */
+async function loadPhotos() {
+  try {
+    var res = await fetch(STOCK_WORKER + '/photos?slug=' + encodeURIComponent(WINE_SLUG), { cache: 'no-store' });
+    var data = await res.json();
+    if (!data.ok) return;
+    var p = data.photos;
+    // Main photo
+    if (p.main) {
+      var frame = document.getElementById('photo-main');
+      if (frame) {
+        var ph = frame.querySelector('.img-placeholder');
+        if (ph) ph.remove();
+        var img = document.createElement('img');
+        img.src = p.main; img.alt = ''; img.loading = 'lazy';
+        img.className = 'wine-photo';
+        frame.appendChild(img);
+      }
+    }
+    // Gallery photos
+    (p.gallery || []).forEach(function(url, i) {
+      if (!url) return;
+      var slot = document.querySelector('[data-photo-slot="gallery-' + (i+1) + '"]');
+      if (!slot) return;
+      slot.classList.add('has-photo');
+      var img = document.createElement('img');
+      img.src = url; img.alt = ''; img.loading = 'lazy';
+      img.className = 'gallery-photo';
+      slot.appendChild(img);
+    });
+  } catch (e) {}
+}
+loadPhotos();
+
 document.addEventListener('visibilitychange', function() {
   if (document.visibilityState === 'visible') loadStock();
 });
