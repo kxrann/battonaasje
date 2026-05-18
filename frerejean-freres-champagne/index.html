@@ -671,20 +671,7 @@
     a { color: #000 !important; text-decoration: none !important; }
     h2, h3, .wine-name { page-break-after: avoid; }
     .wine-text { page-break-inside: avoid; orphans: 3; widows: 3; }
-  }
-
-  /* Wax seal — 'gecureerd' stempel */
-  .wax-seal {
-    width: 36px; height: 36px;
-    display: inline-block; vertical-align: middle;
-    margin-right: 12px; margin-bottom: 6px;
-    flex-shrink: 0;
-    filter: drop-shadow(1px 2px 2px rgba(0,0,0,0.25));
-  }
-  .wax-seal-row { display: flex; align-items: center; gap: 4px; margin-bottom: 4px; }
-  .wax-seal-label { font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: var(--faded); font-style: italic; }
-  @media (max-width: 768px) { .wax-seal { width: 30px; height: 30px; } }
-</style>
+  }</style>
 <link rel="icon" type="image/png" sizes="512x512" href="/favicon.png">
 <link rel="apple-touch-icon" sizes="512x512" href="/favicon.png">
 <link rel="shortcut icon" href="/favicon.png">
@@ -746,7 +733,6 @@
     </div>
     <div class="wine-info">
       <div>
-        <div class="wax-seal-row"><svg class="wax-seal" viewBox="0 0 32 32" aria-hidden="true"><defs><radialGradient id="waxGrad" cx="0.35" cy="0.35" r="0.7"><stop offset="0%" stop-color="#a8334a"/><stop offset="60%" stop-color="#7a1d2f"/><stop offset="100%" stop-color="#4a0f1d"/></radialGradient></defs><circle cx="16" cy="16" r="14" fill="url(#waxGrad)"/><circle cx="16" cy="16" r="10.5" fill="none" stroke="rgba(242,237,228,0.35)" stroke-width="0.5" stroke-dasharray="1.5 1.2"/><text x="16" y="21.5" text-anchor="middle" fill="#f2ede4" font-family="Cormorant Garamond, Georgia, serif" font-size="16" font-weight="500" font-style="italic">B</text></svg><span class="wax-seal-label">Gecureerd</span></div>
         <div class="wine-meta">Champagne · Premier Cru · Côte des Blancs · Frankrijk</div>
         <h3 class="wine-name">Frerejean Frères Premier Cru</h3>
         <p class="wine-producer">Frerejean Frères</p>
