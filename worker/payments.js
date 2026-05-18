@@ -53,13 +53,13 @@ function corsHeaders(origin) {
   };
 }
 
-// Security headers — applied to every response
+// Security headers — applied to every response (2026 best practices)
 const SECURITY_HEADERS = {
-  'Strict-Transport-Security':   'max-age=31536000; includeSubDomains; preload',
+  'Strict-Transport-Security':   'max-age=63072000; includeSubDomains; preload',
   'X-Content-Type-Options':      'nosniff',
   'X-Frame-Options':             'DENY',
   'Referrer-Policy':             'strict-origin-when-cross-origin',
-  'Permissions-Policy':          'camera=(), microphone=(), geolocation=()',
+  'Permissions-Policy':          'camera=(), microphone=(), geolocation=(), interest-cohort=(), browsing-topics=()',
   'X-Permitted-Cross-Domain-Policies': 'none',
 };
 function withSecurityHeaders(response) {

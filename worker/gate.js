@@ -54,14 +54,19 @@ function corsHeaders(origin) {
 }
 
 // ─── Security headers — applied to every response ────────────────────────────
+// Following Cloudflare/OWASP 2026 best practices
 const SECURITY_HEADERS = {
-  'Strict-Transport-Security':   'max-age=31536000; includeSubDomains; preload',
+  // HSTS — 2 years per current best-practice; includeSubDomains + preload-ready
+  'Strict-Transport-Security':   'max-age=63072000; includeSubDomains; preload',
   'X-Content-Type-Options':      'nosniff',
   'X-Frame-Options':             'DENY',
   'Referrer-Policy':             'strict-origin-when-cross-origin',
-  'Permissions-Policy':          'camera=(), microphone=(), geolocation=(), interest-cohort=()',
+  // Permissions-Policy: deny sensors + opt-out of FLoC/Topics
+  'Permissions-Policy':          'camera=(), microphone=(), geolocation=(), interest-cohort=(), browsing-topics=()',
   'X-Permitted-Cross-Domain-Policies': 'none',
   'Cross-Origin-Resource-Policy': 'cross-origin',
+  // CSP on Worker JSON/HTML responses — defense in depth, esp. for /logs etc.
+  'Content-Security-Policy':     "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://*.r2.dev; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self';",
 };
 
 // ─── KV: access log ──────────────────────────────────────────────────────────
