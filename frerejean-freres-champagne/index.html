@@ -608,6 +608,82 @@
   .terroir.is-offscreen .terroir-ping-ring,
   .terroir.is-offscreen .terroir-pin-line,
   .terroir.is-offscreen .terroir-pin-dot { animation-play-state: paused; }
+
+  /* ═══ DESIGN POLISH (phase 1) ═══ */
+  /* Page fade-in on first paint */
+  @keyframes pageFadeIn { from { opacity: 0; } to { opacity: 1; } }
+  body { animation: pageFadeIn 0.45s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { body { animation: none; } }
+
+  /* Skeleton shimmer for photos loading from R2 */
+  .img-placeholder.is-loading, .photo-slot.is-loading, .region-wine-frame.is-loading { position: relative; overflow: hidden; }
+  .img-placeholder.is-loading::after,
+  .photo-slot.is-loading::after,
+  .region-wine-frame.is-loading::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.18) 50%, transparent 100%);
+    animation: shimmer 1.5s infinite ease-in-out;
+    pointer-events: none;
+  }
+  @keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+  @media (prefers-reduced-motion: reduce) {
+    .img-placeholder.is-loading::after, .photo-slot.is-loading::after, .region-wine-frame.is-loading::after { animation: none; }
+  }
+
+  /* Bottle SVG icon: subtle shine animation while placeholder visible */
+  @keyframes bottleShine { 0%, 100% { opacity: 0.5; } 50% { opacity: 0.85; } }
+  .img-placeholder svg, .photo-ph-icon { animation: bottleShine 3.2s ease-in-out infinite; }
+  @media (prefers-reduced-motion: reduce) { .img-placeholder svg, .photo-ph-icon { animation: none; } }
+
+  /* Welcome-back floating banner */
+  .welcome-back {
+    position: fixed; top: 88px; left: 50%; transform: translate(-50%, -10px);
+    background: rgba(26, 23, 20, 0.94); color: #f2ede4;
+    padding: 12px 28px;
+    font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 16px;
+    letter-spacing: 3px;
+    z-index: 200;
+    opacity: 0;
+    transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    pointer-events: none;
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  }
+  .welcome-back.show { opacity: 1; transform: translate(-50%, 0); }
+  @media (max-width: 480px) { .welcome-back { font-size: 14px; padding: 10px 22px; top: 72px; } }
+
+  /* Print: optimized for wine detail pages — keep typography, drop UI */
+  @media print {
+    body { background: #fff !important; color: #000 !important; }
+    nav, footer, .footer-legal, .cookie-banner, .wine-buy, .wine-footer button, .checkout-overlay,
+    .welcome-back, #private-gate, #age-gate, .wine-detail-top, .gallery-section, .nav-back { display: none !important; }
+    main { display: block !important; }
+    main[inert] { display: block !important; }
+    .wine-image-frame { position: static !important; max-width: 240px !important; margin: 0 auto 32px; page-break-inside: avoid; }
+    .wines { padding: 0 !important; max-width: 100% !important; }
+    .wines-header { border: none !important; padding: 0 !important; margin-bottom: 24px !important; }
+    .wine { grid-template-columns: 1fr !important; gap: 0 !important; }
+    .terroir { page-break-inside: avoid; border-color: #888 !important; }
+    .terroir-country { fill: #fff !important; stroke: #000 !important; }
+    .terroir-region, .terroir-pin-dot { fill: #000 !important; }
+    .terroir-pin-line { stroke: #000 !important; animation: none !important; }
+    .terroir-ping-ring { display: none !important; }
+    .wine-pairing-tag { border: 1px solid #888 !important; color: #000 !important; }
+    a { color: #000 !important; text-decoration: none !important; }
+    h2, h3, .wine-name { page-break-after: avoid; }
+    .wine-text { page-break-inside: avoid; orphans: 3; widows: 3; }
+  }
+
+  /* Wax seal — 'gecureerd' stempel */
+  .wax-seal {
+    width: 36px; height: 36px;
+    display: inline-block; vertical-align: middle;
+    margin-right: 12px; margin-bottom: 6px;
+    flex-shrink: 0;
+    filter: drop-shadow(1px 2px 2px rgba(0,0,0,0.25));
+  }
+  .wax-seal-row { display: flex; align-items: center; gap: 4px; margin-bottom: 4px; }
+  .wax-seal-label { font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: var(--faded); font-style: italic; }
+  @media (max-width: 768px) { .wax-seal { width: 30px; height: 30px; } }
 </style>
 <link rel="icon" type="image/png" sizes="512x512" href="/favicon.png">
 <link rel="apple-touch-icon" sizes="512x512" href="/favicon.png">
@@ -670,6 +746,7 @@
     </div>
     <div class="wine-info">
       <div>
+        <div class="wax-seal-row"><svg class="wax-seal" viewBox="0 0 32 32" aria-hidden="true"><defs><radialGradient id="waxGrad" cx="0.35" cy="0.35" r="0.7"><stop offset="0%" stop-color="#a8334a"/><stop offset="60%" stop-color="#7a1d2f"/><stop offset="100%" stop-color="#4a0f1d"/></radialGradient></defs><circle cx="16" cy="16" r="14" fill="url(#waxGrad)"/><circle cx="16" cy="16" r="10.5" fill="none" stroke="rgba(242,237,228,0.35)" stroke-width="0.5" stroke-dasharray="1.5 1.2"/><text x="16" y="21.5" text-anchor="middle" fill="#f2ede4" font-family="Cormorant Garamond, Georgia, serif" font-size="16" font-weight="500" font-style="italic">B</text></svg><span class="wax-seal-label">Gecureerd</span></div>
         <div class="wine-meta">Champagne · Premier Cru · Côte des Blancs · Frankrijk</div>
         <h3 class="wine-name">Frerejean Frères Premier Cru</h3>
         <p class="wine-producer">Frerejean Frères</p>
@@ -978,27 +1055,42 @@ async function loadPhotos() {
     var data = await res.json();
     if (!data.ok) return;
     var p = data.photos;
-    // Main photo
+    // Main photo — with shimmer skeleton during load
     if (p.main) {
       var frame = document.getElementById('photo-main');
       if (frame) {
         var ph = frame.querySelector('.img-placeholder');
-        if (ph) ph.remove();
+        if (ph) ph.classList.add('is-loading');
         var img = document.createElement('img');
-        img.src = p.main; img.alt = ''; img.loading = 'lazy';
+        img.alt = ''; img.loading = 'lazy'; img.decoding = 'async';
         img.className = 'wine-photo';
+        img.style.opacity = '0';
+        img.style.transition = 'opacity 0.5s ease';
+        img.onload = function() {
+          if (ph) ph.remove();
+          requestAnimationFrame(function() { img.style.opacity = '1'; });
+        };
+        img.src = p.main;
         frame.appendChild(img);
       }
     }
-    // Gallery photos
+    // Gallery photos — with shimmer skeleton during load
     (p.gallery || []).forEach(function(url, i) {
       if (!url) return;
       var slot = document.querySelector('[data-photo-slot="gallery-' + (i+1) + '"]');
       if (!slot) return;
-      slot.classList.add('has-photo');
+      slot.classList.add('is-loading');
       var img = document.createElement('img');
-      img.src = url; img.alt = ''; img.loading = 'lazy';
+      img.alt = ''; img.loading = 'lazy'; img.decoding = 'async';
       img.className = 'gallery-photo';
+      img.style.opacity = '0';
+      img.style.transition = 'opacity 0.5s ease';
+      img.onload = function() {
+        slot.classList.remove('is-loading');
+        slot.classList.add('has-photo');
+        requestAnimationFrame(function() { img.style.opacity = '1'; });
+      };
+      img.src = url;
       slot.appendChild(img);
     });
   } catch (e) {}
@@ -1198,6 +1290,21 @@ function cookieConsent(c){localStorage.setItem('battonaasje_cookie_consent',c);d
       t.classList.toggle('is-offscreen', !e.isIntersecting);
     });
   }, { threshold: 0 }).observe(t);
+})();
+</script>
+<script>
+/* Welcome-back banner — shown once per session for already-verified visitors */
+(function() {
+  if (sessionStorage.getItem('battonaasje_private_verified') !== 'true') return;
+  if (sessionStorage.getItem('battonaasje_age_verified') !== 'true') return;
+  if (sessionStorage.getItem('battonaasje_welcome_shown') === '1') return;
+  sessionStorage.setItem('battonaasje_welcome_shown', '1');
+  var b = document.createElement('div');
+  b.className = 'welcome-back';
+  b.textContent = 'Welkom terug.';
+  document.body.appendChild(b);
+  requestAnimationFrame(function() { b.classList.add('show'); });
+  setTimeout(function() { b.classList.remove('show'); setTimeout(function(){ b.remove(); }, 700); }, 2400);
 })();
 </script>
 </body>
