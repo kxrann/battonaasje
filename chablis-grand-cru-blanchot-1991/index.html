@@ -528,6 +528,21 @@
     .checkout-card { padding: 36px 24px 28px; }
     .checkout-title { font-size: 20px; letter-spacing: 4px; }
   }
+
+  /* STOCK BADGE */
+  .wine-footer-meta { display: flex; flex-direction: column; gap: 12px; align-items: flex-start; }
+  .stock-badge { display: inline-flex; align-items: center; gap: 10px; padding: 8px 16px; border: 1px solid var(--ghost); font-size: 10px; letter-spacing: 2.5px; text-transform: uppercase; transition: opacity 0.2s; }
+  .stock-badge[hidden] { display: none; }
+  .stock-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--faded); flex-shrink: 0; }
+  .stock-badge[data-status="loading"] { opacity: 0.5; }
+  .stock-badge[data-status="ok"] { border-color: #2a7a3b; color: #2a7a3b; }
+  .stock-badge[data-status="ok"] .stock-dot { background: #2a7a3b; }
+  .stock-badge[data-status="low"] { border-color: #c68b2c; color: #c68b2c; }
+  .stock-badge[data-status="low"] .stock-dot { background: #c68b2c; animation: stock-pulse 1.5s ease-in-out infinite; }
+  .stock-badge[data-status="sold"] { border-color: #a05040; color: #a05040; }
+  .stock-badge[data-status="sold"] .stock-dot { background: #a05040; }
+  @keyframes stock-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+  .wine-buy:disabled { opacity: 0.5; cursor: not-allowed; background: var(--faded); }
 </style>
 </head>
 <body>
@@ -668,8 +683,11 @@
       </div>
 
       <div class="wine-footer">
-        <div class="wine-price">€295,00<span class="wine-price-unit">/ FLES</span></div>
-        <button type="button" class="wine-buy" onclick="openCheckout()">Direct bestellen →</button>
+        <div class="wine-footer-meta">
+          <div class="stock-badge" id="stock-badge" data-status="loading" hidden><span class="stock-dot"></span><span class="stock-text" id="stock-text">Voorraad laden…</span></div>
+          <div class="wine-price">€295,00<span class="wine-price-unit">/ FLES</span></div>
+        </div>
+        <button type="button" class="wine-buy" id="wine-buy-btn" onclick="openCheckout()">Direct bestellen →</button>
       </div>
     </div>
   </article>
@@ -760,6 +778,7 @@ var WINE_UNIT_PRICE = 295.0;
 function fmt(n) { return n.toFixed(2).replace('.', ','); }
 
 function openCheckout() {
+  if (CURRENT_STOCK === 0) return;
   document.getElementById('checkout-overlay').hidden = false;
   document.body.style.overflow = 'hidden';
   recalcTotal();
@@ -772,7 +791,12 @@ function closeCheckout() {
 function recalcTotal() {
   var input = document.getElementById('checkout-qty');
   var qty = parseInt(input.value) || 1;
-  if (qty < 1) qty = 1; if (qty > 12) qty = 12;
+  var maxAllowed = 12;
+  if (typeof CURRENT_STOCK !== 'undefined' && CURRENT_STOCK !== null && CURRENT_STOCK > 0) {
+    maxAllowed = Math.min(12, CURRENT_STOCK);
+  }
+  if (qty < 1) qty = 1;
+  if (qty > maxAllowed) qty = maxAllowed;
   input.value = qty;
   document.getElementById('checkout-total').textContent = fmt(qty * WINE_UNIT_PRICE);
 }
@@ -821,6 +845,66 @@ async function startCheckout() {
     errorEl.textContent = 'Er ging iets mis. Probeer opnieuw of neem contact op.';
   }
 }
+
+
+/* STOCK — real-time voorraad-indicator */
+var STOCK_WORKER = 'https://battonaasje-gate.kyranboi123.workers.dev';
+var CURRENT_STOCK = null;
+
+async function loadStock() {
+  try {
+    var res = await fetch(STOCK_WORKER + '/stock', { cache: 'no-store' });
+    var data = await res.json();
+    if (!data.ok) return;
+    CURRENT_STOCK = data.stock[WINE_SLUG];
+    updateStockUI();
+  } catch (e) {}
+}
+
+function updateStockUI() {
+  var badge = document.getElementById('stock-badge');
+  var text = document.getElementById('stock-text');
+  var buyBtn = document.getElementById('wine-buy-btn');
+  if (!badge || !buyBtn) return;
+  var n = CURRENT_STOCK;
+
+  if (n === null || n === undefined) {
+    badge.hidden = true;
+    buyBtn.disabled = false;
+    buyBtn.textContent = 'Direct bestellen →';
+    return;
+  }
+  badge.hidden = false;
+
+  if (n === 0) {
+    badge.setAttribute('data-status', 'sold');
+    text.textContent = 'Uitverkocht';
+    buyBtn.disabled = true;
+    buyBtn.textContent = 'Uitverkocht';
+  } else if (n <= 2) {
+    badge.setAttribute('data-status', 'low');
+    text.textContent = n === 1 ? 'Laatste fles' : 'Laatste ' + n + ' flessen';
+    buyBtn.disabled = false;
+    buyBtn.textContent = 'Direct bestellen →';
+  } else {
+    badge.setAttribute('data-status', 'ok');
+    text.textContent = 'Op voorraad · ' + n + ' beschikbaar';
+    buyBtn.disabled = false;
+    buyBtn.textContent = 'Direct bestellen →';
+  }
+  var qtyInput = document.getElementById('checkout-qty');
+  if (qtyInput) {
+    var maxQ = n > 0 ? Math.min(12, n) : 1;
+    qtyInput.max = maxQ;
+    if (parseInt(qtyInput.value) > maxQ) { qtyInput.value = maxQ; recalcTotal(); }
+  }
+}
+
+loadStock();
+document.addEventListener('visibilitychange', function() {
+  if (document.visibilityState === 'visible') loadStock();
+});
+
 </script>
 
 

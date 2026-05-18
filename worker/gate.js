@@ -104,6 +104,161 @@ async function recordPageview(env, page) {
   }
 }
 
+// ─── KV: stock management ────────────────────────────────────────────────────
+// Key:   stock:<slug>
+// Value: integer count as string (no TTL — manual management)
+//
+// KNOWN_WINES is the canonical list of wines that the /voorraad admin shows.
+// Keep this in sync with payments.js CATALOG. Adding a wine = add entry here.
+const KNOWN_WINES = [
+  { slug: 'frerejean-freres-champagne',          name: 'Frerejean Frères Premier Cru' },
+  { slug: 'chablis-grand-cru-blanchot-1991',     name: 'Defaix Chablis Grand Cru Blanchot 1991' },
+  { slug: 'massolino-barolo-2019-magnum',        name: 'Massolino Barolo 2019 Magnum' },
+];
+
+const SLUG_RE = /^[a-z0-9][a-z0-9-]{0,80}$/;
+
+async function getStockMap(env) {
+  if (!env.ACCESS_LOG) return {};
+  const map = {};
+  for (const w of KNOWN_WINES) {
+    const raw = await env.ACCESS_LOG.get(`stock:${w.slug}`);
+    map[w.slug] = raw === null ? null : (parseInt(raw, 10) || 0);
+  }
+  return map;
+}
+
+async function setStock(env, slug, count) {
+  if (!env.ACCESS_LOG) return;
+  await env.ACCESS_LOG.put(`stock:${slug}`, String(count));
+}
+
+// ── GET /stock — public JSON read ────────────────────────────────────────────
+async function handleStockRead(request, env) {
+  const origin = request.headers.get('Origin') || '';
+  const stock  = await getStockMap(env);
+  return new Response(JSON.stringify({ ok: true, stock }), {
+    status: 200,
+    headers: {
+      'Content-Type':  'application/json',
+      'Cache-Control': 'no-store',
+      ...corsHeaders(origin),
+    },
+  });
+}
+
+// ── GET/POST /voorraad — admin HTML + update ─────────────────────────────────
+async function handleVoorraadAdmin(request, env) {
+  const url      = new URL(request.url);
+  const provided = url.searchParams.get('secret') || '';
+  if (!env.LOG_SECRET || provided !== env.LOG_SECRET) {
+    return new Response('Unauthorized', { status: 401 });
+  }
+
+  // POST: update one wine
+  if (request.method === 'POST') {
+    let body;
+    try { body = await request.json(); } catch {
+      return new Response(JSON.stringify({ ok: false, error: 'invalid_body' }), {
+        status: 400, headers: { 'Content-Type': 'application/json' },
+      });
+    }
+    const slug  = String(body.slug || '');
+    const count = parseInt(body.count, 10);
+    if (!SLUG_RE.test(slug))         return new Response(JSON.stringify({ ok: false, error: 'invalid_slug' }),  { status: 400, headers: { 'Content-Type': 'application/json' } });
+    if (isNaN(count) || count < 0)   return new Response(JSON.stringify({ ok: false, error: 'invalid_count' }), { status: 400, headers: { 'Content-Type': 'application/json' } });
+    if (count > 9999)                return new Response(JSON.stringify({ ok: false, error: 'too_high' }),      { status: 400, headers: { 'Content-Type': 'application/json' } });
+    await setStock(env, slug, count);
+    return new Response(JSON.stringify({ ok: true, slug, count }), {
+      status: 200, headers: { 'Content-Type': 'application/json' },
+    });
+  }
+
+  // GET: render admin HTML
+  const stock = await getStockMap(env);
+  const rows = KNOWN_WINES.map((w) => {
+    const current = stock[w.slug];
+    const display = current === null ? '—' : current;
+    const status =
+      current === null ? '<span style="color:#8c8478">niet ingesteld</span>' :
+      current === 0    ? '<span style="color:#a05040;font-weight:600">UITVERKOCHT</span>' :
+      current <= 2     ? '<span style="color:#c68b2c;font-weight:600">LAAG</span>' :
+                         '<span style="color:#2a7a3b;font-weight:600">OK</span>';
+    return `<tr>
+      <td><div style="font-weight:600">${w.name}</div><div style="font-size:11px;color:#8c8478;margin-top:2px">${w.slug}</div></td>
+      <td style="text-align:center;font-size:22px;font-family:'Cormorant Garamond',serif;font-style:italic">${display}</td>
+      <td>${status}</td>
+      <td>
+        <form class="stock-form" data-slug="${w.slug}" onsubmit="return updateStock(event)" style="display:flex;gap:8px">
+          <input type="number" min="0" max="9999" value="${current === null ? '' : current}" required style="width:90px;padding:8px;font-family:'Courier Prime',monospace;font-size:14px;border:1px solid #c8c0b0;background:#fff">
+          <button type="submit" style="padding:8px 16px;background:#1a1714;color:#f2ede4;border:none;font-family:'Courier Prime',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;cursor:pointer">Bijwerken</button>
+        </form>
+      </td>
+    </tr>`;
+  }).join('\n');
+
+  const html = `<!DOCTYPE html>
+<html lang="nl"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Battonaasje — Voorraad</title>
+${SHARED_CSS}
+<style>
+  td { vertical-align: middle; }
+  .saved-flash { color: #2a7a3b; font-size: 10px; letter-spacing: 2px; opacity: 0; transition: opacity 0.3s; }
+  .saved-flash.visible { opacity: 1; }
+</style>
+</head><body>
+<div class="topbar">
+  <h1>Battonaasje</h1>
+  <nav class="topnav">
+    <a href="/logs?secret=${encodeURIComponent(provided)}">Toegangslog</a>
+    <a href="/stats?secret=${encodeURIComponent(provided)}">Bezoekers</a>
+    <a href="/voorraad?secret=${encodeURIComponent(provided)}" class="active">Voorraad</a>
+  </nav>
+</div>
+<div class="sub">Voorraad-beheer · wijzigingen zijn direct zichtbaar op battonaasje.nl</div>
+
+<table>
+  <thead><tr><th>Wijn</th><th style="text-align:center">Voorraad</th><th>Status</th><th>Aanpassen</th></tr></thead>
+  <tbody>${rows}</tbody>
+</table>
+
+<p style="margin-top:32px;font-size:11px;color:#8c8478;letter-spacing:1px;line-height:1.8">
+  Tip: zet voorraad op <strong>0</strong> om de bestelknop te deactiveren ("Uitverkocht").<br>
+  Bij <strong>1 of 2</strong> flessen toont de site automatisch "Laatste flessen".<br>
+  Bij <strong>—</strong> (niet ingesteld) toont de site géén voorraad-badge.
+</p>
+
+<script>
+async function updateStock(e) {
+  e.preventDefault();
+  var form = e.target;
+  var slug = form.dataset.slug;
+  var count = parseInt(form.querySelector('input').value);
+  var btn = form.querySelector('button');
+  btn.disabled = true;
+  btn.textContent = '...';
+  try {
+    var res = await fetch(location.pathname + location.search, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ slug: slug, count: count })
+    });
+    var data = await res.json();
+    if (!data.ok) throw new Error(data.error || 'error');
+    btn.textContent = '✓ Opgeslagen';
+    setTimeout(function() { location.reload(); }, 600);
+  } catch (err) {
+    btn.disabled = false;
+    btn.textContent = 'Fout — opnieuw';
+  }
+  return false;
+}
+</script>
+</body></html>`;
+  return new Response(html, { status: 200, headers: { 'Content-Type': 'text/html; charset=utf-8' } });
+}
+
 // ─── /logs HTML viewer ────────────────────────────────────────────────────────
 async function handleLogs(request, env) {
   const provided = new URL(request.url).searchParams.get('secret') || '';
@@ -155,6 +310,7 @@ ${SHARED_CSS}
     <nav class="topnav">
       <a href="/logs?secret=${encodeURIComponent(provided)}" class="active">Toegangslog</a>
       <a href="/stats?secret=${encodeURIComponent(provided)}">Bezoekers</a>
+      <a href="/voorraad?secret=${encodeURIComponent(provided)}">Voorraad</a>
     </nav>
   </div>
   <div class="sub">Toegangslog — laatste ${total} pogingen (max 200, bewaard 30 dagen)</div>
@@ -288,6 +444,7 @@ ${SHARED_CSS}
     <nav class="topnav">
       <a href="/logs?secret=${encodeURIComponent(provided)}">Toegangslog</a>
       <a href="/stats?secret=${encodeURIComponent(provided)}" class="active">Bezoekers</a>
+      <a href="/voorraad?secret=${encodeURIComponent(provided)}">Voorraad</a>
     </nav>
   </div>
   <div class="sub">Bezoekersstatistieken — bewaard 90 dagen, alleen geverifieerde sessies</div>
@@ -348,8 +505,15 @@ export default {
     }
 
     // HTML viewers
-    if (request.method === 'GET' && url.pathname === '/logs')  return handleLogs(request, env);
-    if (request.method === 'GET' && url.pathname === '/stats') return handleStats(request, env);
+    if (request.method === 'GET' && url.pathname === '/logs')     return handleLogs(request, env);
+    if (request.method === 'GET' && url.pathname === '/stats')    return handleStats(request, env);
+    if (request.method === 'GET' && url.pathname === '/voorraad') return handleVoorraadAdmin(request, env);
+
+    // Public stock JSON for frontend
+    if (request.method === 'GET' && url.pathname === '/stock')    return handleStockRead(request, env);
+
+    // Voorraad admin update
+    if (request.method === 'POST' && url.pathname === '/voorraad') return handleVoorraadAdmin(request, env);
 
     if (request.method !== 'POST') {
       return new Response('Method Not Allowed', { status: 405 });
