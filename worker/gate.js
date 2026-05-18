@@ -53,6 +53,17 @@ function corsHeaders(origin) {
   };
 }
 
+// ─── Security headers — applied to every response ────────────────────────────
+const SECURITY_HEADERS = {
+  'Strict-Transport-Security':   'max-age=31536000; includeSubDomains; preload',
+  'X-Content-Type-Options':      'nosniff',
+  'X-Frame-Options':             'DENY',
+  'Referrer-Policy':             'strict-origin-when-cross-origin',
+  'Permissions-Policy':          'camera=(), microphone=(), geolocation=(), interest-cohort=()',
+  'X-Permitted-Cross-Domain-Policies': 'none',
+  'Cross-Origin-Resource-Policy': 'cross-origin',
+};
+
 // ─── KV: access log ──────────────────────────────────────────────────────────
 // Key:   log:<16-char-padded-ms-timestamp>
 // Value: JSON — { ts, ip, country, ua, ok }
@@ -974,9 +985,22 @@ const SHARED_CSS = `<style>
   .empty { padding: 48px; text-align: center; color: #8c8478; font-style: italic; }
 </style>`;
 
+// Wrap any Response with security headers (clones so it's not immutable)
+function withSecurityHeaders(response) {
+  const headers = new Headers(response.headers);
+  for (const [k, v] of Object.entries(SECURITY_HEADERS)) headers.set(k, v);
+  return new Response(response.body, { status: response.status, headers });
+}
+
 // ─── Main handler ─────────────────────────────────────────────────────────────
 export default {
   async fetch(request, env) {
+    const response = await handleRequest(request, env);
+    return withSecurityHeaders(response);
+  },
+};
+
+async function handleRequest(request, env) {
     const origin = request.headers.get('Origin') || '';
     const url    = new URL(request.url);
 
@@ -1093,5 +1117,4 @@ export default {
     }
 
     return new Response('Not Found', { status: 404 });
-  },
-};
+}

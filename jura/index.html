@@ -11,7 +11,7 @@
 <meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
 <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
 <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=()">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://js.mollie.com https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src https://*.workers.dev https://challenges.cloudflare.com; frame-src https://js.mollie.com https://challenges.cloudflare.com; object-src 'none'; base-uri 'self'; form-action https://formspree.io;">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://js.mollie.com https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src https://*.kyranboi123.workers.dev https://challenges.cloudflare.com; frame-src https://js.mollie.com https://challenges.cloudflare.com; object-src 'none'; base-uri 'self'; form-action https://formspree.io; upgrade-insecure-requests;">
 <link rel="canonical" href="https://battonaasje.nl/jura/">
 <link rel="preload" href="/fonts/co3bmX5slCNuHLi8bLeY9MK7whWMhyjYqXtKky2F7g.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/fonts/u-450q2lgwslOqpF_6gQ8kELawFpWs39pvk.woff2" as="font" type="font/woff2" crossorigin>
@@ -353,6 +353,9 @@
 <link rel="icon" type="image/png" sizes="512x512" href="/favicon.png">
 <link rel="apple-touch-icon" sizes="512x512" href="/favicon.png">
 <link rel="shortcut icon" href="/favicon.png">
+<meta http-equiv="Cross-Origin-Opener-Policy" content="same-origin">
+<meta http-equiv="X-DNS-Prefetch-Control" content="off">
+<meta name="format-detection" content="telephone=no">
 </head>
 <body>
 
@@ -361,6 +364,7 @@
     <div class="private-gate-logo">BATTONAASJE</div>
     <div class="private-gate-line"></div>
     <p class="private-gate-sub">voer de toegangscode in</p>
+    <input type="text" name="hp_name" id="hp_name" tabindex="-1" autocomplete="off" style="position:absolute;left:-10000px;width:1px;height:1px;opacity:0" aria-hidden="true">
     <input class="private-gate-input" id="private-code" type="password" placeholder="· · · · · · · ·" autocomplete="off">
     <div id="turnstile-slot" style="min-height:0;margin-bottom:14px"></div>
     <button type="button" class="private-gate-btn" onclick="checkPrivateCode()">Toegang &rarr;</button>
@@ -484,6 +488,9 @@
     var input = document.getElementById('private-code').value.trim();
     var btn = document.querySelector('#private-gate .private-gate-btn');
     var errorEl = document.getElementById('private-error');
+    // Honeypot — if filled, silently bail (it's a bot)
+    var hp = document.getElementById('hp_name');
+    if (hp && hp.value) return;
     if (TURNSTILE_SITE_KEY && !window.cfTurnstileToken) {
       errorEl.textContent = 'beveiligingscheck laadt — even wachten';
       return;

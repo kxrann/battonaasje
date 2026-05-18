@@ -1,0 +1,10 @@
+# Battonaasje is a private, curated wine site
+# Public indexing is not desired.
+
+User-agent: *
+Disallow: /
+
+# Crawlers should respect this policy.
+# All pages also send <meta name="robots" content="noindex,nofollow">
+
+Sitemap: https://battonaasje.nl/sitemap.xml

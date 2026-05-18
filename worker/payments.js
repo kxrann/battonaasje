@@ -53,6 +53,21 @@ function corsHeaders(origin) {
   };
 }
 
+// Security headers — applied to every response
+const SECURITY_HEADERS = {
+  'Strict-Transport-Security':   'max-age=31536000; includeSubDomains; preload',
+  'X-Content-Type-Options':      'nosniff',
+  'X-Frame-Options':             'DENY',
+  'Referrer-Policy':             'strict-origin-when-cross-origin',
+  'Permissions-Policy':          'camera=(), microphone=(), geolocation=()',
+  'X-Permitted-Cross-Domain-Policies': 'none',
+};
+function withSecurityHeaders(response) {
+  const headers = new Headers(response.headers);
+  for (const [k, v] of Object.entries(SECURITY_HEADERS)) headers.set(k, v);
+  return new Response(response.body, { status: response.status, headers });
+}
+
 function json(data, status, origin) {
   return new Response(JSON.stringify(data), {
     status,
@@ -159,6 +174,11 @@ ${orders.length === 0 ? '<p style="text-align:center;padding:48px;color:#8c8478;
 // ─── Main handler ─────────────────────────────────────────────────────────────
 export default {
   async fetch(request, env) {
+    return withSecurityHeaders(await handleRequest(request, env));
+  },
+};
+
+async function handleRequest(request, env) {
     const origin = request.headers.get('Origin') || '';
     const url    = new URL(request.url);
 
@@ -283,5 +303,4 @@ export default {
     }
 
     return new Response('Not Found', { status: 404 });
-  },
-};
+}

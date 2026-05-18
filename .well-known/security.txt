@@ -1,0 +1,7 @@
+# Security disclosure policy — RFC 9116
+# If you discover a security vulnerability, please report it responsibly.
+
+Contact: mailto:security@battonaasje.nl
+Expires: 2027-12-31T23:59:59.000Z
+Preferred-Languages: nl, en
+Canonical: https://battonaasje.nl/.well-known/security.txt
