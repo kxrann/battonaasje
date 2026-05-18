@@ -94,14 +94,22 @@ function todayISO() {
   return new Date().toISOString().slice(0, 10);
 }
 
-async function recordPageview(env, page) {
+async function recordPageview(env, page, country) {
   if (!env.ACCESS_LOG) return;
   const date = todayISO();
-  const key  = `pv:${date}:${page}`;
+  const ttl  = 90 * 24 * 60 * 60;
   try {
-    const current = await env.ACCESS_LOG.get(key);
-    const next    = (parseInt(current, 10) || 0) + 1;
-    await env.ACCESS_LOG.put(key, String(next), { expirationTtl: 90 * 24 * 60 * 60 });
+    // Per-page counter
+    const pageKey  = `pv:${date}:${page}`;
+    const cur1     = await env.ACCESS_LOG.get(pageKey);
+    await env.ACCESS_LOG.put(pageKey, String((parseInt(cur1, 10) || 0) + 1), { expirationTtl: ttl });
+
+    // Per-country counter
+    if (country && /^[A-Z]{2}$/.test(country)) {
+      const ccKey  = `pv-country:${date}:${country}`;
+      const cur2   = await env.ACCESS_LOG.get(ccKey);
+      await env.ACCESS_LOG.put(ccKey, String((parseInt(cur2, 10) || 0) + 1), { expirationTtl: ttl });
+    }
   } catch (err) {
     console.error('recordPageview failed', err);
   }
@@ -736,17 +744,26 @@ async function handleStats(request, env) {
     return new Response('Unauthorized', { status: 401 });
   }
 
-  // Page through all pv:* keys (max 1000 per list call)
-  let allKeys = [];
-  let cursor;
-  try {
+  // Page through all pv:* and pv-country:* keys
+  async function listAll(prefix) {
+    let keys = [];
+    let cur;
     do {
-      const opts = { prefix: 'pv:', limit: 1000 };
-      if (cursor) opts.cursor = cursor;
+      const opts = { prefix, limit: 1000 };
+      if (cur) opts.cursor = cur;
       const listed = await env.ACCESS_LOG.list(opts);
-      allKeys = allKeys.concat(listed.keys);
-      cursor = listed.list_complete ? null : listed.cursor;
-    } while (cursor);
+      keys = keys.concat(listed.keys);
+      cur = listed.list_complete ? null : listed.cursor;
+    } while (cur);
+    return keys;
+  }
+  let allKeys, countryKeys;
+  try {
+    // pv:YYYY-MM-DD:/path  AND  pv-country:YYYY-MM-DD:CC share the 'pv:' prefix,
+    // so list once and split by key shape.
+    const all = await listAll('pv');
+    allKeys     = all.filter((k) => k.name.startsWith('pv:'));
+    countryKeys = all.filter((k) => k.name.startsWith('pv-country:'));
   } catch {
     return new Response('KV error', { status: 500 });
   }
@@ -788,6 +805,54 @@ async function handleStats(request, env) {
   const topPages = [...perPage.entries()]
     .sort((a, b) => b[1] - a[1])
     .slice(0, 50);
+
+  // Country aggregation
+  const countryEntries = await Promise.all(
+    countryKeys.map(async ({ name }) => {
+      const raw   = await env.ACCESS_LOG.get(name);
+      const parts = name.split(':'); // [ "pv-country", "YYYY-MM-DD", "CC" ]
+      return { date: parts[1], cc: parts[2], count: parseInt(raw, 10) || 0 };
+    })
+  );
+  const perCountry = new Map();
+  for (const e of countryEntries) {
+    perCountry.set(e.cc, (perCountry.get(e.cc) || 0) + e.count);
+  }
+  const topCountries  = [...perCountry.entries()].sort((a, b) => b[1] - a[1]);
+  const totalCountry  = topCountries.reduce((s, [, n]) => s + n, 0) || 1;
+  const maxCountry    = topCountries.length ? topCountries[0][1] : 1;
+
+  // ISO-3166-1 alpha-2 → flag emoji (Unicode regional indicator)
+  function flag(cc) {
+    if (!cc || cc.length !== 2 || !/^[A-Z]{2}$/.test(cc)) return '🏳️';
+    return String.fromCodePoint(
+      0x1F1E6 + cc.charCodeAt(0) - 65,
+      0x1F1E6 + cc.charCodeAt(1) - 65,
+    );
+  }
+  // Friendly Dutch names for common country codes
+  const CC_NAMES = {
+    NL: 'Nederland', BE: 'België', DE: 'Duitsland', FR: 'Frankrijk', IT: 'Italië',
+    ES: 'Spanje', PT: 'Portugal', GB: 'Verenigd Koninkrijk', IE: 'Ierland',
+    LU: 'Luxemburg', CH: 'Zwitserland', AT: 'Oostenrijk', DK: 'Denemarken',
+    SE: 'Zweden', NO: 'Noorwegen', FI: 'Finland', PL: 'Polen', CZ: 'Tsjechië',
+    US: 'Verenigde Staten', CA: 'Canada', AU: 'Australië', JP: 'Japan',
+    CN: 'China', BR: 'Brazilië', MX: 'Mexico', AR: 'Argentinië', ZA: 'Zuid-Afrika',
+    T1: 'Tor netwerk', XX: 'Onbekend',
+  };
+  function ccName(cc) { return CC_NAMES[cc] || cc; }
+
+  const countryRows = topCountries.length === 0
+    ? '<tr><td colspan="3" class="empty-cell">Nog geen land-data — wordt verzameld vanaf de eerste bezoeker.</td></tr>'
+    : topCountries.map(([cc, count]) => {
+        const pct  = ((count / totalCountry) * 100).toFixed(1);
+        const wpct = Math.max(2, (count / maxCountry) * 100);
+        return `<tr>
+          <td class="cc-cell"><span class="cc-flag">${flag(cc)}</span><span class="cc-name">${ccName(cc)}</span><span class="cc-code">${cc}</span></td>
+          <td class="cc-bar-cell"><div class="cc-bar" style="width:${wpct}%"></div></td>
+          <td class="cc-num"><strong>${count}</strong> <span class="cc-pct">${pct}%</span></td>
+        </tr>`;
+      }).join('\n');
 
   // Build last 30 days (in chronological order)
   const days = [];
@@ -836,6 +901,15 @@ ${SHARED_CSS}
   td a { color: #1a1714; text-decoration: none; border-bottom: 1px solid #c8c0b0; }
   td a:hover { border-bottom-color: #1a1714; }
   .empty-cell { padding: 32px; text-align: center; color: #8c8478; font-style: italic; }
+  /* Country chart */
+  .cc-cell { display: flex; align-items: center; gap: 12px; min-width: 200px; }
+  .cc-flag { font-size: 22px; line-height: 1; flex-shrink: 0; }
+  .cc-name { color: #1a1714; }
+  .cc-code { font-size: 10px; letter-spacing: 2px; color: #8c8478; margin-left: 4px; }
+  .cc-bar-cell { width: 60%; padding: 10px 0; }
+  .cc-bar { height: 10px; background: linear-gradient(90deg, #3a3528 0%, #1a1714 100%); transition: width 0.3s ease-out; min-width: 2px; }
+  .cc-num { text-align: right; white-space: nowrap; font-family: 'Courier Prime', monospace; }
+  .cc-pct { font-size: 10px; color: #8c8478; margin-left: 6px; letter-spacing: 1px; }
 </style>
 </head>
 <body>
@@ -864,6 +938,12 @@ ${SHARED_CSS}
   <table>
     <thead><tr><th>Pagina</th><th style="text-align:right">Bezoeken</th></tr></thead>
     <tbody>${pagesRows}</tbody>
+  </table>
+
+  <div class="section-title">Bezoekers per land</div>
+  <table>
+    <thead><tr><th>Land</th><th style="width:60%">&nbsp;</th><th style="text-align:right">Bezoeken</th></tr></thead>
+    <tbody>${countryRows}</tbody>
   </table>
 </body></html>`;
 
@@ -939,7 +1019,7 @@ export default {
         return new Response('', { status: 400, headers: corsHeaders(origin) });
       }
       const page = sanitizePath(body.page);
-      await recordPageview(env, page);
+      await recordPageview(env, page, country);
       return new Response('', { status: 204, headers: corsHeaders(origin) });
     }
 
