@@ -1,0 +1,15 @@
+name = "battonaasje-gate"
+main = "gate.js"
+compatibility_date = "2024-01-01"
+
+# Create the KV namespace first, then paste the id below:
+#   wrangler kv:namespace create ACCESS_LOG
+#   wrangler kv:namespace create ACCESS_LOG --preview   (for local dev)
+[[kv_namespaces]]
+binding = "ACCESS_LOG"
+id = "REPLACE_WITH_YOUR_KV_NAMESPACE_ID"
+preview_id = "REPLACE_WITH_YOUR_KV_PREVIEW_NAMESPACE_ID"
+
+# Secrets (set via wrangler, never in this file):
+#   wrangler secret put GATE_CODE        ← the private access code
+#   wrangler secret put LOG_SECRET       ← a password to view /logs
