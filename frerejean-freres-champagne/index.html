@@ -364,7 +364,7 @@
     .terroir-map { max-width: min(440px, 100%); margin: 0 auto; }
     .terroir-svg { min-height: 240px; }
   }
-  @media (max-width: 480px) { .nav-back { max-width: 22px; letter-spacing: 0; } }
+  /* nav-back rule replaced below */
   @media (max-width: 768px) {
     nav { padding: 16px 24px; }
     .region-hero { padding: 120px 24px 50px; min-height: 50vh; }
@@ -395,7 +395,7 @@
   .cookie-btn-accept:hover { background: rgba(242,237,228,0.1); border-color: rgba(242,237,228,0.9); color: rgba(242,237,228,0.95); }
   .cookie-btn-decline { border-color: rgba(242,237,228,0.2); color: rgba(242,237,228,0.35); }
   .cookie-btn-decline:hover { border-color: rgba(242,237,228,0.4); color: rgba(242,237,228,0.55); }
-  @media (max-width: 480px) { .nav-back { max-width: 22px; letter-spacing: 0; } }
+  /* nav-back rule replaced below */
   @media (max-width: 768px) { .cookie-banner { flex-direction: column; padding: 16px 24px; align-items: flex-start; gap: 14px; } .cookie-banner-actions { width: 100%; } .cookie-btn { flex: 1; text-align: center; } }
 
   /* PHOTO GALLERY */
@@ -585,6 +585,27 @@
   .checkout-close { min-width: 44px; min-height: 44px; }
   /* Prevent very long wine/producer names overflowing */
   .wine-name, .wine-producer, .wine-meta { overflow-wrap: anywhere; word-break: break-word; }
+
+  /* Nav-back: arrow-only on tiny screens */
+  @media (max-width: 480px) {
+    .nav-back {
+      max-width: 36px; width: 36px; height: 36px;
+      letter-spacing: 0; font-size: 0;
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 0;
+    }
+    .nav-back::before { content: '←'; font-size: 18px; color: var(--faded); line-height: 1; }
+  }
+
+  /* Lege foto-slot placeholders innemen minder ruimte op mobiel */
+  @media (max-width: 768px) {
+    .photo-slot:not(.has-photo) { min-height: 130px !important; }
+  }
+
+  /* Pauzeer terroir animaties wanneer off-screen */
+  .terroir.is-offscreen .terroir-ping-ring,
+  .terroir.is-offscreen .terroir-pin-line,
+  .terroir.is-offscreen .terroir-pin-dot { animation-play-state: paused; }
 </style>
 <link rel="icon" type="image/png" sizes="512x512" href="/favicon.png">
 <link rel="apple-touch-icon" sizes="512x512" href="/favicon.png">
@@ -1161,6 +1182,20 @@ function cookieConsent(c){localStorage.setItem('battonaasje_cookie_consent',c);d
     origSet(k, v);
     if (k === 'battonaasje_age_verified' && v === 'true') fire();
   };
+})();
+</script>
+
+<script>
+/* Pauzeer terroir animaties wanneer ze niet zichtbaar zijn (bespaart batterij) */
+(function() {
+  var t = document.querySelector('.terroir');
+  if (!t || !window.IntersectionObserver) return;
+  t.classList.add('is-offscreen');
+  new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      t.classList.toggle('is-offscreen', !e.isIntersecting);
+    });
+  }, { threshold: 0 }).observe(t);
 })();
 </script>
 </body>

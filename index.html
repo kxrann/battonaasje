@@ -1559,6 +1559,17 @@
   /* Larger modal-close hit area */
   .modal-close { min-width: 44px; min-height: 44px; padding: 8px 12px; }
   footer { flex-wrap: wrap; gap: 16px; }
+
+  /* Lege foto-slot placeholders innemen minder ruimte op mobiel */
+  @media (max-width: 768px) {
+    .photo-slot:not(.has-photo) { min-height: 130px !important; }
+  }
+
+  /* Newsletter submit button gecentreerd op mobiel */
+  @media (max-width: 768px) {
+    .email-form { align-items: center; }
+    .form-submit { align-self: center; }
+  }
 </style>
 </head>
 <body>

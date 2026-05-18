@@ -126,6 +126,11 @@
     input[type=text], input[type=email], input[type=password], input[type=number],
     input[type=tel], textarea, select { font-size: 16px !important; }
   }
+
+  /* Lege foto-slot placeholders innemen minder ruimte op mobiel */
+  @media (max-width: 768px) {
+    .photo-slot:not(.has-photo) { min-height: 130px !important; }
+  }
 </style>
 <link rel="icon" type="image/png" sizes="512x512" href="/favicon.png">
 <link rel="apple-touch-icon" sizes="512x512" href="/favicon.png">
